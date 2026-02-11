@@ -943,6 +943,14 @@ function load(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{load();recalc()});
+
+// Auto-fill price from prices.json
+fetch('../prices.json').then(r=>r.json()).then(d=>{
+  if(d.CRCL && d.CRCL.price){
+    const el=document.getElementById('m-cp');
+    if(el){el.value=d.CRCL.price;recalc()}
+  }
+}).catch(()=>{});
 </script>
 </body>
 </html>
