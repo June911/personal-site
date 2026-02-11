@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICO 参与框架 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F0F0;
+  --fg: #121212;
+  --red: #D02020;
+  --blue: #1040C0;
+  --yellow: #F0C020;
+  --muted: #E0E0E0;
+  --white: #FFFFFF;
+  --font: 'Outfit', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); font-size: 16px; line-height: 1.6; font-weight: 500; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+.nav { background: var(--white); border-bottom: 4px solid var(--fg); padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 64px; }
+.nav-logo { display: flex; align-items: center; gap: 12px; }
+.nav-shapes { display: flex; align-items: center; gap: 6px; }
+.shape-circle { width: 16px; height: 16px; background: var(--red); border-radius: 50%; border: 2px solid var(--fg); }
+.shape-square { width: 14px; height: 14px; background: var(--blue); border: 2px solid var(--fg); }
+.shape-triangle { width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid var(--yellow); }
+.nav-title { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+.nav-back { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 16px; border: 2px solid var(--fg); transition: all 0.2s; }
+.nav-back:hover { background: var(--yellow); }
+
+/* HERO */
+.article-hero { border-bottom: 4px solid var(--fg); overflow: hidden; }
+.article-hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; min-height: 360px; }
+.article-hero-left { padding: 64px 40px 64px 16px; display: flex; flex-direction: column; justify-content: center; }
+.article-hero-right { background: var(--yellow); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.article-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #8a6d00; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.article-label::before { content: ''; width: 24px; height: 3px; background: var(--yellow); }
+.article-h1 { font-size: 54px; font-weight: 900; line-height: 0.92; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 20px; }
+.article-subtitle { font-size: 18px; font-weight: 500; color: #555; max-width: 480px; line-height: 1.7; }
+/* Hero geometric */
+.hero-geo { position: relative; width: 260px; height: 260px; }
+.hero-geo .g1 { position: absolute; width: 120px; height: 120px; background: var(--red); border: 4px solid var(--fg); top: 10px; left: 10px; }
+.hero-geo .g2 { position: absolute; width: 120px; height: 120px; border: 5px solid var(--fg); border-radius: 50%; top: 80px; left: 80px; }
+.hero-geo .g3 { position: absolute; width: 0; height: 0; border-left: 60px solid transparent; border-right: 60px solid transparent; border-bottom: 100px solid var(--blue); top: 30px; left: 100px; opacity: 0.7; }
+.hero-dot { position: absolute; inset: 0; background: radial-gradient(rgba(0,0,0,0.08) 2px, transparent 2px); background-size: 20px 20px; }
+
+@media (max-width: 768px) {
+  .article-hero-inner { grid-template-columns: 1fr; }
+  .article-hero-left { padding: 40px 16px; }
+  .article-h1 { font-size: 36px; }
+  .article-hero-right { min-height: 200px; }
+  .hero-geo { transform: scale(0.7); }
+}
+
+/* CONTENT */
+.article-body { max-width: 800px; margin: 0 auto; padding: 64px 16px 80px; }
+.article-body h2 {
+  font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em;
+  margin: 56px 0 20px; padding-bottom: 12px; border-bottom: 4px solid var(--fg);
+}
+.article-body h3 {
+  font-size: 22px; font-weight: 900; text-transform: uppercase;
+  margin: 40px 0 16px; color: var(--blue);
+}
+.article-body h4 { font-size: 16px; font-weight: 700; margin: 28px 0 12px; }
+.article-body p { margin-bottom: 16px; line-height: 1.8; color: #333; }
+.article-body ul, .article-body ol { margin: 0 0 16px 24px; line-height: 1.8; color: #333; }
+.article-body li { margin-bottom: 6px; }
+.article-body strong { font-weight: 700; color: var(--fg); }
+.article-body blockquote {
+  background: var(--white); border-left: 6px solid var(--yellow); padding: 20px 24px; margin: 24px 0;
+  font-weight: 700; font-size: 17px; line-height: 1.6;
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+.article-body table {
+  width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;
+  border: 4px solid var(--fg);
+}
+.article-body th {
+  background: var(--fg); color: var(--white); text-align: left; padding: 12px 16px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.article-body td {
+  padding: 10px 16px; border-bottom: 2px solid var(--muted); background: var(--white);
+}
+.article-body tr:last-child td { border-bottom: none; }
+.callout {
+  background: var(--white); border: 4px solid var(--fg); box-shadow: 6px 6px 0 0 var(--fg);
+  padding: 24px; margin: 24px 0; position: relative;
+}
+.callout::after {
+  content: ''; position: absolute; top: 10px; right: 10px;
+  width: 10px; height: 10px; background: var(--red); border-radius: 50%;
+}
+.callout-yellow { border-left: 8px solid var(--yellow); }
+.callout-yellow::after { background: var(--yellow); border-radius: 0; }
+.callout-blue { border-left: 8px solid var(--blue); }
+.callout-blue::after { background: var(--blue); border-radius: 0; transform: rotate(45deg); }
+.callout h4 { margin-top: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Loss highlight */
+.loss { color: var(--red); font-weight: 700; }
+.gain { color: #0a7c50; font-weight: 700; }
+
+/* Footer */
+.footer { background: var(--fg); color: var(--white); padding: 48px 16px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-text { font-size: 13px; font-weight: 500; color: #999; }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #999; transition: color 0.2s; }
+.footer-links a:hover { color: var(--yellow); }
+@media (max-width: 640px) {
+  .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">&larr; 返回文章</a>
+  </div>
+</nav>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <div class="article-hero-left">
+      <div class="article-label">Crypto</div>
+      <h1 class="article-h1">ICO<br>参与<br>框架</h1>
+      <p class="article-subtitle">基于 2025 年 ICO 周期数据总结的参与规则与逃顶指标。</p>
+    </div>
+    <div class="article-hero-right">
+      <div class="hero-dot"></div>
+      <div class="hero-geo">
+        <div class="g1"></div>
+        <div class="g2"></div>
+        <div class="g3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<article class="article-body">
+
+  <h2>核心数据</h2>
+
+  <table>
+    <thead>
+      <tr><th>时间</th><th>项目</th><th>ICO FDV</th><th>开盘倍数</th><th>当前 vs ICO</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Jul 2025</td><td>Plasma</td><td>$500M</td><td>14.6x</td><td class="gain">1.67x</td></tr>
+      <tr><td>Jul 2025</td><td>Pump.fun</td><td>$4B</td><td>3x</td><td class="loss">0.53x (亏)</td></tr>
+      <tr><td>Sep 2025</td><td>Lombard</td><td>$450M</td><td>3.6x</td><td class="gain">1.76x</td></tr>
+      <tr><td>Oct 2025</td><td>MegaETH</td><td>$999M</td><td>~1.3x</td><td class="gain">1.3x</td></tr>
+      <tr><td>Nov 2025</td><td>Monad</td><td>$2.5B</td><td>1.16x</td><td class="loss">0.72x (亏)</td></tr>
+      <tr><td>Dec 2025</td><td>Stable</td><td>$1.5B</td><td>3x</td><td class="gain">1.47x</td></tr>
+      <tr><td>Jan 2026</td><td>Zama</td><td>$55M*</td><td>~8.3x</td><td class="gain">5.7x</td></tr>
+    </tbody>
+  </table>
+
+  <p><em>*Zama：$55M 为拍卖地板 FDV，对比 $1B Series B 打 94% 折。晚期但超低 FDV → 仍有高倍数，反向验证「FDV 是核心变量」。</em></p>
+
+  <h2>什么 ICO 值得参与</h2>
+
+  <p>三个筛选条件：</p>
+
+  <div class="callout callout-yellow">
+    <h4>1. ICO FDV &lt; $1B — 最重要的变量</h4>
+    <p>FDV 过高即使开盘有倍数，持有也容易亏。Pump.fun ($4B) 和 Monad ($2.5B) 现在都在水下；低 FDV 的 Plasma ($500M)、Lombard ($450M) 至今仍有正收益。</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <h4>2. 处于周期早期</h4>
+    <p>同一轮牛市中，越早的 ICO 开盘倍数越高（14.6x → 3.6x → 1.16x）。</p>
+  </div>
+
+  <div class="callout">
+    <h4>3. ICO → TGE 间隔短</h4>
+    <p>热度消散价格难看。间隔越长越危险。</p>
+  </div>
+
+  <blockquote>低 FDV 是最重要的变量，甚至能覆盖「时机晚」的劣势。<br><br>简记：低 FDV（最重要）+ 早期 + 快速上线</blockquote>
+
+  <h2>参与时间窗口</h2>
+
+  <ul>
+    <li><strong>最佳窗口</strong>：第一个财富效应出现后的 ~1 个月（本轮 Jul 2025 前后）</li>
+    <li><strong>可参与期</strong>：约 2-3 个月（Jul → Sep），开盘倍数从 14x 降到 3-4x，仍有利可图</li>
+    <li><strong>停止信号</strong>：开盘倍数压缩到 ~1x（Oct-Nov），市场已无增量资金给新项目</li>
+    <li><strong>晚期（Dec+）</strong>：个别仍有倍数（Stable 3x），但整体高风险，是赌个案而非规律</li>
+  </ul>
+
+  <h2>ICO 作为逃顶指标</h2>
+
+  <p>ICO 市场是周期顶部的领先指标。信号由弱到强：</p>
+
+  <table>
+    <thead><tr><th>信号强度</th><th>现象</th><th>含义</th></tr></thead>
+    <tbody>
+      <tr><td>弱</td><td>ICO FDV 膨胀（$500M → $2-4B）</td><td>市场定价已 euphoric</td></tr>
+      <tr><td>中</td><td>开盘倍数压缩到 ~1x</td><td>二级市场不愿给一级接盘</td></tr>
+      <tr><td><strong>强</strong></td><td>超额认购但开盘不涨（MegaETH 超额 27.8x 开盘平）</td><td>最后的钱冲入但无更多资金接力</td></tr>
+      <tr><td><strong>强</strong></td><td>ICO → TGE 间隔被项目方拉长</td><td>项目方也意识到市场恶化</td></tr>
+    </tbody>
+  </table>
+
+  <blockquote>当 ICO 开盘倍数从 &gt;3x 压缩到 &lt;1.5x，同时 ICO FDV 仍在膨胀 — 这就是逃顶窗口。</blockquote>
+
+  <h2>未参与时的策略</h2>
+
+  <p>ICO 热潮消退后不应继续参与。更合适的策略：<strong>等行情相对不好时，伴随新叙事出现再参与下一轮。</strong></p>
+
+  <h2>待验证</h2>
+
+  <ul>
+    <li>Aztec TGE 后的表现（验证"间隔过长 → 价格差"的假设）</li>
+    <li>Flying Tulip ($1B FDV, Feb 2026) 的开盘表现（验证晚期 + 高 FDV 的模式）</li>
+    <li>下一轮周期是否重复同样的倍数递减模式</li>
+  </ul>
+
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-text">june &copy; 2026</span>
+    <ul class="footer-links">
+      <li><a href="../index.html">首页</a></li>
+      <li><a href="../index.html#articles">文章</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

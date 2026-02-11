@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>指标看板 — june</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e17; --card: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.08);
+      --text: #e8eaed; --dim: #5a6270; --muted: #8892a0;
+      --cyan: #00d9ff; --gold: #ffd700; --green: #00ff88; --pink: #ff6b9d; --orange: #ff9500;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); padding: 0; font-size: 13px; line-height: 1.5; }
+    /* Site nav */
+    .site-nav { background: #111827; border-bottom: 3px solid #222; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; height: 48px; }
+    .site-nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .site-nav-shapes { display: flex; gap: 5px; align-items: center; }
+    .site-nav-shapes .c { width: 10px; height: 10px; background: #D02020; border-radius: 50%; }
+    .site-nav-shapes .s { width: 9px; height: 9px; background: #1040C0; }
+    .site-nav-shapes .t { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #F0C020; }
+    .site-nav-title { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+    .site-nav-back { color: var(--muted); font-size: 12px; text-decoration: none; padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px; transition: all 0.15s; }
+    .site-nav-back:hover { color: var(--cyan); border-color: var(--cyan); }
+    .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem; }
+
+    /* Header */
+    .header { text-align: center; padding: 1.5rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.2rem; }
+    .title { font-size: 1.3rem; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+    .summary { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+    .summary-item { padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; }
+    .summary-item.active { background: rgba(255,107,157,0.1); border: 1px solid rgba(255,107,157,0.3); color: var(--pink); }
+    .summary-item.quiet { background: rgba(0,255,136,0.05); border: 1px solid rgba(0,255,136,0.15); color: var(--muted); }
+    .summary-item b { font-size: 1.1rem; }
+    .timestamp { font-size: 0.7rem; color: var(--dim); margin-top: 0.6rem; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0.4rem; margin-bottom: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    .tab { padding: 0.4rem 1rem; background: none; border: none; border-radius: 6px 6px 0 0; cursor: pointer; color: var(--dim); font-size: 0.8rem; font-weight: 500; transition: all 0.15s; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--cyan); background: rgba(0,217,255,0.08); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Tier sections */
+    .tier-section { margin-bottom: 1.2rem; }
+    .tier-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; padding: 0 0.2rem; }
+    .tier-label { font-size: 0.75rem; font-weight: 600; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; }
+    .tier-desc { font-size: 0.7rem; color: var(--dim); }
+
+    /* Indicator table */
+    .indicator-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .indicator-table thead th { text-align: left; padding: 0.5rem 0.6rem; color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+    .indicator-table tbody td { padding: 0.6rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .indicator-table tbody tr:last-child td { border-bottom: none; }
+    .indicator-table tbody tr:hover { background: rgba(0,217,255,0.03); }
+
+    /* Row triggered highlight */
+    .row-triggered { background: rgba(255,107,157,0.05) !important; }
+    .row-triggered td:first-child { box-shadow: inset 3px 0 0 var(--pink); }
+
+    /* Column widths */
+    .col-name { font-weight: 600; white-space: nowrap; }
+    .col-status { white-space: nowrap; }
+    .col-value { max-width: 220px; }
+    .col-threshold { max-width: 180px; }
+    .col-winrate { min-width: 120px; }
+    .col-timing { white-space: nowrap; }
+
+    /* Status badges */
+    .status-triggered { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 600; background: rgba(255,107,157,0.15); color: var(--pink); }
+    .status-ok { color: var(--dim); font-size: 0.75rem; }
+    .status-watch { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; background: rgba(255,149,0,0.12); color: var(--orange); }
+
+    /* Value */
+    .value { font-size: 0.8rem; color: var(--text); }
+    .manual-link { color: var(--cyan); text-decoration: none; font-size: 0.75rem; opacity: 0.7; }
+    .manual-link:hover { opacity: 1; text-decoration: underline; }
+    .dim { color: var(--dim); font-size: 0.75rem; }
+
+    /* Winrate bar */
+    .wr-bar { display: inline-block; width: 50px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; vertical-align: middle; margin-right: 0.4rem; overflow: hidden; }
+    .wr-fill { display: block; height: 100%; border-radius: 2px; }
+    .wr-text { font-size: 0.75rem; color: var(--muted); vertical-align: middle; }
+
+    /* Timing badges */
+    .timing-lead { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 8px; background: rgba(0,255,136,0.1); color: var(--green); }
+    .timing-coin { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 8px; background: rgba(255,255,255,0.04); color: var(--dim); }
+    .timing-lag { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 8px; background: rgba(255,107,157,0.08); color: var(--pink); opacity: 0.7; }
+
+    /* Expandable detail rows */
+    .indicator-table tbody tr.data-row { cursor: pointer; }
+    .indicator-table tbody tr.data-row:hover { background: rgba(0,217,255,0.05); }
+    .indicator-table tbody tr.data-row .col-name { position: relative; padding-left: 1.2rem; }
+    .indicator-table tbody tr.data-row .col-name::before { content: '▸'; position: absolute; left: 0.4rem; top: 50%; transform: translateY(-50%); font-size: 0.6rem; color: var(--dim); transition: transform 0.15s; }
+    .indicator-table tbody tr.data-row.open .col-name::before { transform: translateY(-50%) rotate(90deg); color: var(--cyan); }
+    .detail-row { display: none; }
+    .detail-row.open { display: table-row; }
+    .detail-row td { padding: 0.6rem 0.8rem 0.8rem 1.2rem; background: rgba(0,217,255,0.02); border-bottom: 1px solid var(--border); }
+    .detail-content { font-size: 0.75rem; line-height: 1.7; color: var(--muted); }
+    .detail-content strong { color: var(--text); font-weight: 600; }
+    .detail-content .detail-label { color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.4rem; }
+
+    /* History timeline */
+    .tl-group { margin-bottom: 1rem; }
+    .tl-date { font-size: 0.75rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.3rem; padding-left: 1rem; position: relative; }
+    .tl-date::before { content: ''; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); transform: translateY(-50%); }
+    .tl-items { padding-left: 1rem; border-left: 1px solid var(--border); margin-left: 2px; }
+    .tl-item { padding: 0.5rem 0.8rem; margin-bottom: 0.3rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+    .tl-indicator { font-weight: 600; font-size: 0.8rem; margin-bottom: 0.15rem; }
+    .tl-signal { font-size: 0.75rem; color: var(--pink); font-weight: 500; }
+    .tl-detail { font-size: 0.7rem; color: var(--dim); margin-top: 0.1rem; }
+    .empty-state { text-align: center; padding: 2rem; color: var(--dim); }
+
+    @media (max-width: 768px) {
+      body { padding: 0.8rem; }
+      .indicator-table { font-size: 0.75rem; }
+      .col-threshold, .col-timing { display: none; }
+      .wr-bar { width: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="../index.html" class="site-nav-logo">
+      <div class="site-nav-shapes"><div class="c"></div><div class="s"></div><div class="t"></div></div>
+      <span class="site-nav-title">june</span>
+    </a>
+    <a href="../index.html" class="site-nav-back">&larr; 返回首页</a>
+  </nav>
+  <div class="container">
+    <div class="header">
+      <div class="title">指标看板</div>
+      <div class="summary">
+        <div class="summary-item active">BTC 抄底 <b>1/10</b></div>
+        <div class="summary-item quiet">SPY 抄底 <b>0/5</b></div>
+        <div class="summary-item quiet">逃顶 <b>0/2</b></div>
+      </div>
+      <div class="timestamp">2026-02-11 10:54</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('btc')">BTC 抄底</div>
+      <div class="tab" onclick="switchTab('spy')">SPY 抄底</div>
+      <div class="tab" onclick="switchTab('top')">逃顶</div>
+      <div class="tab" onclick="switchTab('history')">历史</div>
+    </div>
+
+    <div id="panel-btc" class="panel active">
+      <div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">一级指标</span>
+    <span class="tier-desc">可单独使用，高确信度</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">Ahr999</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://www.coinglass.com/pro/i/ahr999" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">< 0.45</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:100%;background:var(--green);"></span></span><span class="wr-text">100%</span></td>
+  <td class="col-timing"><span class="timing-lead">Leading</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 综合 BTC 定投收益率与 200 日指数拟合价格，衡量当前价格相对长期趋势的偏离程度。<br><span class="detail-label">为什么有效</span> 当指数低于 0.45 时，意味着价格同时低于定投均价和趋势拟合价，历史上 180 天内 <strong>100% 胜率</strong>。<br><span class="detail-label">区间</span> < 0.45 抄底 · 0.45-1.2 定投 · > 1.2 等待 · > 6 考虑卖出</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">Funding Rate</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><span class="value">当前 0.0014%，连续负 0 次</span></td>
+  <td class="col-threshold"><span class="dim">连续 ≥7 次负</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:93%;background:var(--green);"></span></span><span class="wr-text">93%</span></td>
+  <td class="col-timing"><span class="timing-lead">Leading</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 永续合约多头定期向空头支付的费率。持续为负说明空头拥挤，市场极度悲观。<br><span class="detail-label">为什么有效</span> 连续 7 次以上负费率意味着做空成本已被市场充分消化，空头被迫回补时会推动价格反弹。<br><span class="detail-label">注意</span> 需要"连续"为负，单次负费率不构成信号。</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">MVRV Z-Score</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://www.coinglass.com/pro/i/mvrv" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">< 0</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:80%;background:var(--cyan);"></span></span><span class="wr-text">80%</span></td>
+  <td class="col-timing"><span class="timing-lead">Leading</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 市值(Market Value)与已实现价值(Realized Value)之比的标准差。已实现价值 = 每个链上 UTXO 按最后移动价格计算的总值。<br><span class="detail-label">为什么有效</span> Z-Score < 0 说明当前市值低于全网平均持仓成本，历史上对应重大周期底部。<br><span class="detail-label">区间</span> < -0.5 极度低估 · < 0 低估 · > 7 极度高估</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">STH-NUPL</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://studio.glassnode.com/charts/indicators.NuplLess155" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">< -0.25</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:100%;background:var(--green);"></span></span><span class="wr-text">100%</span></td>
+  <td class="col-timing"><span class="timing-lead">Leading</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 短期持有者（< 155 天）的未实现盈亏比。衡量新入场投资者是整体盈利还是亏损。<br><span class="detail-label">为什么有效</span> 当短期持有者群体深度亏损（< -0.25），"弱手"已被清洗，剩余持有者不愿低价卖出，抛压枯竭。<br><span class="detail-label">区间</span> < -0.25 投降区（强信号）· -0.25~0 亏损区 · > 0 盈利区</div></td></tr>
+</tbody></table></div>
+<div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">二级指标</span>
+    <span class="tier-desc">配合一级使用，增强信号</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">Hash Ribbons</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://www.bitcoinmagazinepro.com/charts/hash-ribbons/" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">矿工投降结束</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:78%;background:var(--cyan);"></span></span><span class="wr-text">78%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 哈希率的 30 日与 60 日均线交叉。当短期均线下穿长期均线 = 矿工投降（算力流失），之后上穿 = 投降结束。<br><span class="detail-label">为什么有效</span> 矿工投降意味着最坚定的参与者都在亏损出局，卖压最强阶段过去后价格通常反弹。</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">Puell Multiple</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://studio.glassnode.com/charts/mining.PuellMultiple" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">< 0.5</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:68%;background:var(--gold);"></span></span><span class="wr-text">68%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 每日矿工收入（USD）除以 365 日均值。反映矿工当前收入相对历史水平。<br><span class="detail-label">为什么有效</span> < 0.5 说明矿工收入远低于历史均值，挖矿已无利可图，弱矿工退出 → 抛压减少。<br><span class="detail-label">区间</span> < 0.3 极端底部 · < 0.5 抄底区 · > 4 顶部区</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">矿机关机价</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://hashrateindex.com/" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">BTC 接近关机价</span></td>
+  <td class="col-winrate"><span class="wr-text">-</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 主流矿机的电费盈亏平衡价格。BTC 价格接近或跌破此线时，矿工被迫关机或卖币还贷。<br><span class="detail-label">为什么有效</span> 关机价是矿工的"最后防线"，价格跌破后矿工抛压集中释放，是被迫卖盘耗尽的前兆。</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">稳定币供给增速</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://stablecoins.llama.fi/stablecoincharts/all" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">90d 增速见底回升</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:75%;background:var(--cyan);"></span></span><span class="wr-text">75%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 全链稳定币总供给的 90 日增速。稳定币是 Crypto 的"弹药"，供给增速反映资金面扩张/收缩。<br><span class="detail-label">为什么有效</span> 增速见底回升 = 资金面从收缩转向扩张，新资金开始流入 Crypto 生态，价格通常跟随。</div></td></tr>
+</tbody></table></div>
+<div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">辅助指标</span>
+    <span class="tier-desc">仅做辅助验证</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">ETF 净方向性流动</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://www.coinglass.com/etf/bitcoin" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">连续净流出 + OI 下降</span></td>
+  <td class="col-winrate"><span class="wr-text">-</span></td>
+  <td class="col-timing"><span class="timing-lag">Lagging</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 过滤基差交易噪音后的真实机构资金方向。ETF 流入 + CME OI 同步上升 = 基差交易（非方向性）；ETF 流出 + OI 下降 = 真实机构撤退。<br><span class="detail-label">为什么有效</span> 单看 ETF 流入/流出容易被 Basis Trade 误导，需要与 CME 持仓量交叉验证才能判断真实方向。</div></td></tr>
+<tr class="data-row row-triggered" onclick="toggleDetail(this)">
+  <td class="col-name">Fear & Greed</td>
+  <td class="col-status"><span class="status-triggered">触发 · 行动</span></td>
+  <td class="col-value"><span class="value">11 (Extreme Fear)</span></td>
+  <td class="col-threshold"><span class="dim">< 15</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:54%;background:var(--gold);"></span></span><span class="wr-text">54%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 综合波动率、成交量、社交媒体、调查、BTC 市占率等维度的情绪指数（0-100）。<br><span class="detail-label">为什么有效</span> 极度恐惧（< 15）反映市场情绪处于极端，但单独使用胜率仅 54%，需配合一级指标确认。<br><span class="detail-label">注意</span> 仅做辅助验证，不可单独作为交易依据。</div></td></tr>
+</tbody></table></div>
+    </div>
+    <div id="panel-spy" class="panel">
+      <div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">一级指标</span>
+    <span class="tier-desc">可单独使用，高确信度</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">MA200 偏离</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><span class="value">偏离 +7.5%</span></td>
+  <td class="col-threshold"><span class="dim">SPY 偏离 MA200 < -15%</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:78%;background:var(--cyan);"></span></span><span class="wr-text">78%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> SPY 当前价格相对 200 日均线的偏离百分比。MA200 是机构最常用的长期趋势线。<br><span class="detail-label">为什么有效</span> 偏离 < -15% 意味着超卖严重，均值回归的力量很强。偏离 < -20% 时 1 年内胜率接近 100%。</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">VIX 恐慌</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><span class="value">VIX 17.8</span></td>
+  <td class="col-threshold"><span class="dim">> 40</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:91%;background:var(--green);"></span></span><span class="wr-text">91%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> CBOE 波动率指数，衡量 S&P 500 期权隐含波动率，俗称"恐慌指数"。<br><span class="detail-label">为什么有效</span> VIX > 40 代表极端恐慌，期权市场过度定价尾部风险，买入 SPY 1 年胜率 100%。VIX > 50 极为罕见。</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">双跌 SPY+GLD</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><span class="value">SPY 0.02%, GLD 3.92%</span></td>
+  <td class="col-threshold"><span class="dim">SPY 7d跌>7% 且 GLD跌>3%</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:85%;background:var(--cyan);"></span></span><span class="wr-text">85%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 股票与黄金同时大跌 = 流动性危机。正常下跌中黄金是避险资产会涨，两者同跌说明是被迫抛售一切换现金。<br><span class="detail-label">为什么有效</span> 流动性危机是非理性的，一旦恐慌消退，资产价格通常快速修复。1 年胜率 100%。</div></td></tr>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">双跌 SPY+TLT</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><span class="value">SPY 0.02%, TLT 2.00%</span></td>
+  <td class="col-threshold"><span class="dim">SPY 7d跌>7% 且 TLT跌>2%</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:80%;background:var(--cyan);"></span></span><span class="wr-text">80%</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 股票与长期国债同时大跌 = 股债双杀。正常情况下两者负相关，同跌意味着系统性去杠杆。<br><span class="detail-label">为什么有效</span> 股债双杀是极端事件，通常由保证金追缴(margin call)引发，被迫卖盘耗尽后强力反弹。</div></td></tr>
+</tbody></table></div>
+<div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">二级指标</span>
+    <span class="tier-desc">配合一级使用，增强信号</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">SCHD/QQQ 轮动</td>
+  <td class="col-status"><span class="status-watch">防御</span></td>
+  <td class="col-value"><span class="value">比率 110.02 (↑ SCHD 走强 (risk-off))</span></td>
+  <td class="col-threshold"><span class="dim">比率飙升后见顶回落</span></td>
+  <td class="col-winrate"><span class="wr-text">-</span></td>
+  <td class="col-timing"><span class="timing-coin">Coincident</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> SCHD（高股息价值 ETF）与 QQQ（成长 ETF）的标准化价格比率。比率上升 = 市场 risk-off，资金从成长转向防御。<br><span class="detail-label">为什么有效</span> 当比率飙升后见顶回落，说明 risk-off 情绪释放完毕，QQQ 可能开始跑赢，是成长股抄底信号。</div></td></tr>
+</tbody></table></div>
+    </div>
+    <div id="panel-top" class="panel">
+      <div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">一级指标</span>
+    <span class="tier-desc">可单独使用，高确信度</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">Crypto VC 融资</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><a href="https://defillama.com/raises" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-threshold"><span class="dim">3M均 > $2.5B 或 单月 > 100 deals</span></td>
+  <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:100%;background:var(--green);"></span></span><span class="wr-text">100%</span></td>
+  <td class="col-timing"><span class="timing-lead">Leading</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 一级市场 VC 融资额度和交易数量。VC 资金是"聪明钱"的极端形式，过热时会过度部署。<br><span class="detail-label">为什么有效</span> 3 个月均融资 > $2.5B 或单月 > 100 笔意味着一级市场已进入非理性繁荣，历史上领先二级市场顶部 3-6 个月。<br><span class="detail-label">区间</span> > $4B 极度过热 · > $2.5B 过热 · > 100 deals/月 过热</div></td></tr>
+</tbody></table></div>
+<div class="tier-section">
+  <div class="tier-head">
+    <span class="tier-label">二级指标</span>
+    <span class="tier-desc">配合一级使用，增强信号</span>
+  </div>
+  <table class="indicator-table">
+  <thead><tr>
+    <th class="col-name">指标</th>
+    <th class="col-status">状态</th>
+    <th class="col-value">当前值</th>
+    <th class="col-threshold">阈值</th>
+    <th class="col-winrate">胜率 180d</th>
+    <th class="col-timing">领先性</th>
+  </tr></thead>
+  <tbody>
+<tr class="data-row" onclick="toggleDetail(this)">
+  <td class="col-name">ICO 市场热度</td>
+  <td class="col-status"><span class="status-ok">正常</span></td>
+  <td class="col-value"><span class="dim">手动检查</span></td>
+  <td class="col-threshold"><span class="dim">开盘倍数 <1.5x + FDV 膨胀</span></td>
+  <td class="col-winrate"><span class="wr-text">TBD</span></td>
+  <td class="col-timing"><span class="timing-lead">Leading</span></td>
+</tr>
+<tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 跟踪 ICO 开盘倍数趋势与 FDV 膨胀程度。一级市场定价膨胀但二级市场接盘乏力 = 资金枯竭。<br><span class="detail-label">为什么有效</span> 当开盘倍数从 >3x 压缩到 <1.5x，同时 ICO FDV 仍在膨胀 — 这就是逃顶窗口。超额认购但开盘不涨是最强信号。</div></td></tr>
+</tbody></table></div>
+    </div>
+    <div id="panel-history" class="panel">
+      <div class="tl-group">
+  <div class="tl-date">2026-02-11</div>
+  <div class="tl-items"><div class="tl-item">
+  <div class="tl-indicator">Fear & Greed</div>
+  <div class="tl-signal">FNG<15</div>
+  <div class="tl-detail">BTC &middot; 关注 BTC 抄底机会</div>
+</div></div>
+</div>
+<div class="tl-group">
+  <div class="tl-date">2026-02-09</div>
+  <div class="tl-items"><div class="tl-item">
+  <div class="tl-indicator">Fear & Greed</div>
+  <div class="tl-signal">FNG<15</div>
+  <div class="tl-detail">BTC &middot; 关注 BTC 抄底机会</div>
+</div></div>
+</div>
+<div class="tl-group">
+  <div class="tl-date">2026-02-02</div>
+  <div class="tl-items"><div class="tl-item">
+  <div class="tl-indicator">Fear & Greed</div>
+  <div class="tl-signal">FNG<15</div>
+  <div class="tl-detail">BTC &middot; 关注 BTC 抄底机会</div>
+</div></div>
+</div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('panel-' + name).classList.add('active');
+    }
+    function toggleDetail(row) {
+      var detail = row.nextElementSibling;
+      if (detail && detail.classList.contains('detail-row')) {
+        row.classList.toggle('open');
+        detail.classList.toggle('open');
+      }
+    }
+  </script>
+</body>
+</html>

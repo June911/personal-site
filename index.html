@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ========== DESIGN TOKENS ========== */
+:root {
+  --bg: #F0F0F0;
+  --fg: #121212;
+  --red: #D02020;
+  --blue: #1040C0;
+  --yellow: #F0C020;
+  --muted: #E0E0E0;
+  --white: #FFFFFF;
+  --font: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ========== RESET ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ========== UTILITIES ========== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+.tracking-widest { letter-spacing: 0.1em; }
+.font-black { font-weight: 900; }
+.font-bold { font-weight: 700; }
+.text-white { color: var(--white); }
+.text-muted { color: #666; }
+
+/* ========== NAVIGATION ========== */
+.nav {
+  background: var(--white);
+  border-bottom: 4px solid var(--fg);
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-shapes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.shape-circle {
+  width: 16px; height: 16px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 2px solid var(--fg);
+}
+.shape-square {
+  width: 14px; height: 14px;
+  background: var(--blue);
+  border: 2px solid var(--fg);
+}
+.shape-triangle {
+  width: 0; height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 16px solid var(--yellow);
+  position: relative;
+}
+.nav-title {
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.nav-links {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+}
+.nav-links a {
+  display: block;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid transparent;
+  transition: all 0.2s ease-out;
+}
+.nav-links a:hover {
+  border: 2px solid var(--fg);
+  background: var(--yellow);
+}
+
+/* Mobile menu */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 2px solid var(--fg);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 4px solid var(--fg);
+    flex-direction: column;
+    padding: 8px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 12px 16px; border-bottom: 2px solid var(--muted); }
+}
+
+/* ========== HERO ========== */
+.hero {
+  border-bottom: 4px solid var(--fg);
+  overflow: hidden;
+}
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 520px;
+}
+.hero-left {
+  padding: 80px 40px 80px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-label::before {
+  content: '';
+  width: 32px; height: 3px;
+  background: var(--red);
+}
+.hero-title {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.hero-title .accent-red { color: var(--red); }
+.hero-title .accent-blue { color: var(--blue); }
+.hero-desc {
+  font-size: 18px;
+  font-weight: 500;
+  color: #444;
+  max-width: 440px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hero-right {
+  background: var(--blue);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Geometric composition */
+.geo-comp { position: relative; width: 320px; height: 320px; }
+.geo-circle {
+  position: absolute;
+  width: 200px; height: 200px;
+  border: 6px solid var(--white);
+  border-radius: 50%;
+  top: 20px; left: 10px;
+  opacity: 0.8;
+}
+.geo-square {
+  position: absolute;
+  width: 140px; height: 140px;
+  background: var(--yellow);
+  border: 4px solid var(--fg);
+  top: 100px; left: 120px;
+  transform: rotate(15deg);
+}
+.geo-square-inner {
+  position: absolute;
+  width: 100px; height: 100px;
+  background: var(--red);
+  border: 4px solid var(--fg);
+  top: 60px; left: 60px;
+}
+.geo-triangle {
+  position: absolute;
+  width: 0; height: 0;
+  border-left: 60px solid transparent;
+  border-right: 60px solid transparent;
+  border-bottom: 100px solid var(--white);
+  top: 180px; left: 100px;
+  opacity: 0.3;
+}
+.geo-dot-grid {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(rgba(255,255,255,0.15) 2px, transparent 2px);
+  background-size: 24px 24px;
+}
+
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-left { padding: 48px 16px; }
+  .hero-title { font-size: 42px; }
+  .hero-right { min-height: 280px; }
+  .geo-comp { width: 240px; height: 240px; transform: scale(0.75); }
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-block;
+  padding: 14px 28px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid var(--fg);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  text-decoration: none;
+}
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: none !important;
+}
+.btn-red {
+  background: var(--red);
+  color: var(--white);
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+.btn-red:hover { background: #b81c1c; }
+.btn-blue {
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+.btn-blue:hover { background: #0c3399; }
+.btn-yellow {
+  background: var(--yellow);
+  color: var(--fg);
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+.btn-yellow:hover { background: #d9ab1a; }
+.btn-outline {
+  background: var(--white);
+  color: var(--fg);
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+.btn-outline:hover { background: var(--muted); }
+
+/* ========== SECTION: DASHBOARDS ========== */
+.section-circle {
+  background: var(--white);
+  border-bottom: 4px solid var(--fg);
+  padding: 80px 16px;
+}
+.section-header {
+  margin-bottom: 48px;
+}
+.section-tag {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-tag::before {
+  content: '';
+  width: 24px; height: 3px;
+}
+.tag-red { color: var(--red); }
+.tag-red::before { background: var(--red); }
+.tag-blue { color: var(--blue); }
+.tag-blue::before { background: var(--blue); }
+.tag-yellow { color: #9a7800; }
+.tag-yellow::before { background: var(--yellow); }
+.section-title {
+  font-size: 48px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.circle-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+.circle-main {
+  background: var(--bg);
+  border: 4px solid var(--fg);
+  box-shadow: 8px 8px 0 0 var(--fg);
+  padding: 32px;
+  position: relative;
+}
+.circle-main::after {
+  content: '';
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 12px; height: 12px;
+  background: var(--blue);
+  border-radius: 50%;
+}
+.circle-main h3 {
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.circle-main p {
+  color: #555;
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+.formula-box {
+  background: var(--white);
+  border: 2px solid var(--fg);
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 2;
+  margin: 20px 0;
+}
+.formula-box .highlight { color: var(--red); font-weight: 700; }
+
+.circle-side { display: flex; flex-direction: column; gap: 24px; }
+.circle-card {
+  background: var(--bg);
+  border: 4px solid var(--fg);
+  box-shadow: 6px 6px 0 0 var(--fg);
+  padding: 24px;
+  flex: 1;
+  position: relative;
+  transition: transform 0.2s ease-out;
+}
+.circle-card:hover { transform: translateY(-2px); }
+.circle-card::after {
+  content: '';
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 10px; height: 10px;
+}
+.circle-card:nth-child(1)::after {
+  background: var(--red);
+}
+.circle-card:nth-child(2)::after {
+  background: var(--yellow);
+  transform: rotate(45deg);
+}
+.circle-card:nth-child(3)::after {
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid var(--blue);
+}
+.circle-card h4 {
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.circle-card .value {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.circle-card .label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 768px) {
+  .section-title { font-size: 32px; }
+  .circle-grid { grid-template-columns: 1fr; }
+  .section-circle { padding: 48px 16px; }
+}
+
+/* ========== SECTION: INDICATORS ========== */
+.section-indicators {
+  background: var(--blue);
+  color: var(--white);
+  border-bottom: 4px solid var(--fg);
+  padding: 80px 16px;
+}
+@media (max-width: 768px) {
+  .section-indicators { padding: 48px 16px; }
+}
+
+/* ========== SECTION: ARTICLES ========== */
+.section-articles {
+  background: var(--bg);
+  border-bottom: 4px solid var(--fg);
+  padding: 80px 16px;
+}
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.article-card {
+  background: var(--white);
+  border: 4px solid var(--fg);
+  box-shadow: 6px 6px 0 0 var(--fg);
+  padding: 28px;
+  position: relative;
+  transition: transform 0.2s ease-out;
+  cursor: default;
+}
+.article-card:hover { transform: translateY(-2px); }
+.article-card::after {
+  content: '';
+  position: absolute;
+  top: 12px; right: 12px;
+}
+.article-card:nth-child(3n+1)::after {
+  width: 10px; height: 10px;
+  background: var(--red);
+  border-radius: 50%;
+}
+.article-card:nth-child(3n+2)::after {
+  width: 8px; height: 8px;
+  background: var(--blue);
+}
+.article-card:nth-child(3n)::after {
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid var(--yellow);
+}
+.article-category {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.cat-framework { background: rgba(208,32,32,0.1); color: var(--red); }
+.cat-market { background: rgba(16,64,192,0.1); color: var(--blue); }
+.cat-crypto { background: rgba(240,192,32,0.2); color: #8a6d00; }
+.cat-moat { background: rgba(52,211,153,0.15); color: #0a7c50; }
+.cat-tech { background: rgba(167,139,250,0.15); color: #6d28d9; }
+
+.article-title {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.article-excerpt {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  .articles-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .articles-grid { grid-template-columns: 1fr; }
+  .section-articles { padding: 48px 16px; }
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  background: var(--fg);
+  color: var(--white);
+  padding: 48px 16px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer-shapes {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.footer-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #999;
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.footer-links a {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--yellow); }
+
+@media (max-width: 640px) {
+  .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+
+/* ========== DECORATIVE: Section geometric accents ========== */
+.section-circle .container { position: relative; }
+.section-articles .container { position: relative; }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="#dashboards">看板</a></li>
+      <li><a href="#indicators">指标体系</a></li>
+      <li><a href="#articles">文章</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-label">Investment Research</div>
+      <h1 class="hero-title">
+        <span class="accent-blue">jun</span><span class="accent-red">e</span>
+      </h1>
+      <p class="hero-desc">
+        系统化追踪市场、验证假设、做出决策。<br>框架、指标与思考。
+      </p>
+      <div class="hero-buttons">
+        <a href="#dashboards" class="btn btn-red">标的看板</a>
+        <a href="#indicators" class="btn btn-outline">指标体系</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="geo-dot-grid"></div>
+      <div class="geo-comp">
+        <div class="geo-circle"></div>
+        <div class="geo-square"></div>
+        <div class="geo-square-inner"></div>
+        <div class="geo-triangle"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DASHBOARDS SECTION ===== -->
+<section class="section-circle" id="dashboards">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag tag-blue">Dashboards</div>
+      <h2 class="section-title">标的<br>看板</h2>
+    </div>
+    <div class="circle-grid">
+      <!-- Circle -->
+      <div class="circle-main">
+        <h3>Circle (CRCL)</h3>
+        <p>USDC 稳定币发行方，通过 IPO 进入公开市场。用核心估值公式跟踪商业逻辑，贝叶斯追踪信念变化。</p>
+        <div class="formula-box">
+          <span class="highlight">USDC 规模</span> = 稳定币总量 × 市占率<br>
+          <span class="highlight">利息收入</span> = USDC × 利率 × 40% - 运营成本<br>
+          <span class="highlight">估值</span> = 净利润 × P/E
+        </div>
+        <a href="dashboards/circle.html" class="btn btn-blue" style="margin-top:16px">查看看板 →</a>
+      </div>
+      <!-- 侧边卡片：更多标的 -->
+      <div class="circle-side">
+        <div class="circle-card">
+          <h4>Crypto</h4>
+          <div class="value">BTC · ETH</div>
+          <div class="label">链上指标 + 周期追踪</div>
+        </div>
+        <div class="circle-card">
+          <h4>Stock</h4>
+          <div class="value">CRCL</div>
+          <div class="label">信念看板 + 估值模型</div>
+        </div>
+        <div class="circle-card" style="opacity:0.5">
+          <h4>Coming Soon</h4>
+          <div class="value">···</div>
+          <div class="label">更多标的持续更新</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INDICATORS SECTION ===== -->
+<section class="section-indicators" id="indicators">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag" style="color:var(--yellow)">
+        <span style="display:inline-block;width:24px;height:3px;background:var(--yellow);margin-right:8px"></span>
+        Quantitative Signals
+      </div>
+      <h2 class="section-title text-white">指标体系</h2>
+    </div>
+
+    <p style="font-size:16px;line-height:1.8;opacity:0.9;max-width:640px;margin-bottom:32px">
+      覆盖 BTC 抄底、SPY 抄底、Crypto 逃顶三个场景，共 16 个量化指标。每个指标标注胜率、领先性和触发阈值，分为一级（可单独使用）、二级（配合使用）、辅助（仅做验证）三个层级。
+    </p>
+    <a href="indicators/index.html" class="btn btn-yellow">查看指标看板 &rarr;</a>
+  </div>
+</section>
+
+<!-- ===== ARTICLES SECTION ===== -->
+<section class="section-articles" id="articles">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag tag-red">Writings</div>
+      <h2 class="section-title">方法论<br>与思考</h2>
+    </div>
+
+    <div class="articles-grid" style="grid-template-columns: repeat(2, 1fr)">
+      <a href="articles/market-fragility.html" class="article-card" style="text-decoration:none;color:inherit;cursor:pointer">
+        <span class="article-category cat-market">市场分析</span>
+        <div class="article-title">市场脆弱性框架</div>
+        <div class="article-excerpt">与其猜测触发点是什么，不如评估市场有多脆弱。脆弱的市场，任何风吹草动都能引发踩踏。被迫交易流框架 + 强制流动性地图。</div>
+      </a>
+      <a href="articles/ico-framework.html" class="article-card" style="text-decoration:none;color:inherit;cursor:pointer">
+        <span class="article-category cat-crypto">Crypto</span>
+        <div class="article-title">ICO 参与框架</div>
+        <div class="article-excerpt">基于 2025 年 ICO 周期数据总结的参与规则与逃顶指标。低 FDV 是最重要的变量，甚至能覆盖「时机晚」的劣势。</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-shapes">
+        <div class="shape-circle" style="width:10px;height:10px"></div>
+        <div class="shape-square" style="width:8px;height:8px"></div>
+      </div>
+      <span class="footer-text">june &copy; 2026</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#dashboards">看板</a></li>
+      <li><a href="#indicators">指标</a></li>
+      <li><a href="#articles">文章</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

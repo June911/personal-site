@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>市场脆弱性框架 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F0F0;
+  --fg: #121212;
+  --red: #D02020;
+  --blue: #1040C0;
+  --yellow: #F0C020;
+  --muted: #E0E0E0;
+  --white: #FFFFFF;
+  --font: 'Outfit', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); font-size: 16px; line-height: 1.6; font-weight: 500; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+.nav { background: var(--white); border-bottom: 4px solid var(--fg); padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 64px; }
+.nav-logo { display: flex; align-items: center; gap: 12px; }
+.nav-shapes { display: flex; align-items: center; gap: 6px; }
+.shape-circle { width: 16px; height: 16px; background: var(--red); border-radius: 50%; border: 2px solid var(--fg); }
+.shape-square { width: 14px; height: 14px; background: var(--blue); border: 2px solid var(--fg); }
+.shape-triangle { width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid var(--yellow); }
+.nav-title { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+.nav-back { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 16px; border: 2px solid var(--fg); transition: all 0.2s; }
+.nav-back:hover { background: var(--yellow); }
+
+/* HERO */
+.article-hero { border-bottom: 4px solid var(--fg); overflow: hidden; }
+.article-hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; min-height: 360px; }
+.article-hero-left { padding: 64px 40px 64px 16px; display: flex; flex-direction: column; justify-content: center; }
+.article-hero-right { background: var(--red); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.article-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--red); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.article-label::before { content: ''; width: 24px; height: 3px; background: var(--red); }
+.article-h1 { font-size: 54px; font-weight: 900; line-height: 0.92; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 20px; }
+.article-subtitle { font-size: 18px; font-weight: 500; color: #555; max-width: 480px; line-height: 1.7; }
+/* Hero geometric */
+.hero-geo { position: relative; width: 260px; height: 260px; }
+.hero-geo .g1 { position: absolute; width: 160px; height: 160px; border: 5px solid var(--white); border-radius: 50%; top: 10px; left: 0; opacity: 0.7; }
+.hero-geo .g2 { position: absolute; width: 100px; height: 100px; background: var(--yellow); border: 4px solid var(--fg); top: 90px; left: 100px; transform: rotate(20deg); }
+.hero-geo .g3 { position: absolute; width: 80px; height: 80px; background: var(--blue); border: 4px solid var(--fg); top: 40px; left: 60px; }
+.hero-dot { position: absolute; inset: 0; background: radial-gradient(rgba(255,255,255,0.12) 2px, transparent 2px); background-size: 20px 20px; }
+
+@media (max-width: 768px) {
+  .article-hero-inner { grid-template-columns: 1fr; }
+  .article-hero-left { padding: 40px 16px; }
+  .article-h1 { font-size: 36px; }
+  .article-hero-right { min-height: 200px; }
+  .hero-geo { transform: scale(0.7); }
+}
+
+/* CONTENT */
+.article-body { max-width: 800px; margin: 0 auto; padding: 64px 16px 80px; }
+.article-body h2 {
+  font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em;
+  margin: 56px 0 20px; padding-bottom: 12px; border-bottom: 4px solid var(--fg);
+}
+.article-body h3 {
+  font-size: 22px; font-weight: 900; text-transform: uppercase;
+  margin: 40px 0 16px; color: var(--blue);
+}
+.article-body h4 {
+  font-size: 16px; font-weight: 700; margin: 28px 0 12px;
+}
+.article-body p { margin-bottom: 16px; line-height: 1.8; color: #333; }
+.article-body ul, .article-body ol { margin: 0 0 16px 24px; line-height: 1.8; color: #333; }
+.article-body li { margin-bottom: 6px; }
+.article-body strong { font-weight: 700; color: var(--fg); }
+.article-body blockquote {
+  background: var(--white); border-left: 6px solid var(--red); padding: 20px 24px; margin: 24px 0;
+  font-weight: 700; font-size: 17px; line-height: 1.6;
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+
+/* Code / formula blocks */
+.code-block {
+  background: var(--fg); color: #e8e8e8; padding: 24px; margin: 20px 0;
+  font-family: var(--mono); font-size: 14px; line-height: 1.9;
+  border: 4px solid var(--fg); overflow-x: auto; white-space: pre;
+}
+
+/* Tables */
+.article-body table {
+  width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;
+  border: 4px solid var(--fg);
+}
+.article-body th {
+  background: var(--fg); color: var(--white); text-align: left; padding: 12px 16px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.article-body td {
+  padding: 10px 16px; border-bottom: 2px solid var(--muted); background: var(--white);
+}
+.article-body tr:last-child td { border-bottom: none; }
+
+/* Callout cards */
+.callout {
+  background: var(--white); border: 4px solid var(--fg); box-shadow: 6px 6px 0 0 var(--fg);
+  padding: 24px; margin: 24px 0; position: relative;
+}
+.callout::after {
+  content: ''; position: absolute; top: 10px; right: 10px;
+  width: 10px; height: 10px; background: var(--red); border-radius: 50%;
+}
+.callout-yellow { border-left: 8px solid var(--yellow); }
+.callout-yellow::after { background: var(--yellow); border-radius: 0; }
+.callout-blue { border-left: 8px solid var(--blue); }
+.callout-blue::after { background: var(--blue); border-radius: 0; transform: rotate(45deg); }
+.callout h4 { margin-top: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Footer */
+.footer { background: var(--fg); color: var(--white); padding: 48px 16px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-text { font-size: 13px; font-weight: 500; color: #999; }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #999; transition: color 0.2s; }
+.footer-links a:hover { color: var(--yellow); }
+@media (max-width: 640px) {
+  .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">&larr; 返回文章</a>
+  </div>
+</nav>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <div class="article-hero-left">
+      <div class="article-label">市场分析</div>
+      <h1 class="article-h1">市场<br>脆弱性<br>框架</h1>
+      <p class="article-subtitle">与其猜测触发点是什么，不如评估市场有多脆弱。脆弱的市场，任何风吹草动都能引发踩踏。</p>
+    </div>
+    <div class="article-hero-right">
+      <div class="hero-dot"></div>
+      <div class="hero-geo">
+        <div class="g1"></div>
+        <div class="g2"></div>
+        <div class="g3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<article class="article-body">
+
+  <h2>核心逻辑</h2>
+
+  <div class="code-block">结构脆弱性 → 过热迹象 → 触发点 → 生态角色应对 → 连锁反应</div>
+
+  <ul>
+    <li><strong>结构脆弱性是根因</strong>：杠杆堆叠、仓位拥挤、角色间的依赖链</li>
+    <li><strong>过热迹象是信号</strong>：一致性预期、波动率压缩、"还能涨"的共识</li>
+    <li><strong>触发点不可预测</strong>：可能是政策变化、一笔大单、一条新闻</li>
+    <li><strong>连锁反应才是杀伤力</strong>：不同角色被迫行动，互相传导，螺旋放大</li>
+  </ul>
+
+  <blockquote>脆弱性高时，触发点是什么不重要 — 你已经该准备了。</blockquote>
+
+  <h3>本质：脆弱性 = 被迫交易流</h3>
+
+  <p>脆弱性的底层是一个问题：<strong>市场里积累了多少不得不执行的交易？</strong></p>
+  <p>这些交易跟价格判断无关，纯粹是结构上被迫的 — 到了某个价位就必须执行。</p>
+
+  <div class="callout callout-yellow">
+    <h4>被迫卖出（下行脆弱性）</h4>
+    <ul>
+      <li>矿工到成本线 → 被迫卖币还贷</li>
+      <li>杠杆多头到清算价 → 被迫平仓</li>
+      <li>ETF 赎回 → AP 被迫在 Coinbase 卖现货</li>
+      <li>循环贷到清算线 → 被迫还款卖出抵押品</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-blue">
+    <h4>被迫买入（上行脆弱性）</h4>
+    <ul>
+      <li>空头被逼仓 → 被迫回补</li>
+      <li>期权 dealer delta 对冲 → 被迫追涨（gamma squeeze）</li>
+      <li>指数纳入 → 被动基金被迫买入</li>
+      <li>做市商库存耗尽 → 被迫提价补货</li>
+    </ul>
+  </div>
+
+  <p><strong>脆弱性评估的核心问题：</strong></p>
+  <ol>
+    <li>现在市场里，有多少头寸在什么价位会被迫卖出？</li>
+    <li>有多少头寸在什么价位会被迫买入？</li>
+    <li>这些被迫交易的规模相对于市场可用流动性有多大？</li>
+  </ol>
+
+  <blockquote>规模大、集中在相近价位 → 高脆弱性，一旦触及就会自我加速<br>规模小、分散在不同价位 → 低脆弱性，冲击可以被吸收</blockquote>
+
+  <h2>案例：BTC 2025 Q4 下跌</h2>
+
+  <h3>1. 结构脆弱性</h3>
+
+  <table>
+    <thead>
+      <tr><th>层级</th><th>脆弱点</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ETF 杠杆层</td><td>IBIT/DAT 杠杆头寸</td><td>基金持有杠杆化 IBIT 敞口，期权对冲依赖流动性</td></tr>
+      <tr><td>链上杠杆层</td><td>链上/链下杠杆</td><td>期货多头拥挤，期权 gamma squeeze 风险</td></tr>
+      <tr><td>矿工层</td><td>矿机抵押借贷</td><td>矿工抵押矿机借钱挖矿，BTC 下跌 → 抵押品贬值 → 被迫卖币还债</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>关键</strong>：多层杠杆叠加，角色之间互相依赖 — ETF 赎回 → Coinbase 抛售 → 链上价格下跌 → 矿工/杠杆多头爆仓。</p>
+
+  <h3>2. 过热迹象</h3>
+  <ul>
+    <li>贵金属、股票同处高位</li>
+    <li>市场对 AI capex 可持续性产生 concern</li>
+    <li>地缘政治风险升温</li>
+    <li>BTC 单边多头拥挤（清算时 93% 为多头）</li>
+  </ul>
+
+  <h3>3. 触发点</h3>
+  <table>
+    <thead><tr><th>事件</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>Trump 关税（2025/10）</td><td>风险资产 risk-off</td></tr>
+      <tr><td>MSTR 被剔除 MSCI</td><td>未实质触发，但暴露指数被动抛售风险</td></tr>
+      <tr><td>Trump 提名鹰派 Warsh 任美联储主席</td><td>市场重新定价利率路径，美元走强</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>启示</strong>：三个潜在触发点接连出现，最终哪个扣动扳机不重要 — 结构已经脆弱。</p>
+
+  <h3>4. 连锁反应</h3>
+
+  <div class="code-block">宏观冲击（Warsh 提名 + 美元走强 + risk-off）
+  → BTC 价格下行
+    → 杠杆 IBIT 基金面临 margin call
+      → 被迫平仓期权对冲（put/call 权利金飙至 $9 亿）
+        → 底层 IBIT 现货敞口裸露
+          → 被迫抛售 IBIT
+            → AP 套利赎回，Coinbase 卖出真实 BTC
+              → BTC 现货进一步下跌
+                → Crypto 原生杠杆多头爆仓（93% long liquidations）
+                  → 螺旋加速</div>
+
+  <p>每个角色的"理性应对"叠加在一起，变成了系统性的非理性踩踏。</p>
+
+  <h2>案例：2026 年 1 月黄金暴跌</h2>
+
+  <table>
+    <thead><tr><th>表面原因</th><th>深层原因</th></tr></thead>
+    <tbody>
+      <tr><td>美联储换帅</td><td>黄金连涨 9 周</td></tr>
+      <tr><td>GLD 大单抛售</td><td>80% 投资者看多</td></tr>
+      <tr><td></td><td>所有人都是多头，没人来买</td></tr>
+    </tbody>
+  </table>
+
+  <blockquote>高盛复盘结论：换帅只是扣动扳机的手指，市场早已脆弱不堪。</blockquote>
+
+  <h2>执行框架</h2>
+
+  <h3>1. 监控过热信号</h3>
+
+  <table>
+    <thead><tr><th>信号</th><th>阈值</th></tr></thead>
+    <tbody>
+      <tr><td>连续上涨周数</td><td>&ge; 6 周</td></tr>
+      <tr><td>媒体/社交情绪</td><td>一致看多</td></tr>
+      <tr><td>身边人讨论</td><td>"还能涨"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2. 画强制流动性地图</h3>
+
+  <p>不问"脆弱不脆弱"这种定性问题，直接 mapping：<strong>哪些角色、在什么价位、有多大规模的被迫交易</strong>。</p>
+
+  <table>
+    <thead><tr><th>价格区间</th><th>被迫卖出</th><th>被迫买入</th></tr></thead>
+    <tbody>
+      <tr><td>&lt; $70K</td><td>弱矿工出清、杠杆多头深度爆仓</td><td>—</td></tr>
+      <tr><td>$70-85K</td><td>矿工还贷压力卖币、部分 ETF 持有者止损</td><td>—</td></tr>
+      <tr><td>$85-95K</td><td>ETF 持有者解套卖出</td><td>矿工还贷压力缓解</td></tr>
+      <tr><td>&gt; $95K</td><td>—</td><td>空头被迫回补、期权 dealer 被迫追涨</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h4>吸收阈值公式</h4>
+    <p style="font-family:var(--mono);margin-bottom:8px"><strong>吸收阈值 = min(市值 &times; 2%, 日均成交量 &times; 20%)</strong></p>
+    <table style="margin:0;font-size:13px">
+      <thead><tr><th>量级</th><th>判断</th></tr></thead>
+      <tbody>
+        <tr><td>大（&gt; 阈值）</td><td>无法消化，会自我加速</td></tr>
+        <tr><td>中（&lt; 阈值）</td><td>有冲击但可吸收</td></tr>
+        <tr><td>小/不确定</td><td>规模不清或已分散</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>可观测指标</h3>
+
+  <table>
+    <thead><tr><th>维度</th><th>指标</th><th>高脆弱阈值</th></tr></thead>
+    <tbody>
+      <tr><td>仓位拥挤</td><td>BTC 期货 OI / 市值比</td><td>持续上升 + 偏离均值</td></tr>
+      <tr><td>杠杆方向</td><td>Funding rate 持续为正天数</td><td>&gt; 14 天</td></tr>
+      <tr><td>多层杠杆同步</td><td>CME OI + ETF 流入 + 链上杠杆</td><td>三者齐升</td></tr>
+      <tr><td>DeFi 杠杆</td><td>Aave 稳定币利用率</td><td>&gt; 85%</td></tr>
+      <tr><td>矿工压力</td><td>矿工链上转出量</td><td>显著高于 30 日均值</td></tr>
+      <tr><td>ETF 情绪</td><td>Coinbase 溢价/折价</td><td>连续为负</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3. 触发点出现后</h3>
+
+  <table>
+    <thead><tr><th>情况</th><th>判断</th><th>行动</th></tr></thead>
+    <tbody>
+      <tr><td>有实质影响</td><td>政策转向、基本面恶化</td><td>顺势减仓，等待明朗</td></tr>
+      <tr><td>无实质影响</td><td>只是借口/情绪释放</td><td>等清洗完毕后抄底</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-yellow">
+    <h4>"强制卖盘耗尽"信号</h4>
+    <ul>
+      <li>Funding rate 深度转负后连续回升 — 空头已拥挤，多头被清洗干净</li>
+      <li>矿工链上转出量回落至均值以下 — 矿工抛压结束</li>
+      <li>ETF 连续流出天数见顶回落 — 机构被迫赎回基本完成</li>
+      <li>清算量骤降 — 可清算的杠杆头寸已被清理</li>
+      <li>VIX 冲高回落 / 恐慌情绪释放 — 辅助确认</li>
+    </ul>
+  </div>
+
+  <h2>盲区：低脆弱性慢涨</h2>
+
+  <p>本框架擅长识别"什么时候该防守"，但对<strong>去杠杆后低波缓涨</strong>的行情没有覆盖 — 过热信号迟迟不出现，会让你一直等待而错过行情。</p>
+
+  <p><strong>互补策略</strong>：</p>
+  <ul>
+    <li>强制流动性地图上地雷稀疏 → 低脆弱环境</li>
+    <li>低脆弱环境下不需要防守，正常持仓</li>
+    <li>当地图上开始出现新的被迫交易集中区时，重新进入警戒</li>
+  </ul>
+
+  <blockquote>画出被迫交易的地图 — 地雷密集时准备跑，地雷清完后开始接，没有地雷时安心持有。</blockquote>
+
+  <h2>与其他框架的关系</h2>
+  <ul>
+    <li><strong>双跌抄底策略</strong>：强制卖盘耗尽后的入场时机判断</li>
+    <li><strong>拐点不可逆</strong>：判断是否有实质性变化</li>
+    <li><strong>贝叶斯</strong>：脆弱性评估本身也需要持续更新先验</li>
+  </ul>
+
+  <p style="margin-top:48px;font-size:13px;color:#999"><em>更新记录：2026-02-07 重构为被迫交易流框架 + 强制流动性地图 · 2026-02-03 初版</em></p>
+
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-text">june &copy; 2026</span>
+    <ul class="footer-links">
+      <li><a href="../index.html">首页</a></li>
+      <li><a href="../index.html#articles">文章</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

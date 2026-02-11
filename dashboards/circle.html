@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle (CRCL) 信念看板 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f19;--bg2:#111827;--bg3:#1a2035;--bg4:#232d45;--border:#2a3450;--text:#e8ecf4;--text2:#9ca8c4;--text3:#5e6e8f;--blue:#4d8cf5;--cyan:#22d3ee;--green:#34d399;--yellow:#fbbf24;--orange:#f97316;--red:#f87171;--purple:#a78bfa;--font:'Segoe UI',system-ui,-apple-system,sans-serif;--mono:'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.6}
+.dashboard{max-width:1440px;margin:0 auto;padding:20px}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:center;padding:14px 0 18px;border-bottom:1px solid var(--border);margin-bottom:0}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.header-right{display:flex;align-items:center;gap:20px}
+.hm{text-align:right}
+.hm .l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.hm .v{font-family:var(--mono);font-size:20px;font-weight:700}
+.verdict{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;background:var(--bg2);padding:4px;border-radius:10px;margin:16px 0 20px}
+.tab{padding:10px 22px;font-size:13px;font-weight:500;color:var(--text3);background:transparent;border:none;border-radius:8px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab.active{background:var(--bg3);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.tab:hover:not(.active){color:var(--text2)}
+
+/* Page */
+.page{display:none}.page.active{display:block}
+
+/* Card */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
+.card-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+
+/* Grid */
+.g{display:grid;gap:16px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}.ga{grid-template-columns:2fr 1fr}
+
+/* Badge */
+.b{font-size:10px;padding:3px 8px;border-radius:4px;font-weight:600;display:inline-block;white-space:nowrap}
+.b-g{background:rgba(52,211,153,.15);color:var(--green)}.b-y{background:rgba(251,191,36,.15);color:var(--yellow)}.b-r{background:rgba(248,113,113,.15);color:var(--red)}.b-b{background:rgba(77,140,245,.15);color:var(--blue)}.b-p{background:rgba(167,139,250,.15);color:var(--purple)}.b-o{background:rgba(249,115,22,.15);color:var(--orange)}.b-gr{background:rgba(94,110,143,.15);color:var(--text3)}
+.mono{font-family:var(--mono)}
+
+/* Formula */
+.formula{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--mono);font-size:13px;line-height:2}
+
+/* Scenario */
+.sc-row{display:grid;grid-template-columns:80px 60px 1fr 90px;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;margin-bottom:8px}
+.sc-row input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;outline:none;cursor:pointer}
+.sc-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,.3)}
+.ev-box{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg2);border-radius:8px;margin-top:12px;border:1px solid var(--border)}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th,.tbl td{padding:8px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05)}
+.tbl th{font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:500}
+
+/* Hypothesis page header */
+.h-header{display:flex;justify-content:space-between;align-items:center;padding:20px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:20px}
+.h-left{display:flex;align-items:center;gap:16px}
+.h-id{font-family:var(--mono);font-size:13px;padding:6px 14px;border-radius:6px;font-weight:700}
+.h-title{font-size:18px;font-weight:700}
+.h-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.h-right{display:flex;align-items:center;gap:20px}
+.conf{text-align:center}
+.conf .l{font-size:10px;color:var(--text3)}
+.conf .v{font-family:var(--mono);font-size:24px;font-weight:700}
+.conf-bar{width:120px;height:6px;background:var(--bg);border-radius:3px;margin-top:4px}
+.conf-fill{height:100%;border-radius:3px;transition:width .3s}
+
+/* Belief node */
+.belief{background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.belief-head{padding:16px 18px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;user-select:none}
+.belief-head:hover{background:rgba(255,255,255,.015)}
+.belief-body{padding:0 18px 16px;display:none}
+.belief.open .belief-body{display:block}
+.belief-title{font-size:14px;font-weight:600}
+.belief-desc{font-size:11px;color:var(--text3);margin-top:2px}
+.belief-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.arrow{font-size:14px;color:var(--text3);transition:transform .2s;margin-left:6px}
+.belief.open .arrow{transform:rotate(180deg)}
+
+/* Evidence */
+.ev-item{display:flex;gap:8px;padding:7px 0;font-size:12px;color:var(--text2);border-bottom:1px solid rgba(255,255,255,.03)}
+.ev-item:last-child{border-bottom:none}
+.ev-icon{color:var(--text3);flex-shrink:0;width:18px;text-align:center}
+.ev-src{font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;margin-left:auto;flex-shrink:0}
+
+/* Tipping point (embedded) */
+.tp{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg2);border-radius:7px;margin-top:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+.tp:hover{border-color:var(--border);background:var(--bg4)}
+.tp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:2px solid;transition:all .2s}
+.tp-dot.pending{background:transparent;border-color:var(--text3)}
+.tp-dot.approaching{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 6px rgba(251,191,36,.4)}
+.tp-dot.triggered{background:var(--green);border-color:var(--green);box-shadow:0 0 6px rgba(52,211,153,.4)}
+.tp-dot.negative{background:var(--red);border-color:var(--red);box-shadow:0 0 6px rgba(248,113,113,.4)}
+.tp-text{flex:1;font-size:12px;font-weight:500}
+.tp-sig{font-size:10px;color:var(--text3)}
+.tp-time{font-size:11px;font-family:var(--mono);color:var(--text3);white-space:nowrap}
+
+/* Logic chain */
+.logic{background:rgba(0,0,0,.2);border-radius:6px;padding:12px;margin-top:10px;font-size:12px}
+.logic .step{padding:2px 0;color:var(--text2)}
+.logic .arr{color:var(--text3);font-size:10px;padding:1px 0}
+
+/* Insight box */
+.ins{padding:12px 14px;border-radius:8px;font-size:12px;margin-top:10px}
+.ins.warn{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:var(--yellow)}
+.ins.info{background:rgba(77,140,245,.08);border:1px solid rgba(77,140,245,.2);color:var(--blue)}
+.ins.danger{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--red)}
+.ins.ok{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--green)}
+.ins strong{display:block;margin-bottom:3px}
+
+/* Viewpoint */
+.vp{padding:12px 14px;background:var(--bg2);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--text3)}
+
+/* Moat */
+.moat{padding:10px 14px;background:var(--bg2);border-radius:6px;margin-bottom:6px}
+.moat-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.moat-bar{height:4px;background:var(--bg);border-radius:2px}.moat-fill{height:100%;background:var(--yellow);border-radius:2px}
+.moat-note{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* Comp row */
+.comp{display:grid;grid-template-columns:130px 60px 1fr;gap:12px;align-items:center;padding:10px 14px;background:var(--bg2);border-radius:6px;margin-bottom:6px}
+
+/* Log */
+.log-form{display:grid;grid-template-columns:120px 1fr 180px 80px 80px;gap:8px;padding:14px;background:var(--bg2);border-radius:8px;margin-bottom:14px}
+.log-form input,.log-form select{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:12px;font-family:var(--font)}
+.log-form input:focus{outline:none;border-color:var(--blue)}
+.log-form button{background:var(--blue);border:none;border-radius:6px;padding:8px 16px;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.log-form button:hover{opacity:.85}
+.log-tbl{width:100%;border-collapse:collapse}
+.log-tbl th,.log-tbl td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.log-tbl th{font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:500;position:sticky;top:0;background:var(--bg3)}
+
+/* All tipping points summary */
+.tp-summary{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg2);border-radius:7px;margin-bottom:6px;border-left:3px solid var(--border)}
+.tp-summary.bull{border-left-color:var(--green)}
+.tp-summary.bear{border-left-color:var(--red)}
+.tp-summary.key{border-left-color:var(--yellow)}
+
+/* Overview hypothesis card */
+.hyp-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.hyp-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.hyp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+
+/* Transform */
+.tf-row{display:grid;grid-template-columns:150px 100px 1fr;gap:10px;align-items:center;padding:10px 14px;background:var(--bg2);border-radius:6px;margin-bottom:6px}
+
+/* Separator */
+.sep{font-size:13px;font-weight:600;color:var(--text2);margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+
+/* Footer */
+footer{text-align:center;padding:20px;color:var(--text3);font-size:11px;border-top:1px solid var(--border);margin-top:28px}
+
+/* Mind map tree */
+.tree{display:flex;flex-direction:column;align-items:center;padding:10px 0}
+.tree-line{width:2px;height:28px;background:var(--border)}
+.tree-node{position:relative;text-align:center}
+.tree-branch{display:flex;gap:16px;position:relative;padding-top:28px}
+.tree-branch::before{content:'';position:absolute;top:0;left:calc(50% / 3 + 40px);right:calc(50% / 3 + 40px);height:2px;background:var(--border)}
+.tree-branch .tree-node::before{content:'';position:absolute;top:-28px;left:50%;width:2px;height:28px;background:var(--border)}
+.tree-root{padding:16px 28px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;min-width:320px}
+.tree-h0{padding:14px 24px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s}
+.tree-h0:hover{border-color:var(--purple);transform:translateY(-1px)}
+.tree-h{flex:1;min-width:260px;max-width:380px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;text-align:left;cursor:pointer;transition:all .15s}
+.tree-h:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.tree-h .sub-list{margin-top:10px;font-size:11px;color:var(--text2);line-height:1.8}
+.tree-h .tp-list{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.tree-h .tp-mini{display:flex;align-items:center;gap:6px;font-size:11px;padding:4px 8px;background:var(--bg2);border-radius:4px}
+.tree-h .tp-mini-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+@media(max-width:1000px){.g2,.ga{grid-template-columns:1fr}.log-form{grid-template-columns:1fr 1fr}.tree-branch{flex-direction:column;align-items:center;padding-top:0}.tree-branch::before{display:none}.tree-branch .tree-node::before{display:none}}
+.mi{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:4px 8px;color:var(--text);font-family:var(--mono);font-size:12px;width:80px;text-align:right}
+.mi:focus{outline:none;border-color:var(--yellow);background:rgba(251,191,36,.2)}
+.ms{width:60px}
+.site-nav{background:#111827;border-bottom:3px solid #222;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;height:48px}
+.site-nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.site-nav-shapes{display:flex;gap:5px;align-items:center}
+.site-nav-shapes .c{width:10px;height:10px;background:#D02020;border-radius:50%}
+.site-nav-shapes .s{width:9px;height:9px;background:#1040C0}
+.site-nav-shapes .t{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid #F0C020}
+.site-nav-title{font-family:'Outfit',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:0.05em}
+.site-nav-back{color:var(--text3);font-size:12px;text-decoration:none;padding:5px 12px;border:1px solid var(--border);border-radius:4px;transition:all .15s}
+.site-nav-back:hover{color:var(--cyan);border-color:var(--cyan)}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="../index.html" class="site-nav-logo">
+    <div class="site-nav-shapes"><div class="c"></div><div class="s"></div><div class="t"></div></div>
+    <span class="site-nav-title">june</span>
+  </a>
+  <a href="../index.html" class="site-nav-back">&larr; 返回首页</a>
+</nav>
+<div class="dashboard">
+
+<!-- HEADER -->
+<header class="header">
+  <div>
+    <h1>Circle (CRCL) 投资信念看板</h1>
+    <div class="header-sub">V 模型 · 信念链 · 贝叶斯动态更新</div>
+  </div>
+  <div class="header-right">
+    <div class="hm"><div class="l">当前价格</div><div class="v">$<span id="hp">71</span></div></div>
+    <div class="hm"><div class="l">期望价值</div><div class="v" style="color:var(--blue)">$<span id="hev">79.1</span></div></div>
+    <div class="verdict" id="hverdict" style="background:rgba(52,211,153,.15);color:var(--green)">低估 -10% · 持有观察</div>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showPage('overview',this)">总览</button>
+  <button class="tab" onclick="showPage('h1',this)">H1 规模</button>
+  <button class="tab" onclick="showPage('h2',this)">H2 市占率</button>
+  <button class="tab" onclick="showPage('h3',this)">H3 利润率</button>
+  <button class="tab" onclick="showPage('log',this)">日志</button>
+</div>
+
+<!-- ============================================================
+     PAGE 1: 总览 — 思维导图
+     ============================================================ -->
+<div id="overview" class="page active">
+
+  <!-- 思维导图 -->
+  <div class="tree">
+
+    <!-- 顶层: 估值公式 + EV -->
+    <div class="tree-node tree-root">
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px">Circle 估值</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:14px">
+        <span style="color:var(--purple);font-weight:600">稳定币规模</span>
+        <span style="color:var(--text3)">×</span>
+        <span style="color:var(--green);font-weight:600">USDC 市占率</span>
+        <span style="color:var(--text3)">×</span>
+        <span style="color:var(--orange);font-weight:600">利润率 × P/E</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--text3)">期望价值</div>
+          <div class="mono" style="font-size:26px;font-weight:700;color:var(--blue)" id="treeEV">$79.1</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--text3)">当前</div>
+          <div class="mono" style="font-size:26px;font-weight:700;color:var(--text2)">$<span id="treeCP">71</span></div>
+        </div>
+        <div id="treeVerdict" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:rgba(52,211,153,.15);color:var(--green)">低估 -10%</div>
+      </div>
+    </div>
+
+    <div class="tree-line"></div>
+
+    <!-- H0: 宏观前提 -->
+    <div class="tree-node tree-h0" onclick="showPage('h1',document.querySelectorAll('.tab')[1])">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+        <span class="b b-p" style="font-size:11px">H0</span>
+        <span style="font-size:14px;font-weight:600">宏观前提：美元霸权链上延伸</span>
+        <span class="mono" style="font-size:14px;font-weight:700;color:var(--green)">70%<span style="color:var(--text3);font-weight:400">/5yr</span></span>
+        <span class="mono" style="font-size:14px;font-weight:700;color:var(--yellow)">50%<span style="color:var(--text3);font-weight:400">/10yr</span></span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">弱国控制力↓ + 美国短期友好 · 5 年内风险可控</div>
+    </div>
+
+    <div class="tree-line"></div>
+
+    <!-- 分支: H1 / H2 / H3 -->
+    <div class="tree-branch">
+
+      <!-- H1 -->
+      <div class="tree-node tree-h" onclick="showPage('h1',document.querySelectorAll('.tab')[1])" style="border-top:3px solid var(--purple)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-p">H1 市场规模</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--yellow)">60%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">稳定币 5 年达 $1T+</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">$300B → $916B - $1,613B</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:60%;height:100%;background:var(--yellow);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · 新兴市场 $320B <span class="b b-g" style="font-size:9px">高</span><br>
+          · RWA $300B+ <span class="b b-o" style="font-size:9px">待验证</span> ⭐<br>
+          · Crypto $100B <span class="b b-y" style="font-size:9px">中</span><br>
+          · 跨境 $100B <span class="b b-y" style="font-size:9px">中</span><br>
+          · AI Agent $25-250B <span class="b b-r" style="font-size:9px">低</span>
+        </div>
+        <div class="tp-list">
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>法案细则 · 26/06-07</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>RWA TVL > $100B</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>银行接受抵押</div>
+        </div>
+      </div>
+
+      <!-- H2 -->
+      <div class="tree-node tree-h" onclick="showPage('h2',document.querySelectorAll('.tab')[2])" style="border-top:3px solid var(--green)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-g">H2 市占率</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--yellow)">50%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">USDC 占住 RWA 配对位置</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">24.67% → 20% / 27% / 30%</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:50%;height:100%;background:var(--yellow);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · RWA 配对排他性 <span class="b b-g" style="font-size:9px">核心</span> ⭐<br>
+          · DeFi 保持领先 <span class="b b-g" style="font-size:9px">强</span><br>
+          · 新兴市场/CEX <span class="b b-r" style="font-size:9px">弱</span><br>
+          · 护城河 6-7 分（窄）
+        </div>
+        <div class="tp-list">
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--green)"></span>RWA 平台选 USDC</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--red)"></span>USDH > 10% = 止损</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--red)"></span>Stripe 拿牌 · 26/04</div>
+        </div>
+      </div>
+
+      <!-- H3 -->
+      <div class="tree-node tree-h" onclick="showPage('h3',document.querySelectorAll('.tab')[3])" style="border-top:3px solid var(--orange)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-o">H3 利润率</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--red)">25%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">商业模式转型按流量收费</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">利息占 96% · 利率敏感 · CB 分成 55%</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:25%;height:100%;background:var(--red);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · Coinbase 55% 分成 <span class="b b-r" style="font-size:9px">结构性</span><br>
+          · 利率变 1% 利润变 20-30%<br>
+          · CPN/ARC 转型中 <span class="b b-y" style="font-size:9px">进行中</span><br>
+          · P/E 上限 25x
+        </div>
+        <div class="tp-list">
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--green)"></span>非利息收入 > 10%</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--green)"></span>Mint 占比 > 25%</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--yellow)"></span>CB 合同重谈 · 26Q4</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 情景估值模型 -->
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">情景估值模型 <span class="b b-b">可调参数 · 自动计算</span></div>
+    <div class="g g2">
+      <div>
+        <div class="sc-row" style="background:rgba(248,113,113,.08)">
+          <div style="color:var(--red);font-weight:600">悲观</div>
+          <div class="mono" style="font-size:12px;color:var(--text3)" id="sp-p">$24</div>
+          <input type="range" id="sl-p" min="0" max="100" value="20" style="accent-color:var(--red)" oninput="upProb('p',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--red);text-align:right" id="pr-p">20%</div>
+        </div>
+        <div class="sc-row" style="background:rgba(251,191,36,.08)">
+          <div style="color:var(--yellow);font-weight:600">中性</div>
+          <div class="mono" style="font-size:12px;color:var(--text3)" id="sp-n">$58</div>
+          <input type="range" id="sl-n" min="0" max="100" value="50" style="accent-color:var(--yellow)" oninput="upProb('n',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--yellow);text-align:right" id="pr-n">50%</div>
+        </div>
+        <div class="sc-row" style="background:rgba(52,211,153,.08)">
+          <div style="color:var(--green);font-weight:600">乐观</div>
+          <div class="mono" style="font-size:12px;color:var(--text3)" id="sp-o">$151</div>
+          <input type="range" id="sl-o" min="0" max="100" value="30" style="accent-color:var(--green)" oninput="upProb('o',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--green);text-align:right" id="pr-o">30%</div>
+        </div>
+      </div>
+      <div>
+        <div class="ev-box" style="margin-top:0;height:100%;flex-direction:column;justify-content:center;align-items:center;gap:10px">
+          <div class="mono" style="font-size:11px;color:var(--text3)" id="evF">$24×20% + $58×50% + $151×30%</div>
+          <div class="mono" style="font-size:36px;font-weight:700;color:var(--blue)" id="evV">$79.1</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:12px;color:var(--text3)">vs $<span id="evP">71</span></span>
+            <span style="font-size:13px;font-weight:600" id="evD" style="color:var(--green)">低估 -10%</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <span style="padding:4px 10px;background:rgba(52,211,153,.08);border-radius:4px;font-size:10px;color:var(--green)">加仓: EV>价格×1.2</span>
+            <span style="padding:4px 10px;background:rgba(248,113,113,.08);border-radius:4px;font-size:10px;color:var(--red)">减仓: EV<价格×0.8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 可展开的估值模型明细 -->
+    <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:6px 0" onclick="toggleModel()">
+        <span style="font-size:12px;font-weight:600;color:var(--text2)">📊 估值模型明细（点击展开调整参数）</span>
+        <span id="modelArrow" style="font-size:14px;color:var(--text3);transition:transform .2s">▼</span>
+      </div>
+      <div id="modelDetail" style="display:none">
+        <div style="display:flex;gap:16px;margin:10px 0;padding:10px;background:var(--bg2);border-radius:6px;flex-wrap:wrap;align-items:center">
+          <div style="font-size:11px;color:var(--text3)">当前股价 $<input class="mi" id="m-cp" type="number" value="60" step="1" oninput="recalc()"></div>
+          <div style="font-size:11px;color:var(--text3)">股数 <input class="mi" id="m-shares" type="number" value="235" step="1" oninput="recalc()">M</div>
+          <div style="font-size:11px;color:var(--text3)">折现率 <input class="mi" id="m-discount" type="number" value="25" step="1" oninput="recalc()">%/年</div>
+          <div style="font-size:11px;color:var(--text3)">年数 <input class="mi" id="m-years" type="number" value="5" step="1" oninput="recalc()"></div>
+        </div>
+        <!-- 细分市场假设 -->
+        <div style="margin:10px 0;overflow-x:auto">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">细分市场假设 <span style="font-weight:400;color:var(--text3)">· 黄色可编辑</span></div>
+          <table class="tbl" style="font-size:11px">
+            <thead>
+              <tr><th rowspan="2" style="min-width:70px">细分市场</th><th colspan="2" style="color:var(--red);text-align:center">悲观</th><th colspan="2" style="color:var(--yellow);text-align:center">中性</th><th colspan="2" style="color:var(--green);text-align:center">乐观</th></tr>
+              <tr><th style="font-size:9px">规模$B</th><th style="font-size:9px">USDC%</th><th style="font-size:9px">规模$B</th><th style="font-size:9px">USDC%</th><th style="font-size:9px">规模$B</th><th style="font-size:9px">USDC%</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Crypto</td><td><input class="mi ms" id="s-p-crypto-size" type="number" value="200" oninput="recalc()"></td><td><input class="mi ms" id="s-p-crypto-share" type="number" value="25" oninput="recalc()"></td><td><input class="mi ms" id="s-n-crypto-size" type="number" value="250" oninput="recalc()"></td><td><input class="mi ms" id="s-n-crypto-share" type="number" value="30" oninput="recalc()"></td><td><input class="mi ms" id="s-o-crypto-size" type="number" value="350" oninput="recalc()"></td><td><input class="mi ms" id="s-o-crypto-share" type="number" value="35" oninput="recalc()"></td></tr>
+              <tr><td>新兴市场</td><td><input class="mi ms" id="s-p-emerging-size" type="number" value="350" oninput="recalc()"></td><td><input class="mi ms" id="s-p-emerging-share" type="number" value="5" oninput="recalc()"></td><td><input class="mi ms" id="s-n-emerging-size" type="number" value="400" oninput="recalc()"></td><td><input class="mi ms" id="s-n-emerging-share" type="number" value="10" oninput="recalc()"></td><td><input class="mi ms" id="s-o-emerging-size" type="number" value="500" oninput="recalc()"></td><td><input class="mi ms" id="s-o-emerging-share" type="number" value="12" oninput="recalc()"></td></tr>
+              <tr><td>跨境支付</td><td><input class="mi ms" id="s-p-cross-size" type="number" value="120" oninput="recalc()"></td><td><input class="mi ms" id="s-p-cross-share" type="number" value="10" oninput="recalc()"></td><td><input class="mi ms" id="s-n-cross-size" type="number" value="150" oninput="recalc()"></td><td><input class="mi ms" id="s-n-cross-share" type="number" value="20" oninput="recalc()"></td><td><input class="mi ms" id="s-o-cross-size" type="number" value="200" oninput="recalc()"></td><td><input class="mi ms" id="s-o-cross-share" type="number" value="25" oninput="recalc()"></td></tr>
+              <tr style="background:rgba(249,115,22,.04)"><td><strong>RWA ⭐</strong></td><td><input class="mi ms" id="s-p-rwa-size" type="number" value="150" oninput="recalc()"></td><td><input class="mi ms" id="s-p-rwa-share" type="number" value="50" oninput="recalc()"></td><td><input class="mi ms" id="s-n-rwa-size" type="number" value="200" oninput="recalc()"></td><td><input class="mi ms" id="s-n-rwa-share" type="number" value="70" oninput="recalc()"></td><td><input class="mi ms" id="s-o-rwa-size" type="number" value="350" oninput="recalc()"></td><td><input class="mi ms" id="s-o-rwa-share" type="number" value="75" oninput="recalc()"></td></tr>
+              <tr><td>AI Agent</td><td><input class="mi ms" id="s-p-ai-size" type="number" value="50" oninput="recalc()"></td><td><input class="mi ms" id="s-p-ai-share" type="number" value="16" oninput="recalc()"></td><td><input class="mi ms" id="s-n-ai-size" type="number" value="75" oninput="recalc()"></td><td><input class="mi ms" id="s-n-ai-share" type="number" value="50" oninput="recalc()"></td><td><input class="mi ms" id="s-o-ai-size" type="number" value="90" oninput="recalc()"></td><td><input class="mi ms" id="s-o-ai-share" type="number" value="46" oninput="recalc()"></td></tr>
+              <tr style="font-weight:600;border-top:2px solid var(--border)"><td>稳定币总量</td><td colspan="2" class="mono" id="c-p-stab" style="text-align:center"></td><td colspan="2" class="mono" id="c-n-stab" style="text-align:center"></td><td colspan="2" class="mono" id="c-o-stab" style="text-align:center"></td></tr>
+              <tr style="font-weight:700;background:rgba(34,211,238,.06)"><td style="color:var(--cyan)">USDC 规模</td><td colspan="2" class="mono" id="c-p-usdc" style="text-align:center;color:var(--cyan)"></td><td colspan="2" class="mono" id="c-n-usdc" style="text-align:center;color:var(--cyan)"></td><td colspan="2" class="mono" id="c-o-usdc" style="text-align:center;color:var(--cyan)"></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- P&L 模型 -->
+        <div style="overflow-x:auto">
+        <table class="tbl" id="modelTbl">
+          <thead><tr><th style="min-width:130px">参数</th><th style="color:var(--red);min-width:90px">悲观</th><th style="color:var(--yellow);min-width:90px">中性</th><th style="color:var(--green);min-width:90px">乐观</th></tr></thead>
+          <tbody>
+            <tr><td>利率 (%)</td><td><input class="mi" id="m-p-rate" type="number" value="3.0" step="0.1" oninput="recalc()"></td><td><input class="mi" id="m-n-rate" type="number" value="3.0" step="0.1" oninput="recalc()"></td><td><input class="mi" id="m-o-rate" type="number" value="3.0" step="0.1" oninput="recalc()"></td></tr>
+            <tr style="background:rgba(255,255,255,.02)"><td style="color:var(--cyan)">→ 利息收入</td><td class="mono" id="c-p-interest" style="color:var(--cyan)"></td><td class="mono" id="c-n-interest" style="color:var(--cyan)"></td><td class="mono" id="c-o-interest" style="color:var(--cyan)"></td></tr>
+            <tr><td>RLDC 留存率 (%)</td><td><input class="mi" id="m-p-rldc" type="number" value="35" step="1" oninput="recalc()"></td><td><input class="mi" id="m-n-rldc" type="number" value="35" step="1" oninput="recalc()"></td><td><input class="mi" id="m-o-rldc" type="number" value="40" step="1" oninput="recalc()"></td></tr>
+            <tr style="background:rgba(255,255,255,.02)"><td style="color:var(--cyan)">→ 毛利</td><td class="mono" id="c-p-gross" style="color:var(--cyan)"></td><td class="mono" id="c-n-gross" style="color:var(--cyan)"></td><td class="mono" id="c-o-gross" style="color:var(--cyan)"></td></tr>
+            <tr><td>运营支出 ($M)</td><td><input class="mi" id="m-p-opex" type="number" value="550" step="10" oninput="recalc()"></td><td><input class="mi" id="m-n-opex" type="number" value="605" step="10" oninput="recalc()"></td><td><input class="mi" id="m-o-opex" type="number" value="665.5" step="10" oninput="recalc()"></td></tr>
+            <tr style="background:rgba(255,255,255,.02)"><td style="color:var(--cyan)">→ 营业利润</td><td class="mono" id="c-p-oper" style="color:var(--cyan)"></td><td class="mono" id="c-n-oper" style="color:var(--cyan)"></td><td class="mono" id="c-o-oper" style="color:var(--cyan)"></td></tr>
+            <tr><td>税率 (%)</td><td><input class="mi" id="m-p-tax" type="number" value="25" step="1" oninput="recalc()"></td><td><input class="mi" id="m-n-tax" type="number" value="25" step="1" oninput="recalc()"></td><td><input class="mi" id="m-o-tax" type="number" value="25" step="1" oninput="recalc()"></td></tr>
+            <tr style="background:rgba(255,255,255,.02);font-weight:600"><td style="color:var(--blue)">→ 净利润</td><td class="mono" id="c-p-net" style="color:var(--blue)"></td><td class="mono" id="c-n-net" style="color:var(--blue)"></td><td class="mono" id="c-o-net" style="color:var(--blue)"></td></tr>
+            <tr><td>P/E 倍数</td><td><input class="mi" id="m-p-pe" type="number" value="20" step="1" oninput="recalc()"></td><td><input class="mi" id="m-n-pe" type="number" value="20" step="1" oninput="recalc()"></td><td><input class="mi" id="m-o-pe" type="number" value="25" step="1" oninput="recalc()"></td></tr>
+            <tr style="background:rgba(255,255,255,.02)"><td style="color:var(--cyan)">→ 企业价值</td><td class="mono" id="c-p-biz" style="color:var(--cyan)"></td><td class="mono" id="c-n-biz" style="color:var(--cyan)"></td><td class="mono" id="c-o-biz" style="color:var(--cyan)"></td></tr>
+            <tr style="background:rgba(255,255,255,.02)"><td style="color:var(--text2)">→ 未来股价</td><td class="mono" id="c-p-future" style="color:var(--text2)"></td><td class="mono" id="c-n-future" style="color:var(--text2)"></td><td class="mono" id="c-o-future" style="color:var(--text2)"></td></tr>
+            <tr style="font-weight:700;border-top:2px solid var(--border)"><td>→ 折现股价</td><td class="mono" style="color:var(--red)" id="c-p-present"></td><td class="mono" style="color:var(--yellow)" id="c-n-present"></td><td class="mono" style="color:var(--green)" id="c-o-present"></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 核心结论 -->
+  <div class="g g4" style="margin-top:4px">
+    <div class="card" style="background:linear-gradient(135deg,rgba(77,140,245,.08),rgba(77,140,245,.02));border:1px solid rgba(77,140,245,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--blue);margin-bottom:6px">可以买，不应买太多</div>
+      <div style="font-size:12px;color:var(--text2)">尚未过拐点，先 2% 观察仓</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(52,211,153,.02));border:1px solid rgba(52,211,153,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:6px">核心变量是 RWA</div>
+      <div style="font-size:12px;color:var(--text2)">占住现金腿 = 最大 alpha</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,191,36,.02));border:1px solid rgba(251,191,36,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--yellow);margin-bottom:6px">仓位上限 5%</div>
+      <div style="font-size:12px;color:var(--text2)">质量 6-7 分，宏观不确定</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(167,139,250,.02));border:1px solid rgba(167,139,250,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--purple);margin-bottom:6px">等待拐点</div>
+      <div style="font-size:12px;color:var(--text2)">法案 6-7 月 · RWA 平台选择</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: H1 市场规模（含 H0 宏观前提）
+     ============================================================ -->
+<div id="h1" class="page">
+  <!-- H0 宏观前提 -->
+  <div class="belief open" style="border:1px solid rgba(167,139,250,.25);margin-bottom:20px"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title" style="color:var(--purple)">H0 宏观前提：美元霸权链上延伸</div><div class="belief-desc">稳定币繁荣的根基 — 5yr 70% / 10yr 50%</div></div><div class="belief-right"><span class="b b-g">5yr 70%</span><span class="b b-y">10yr 50%</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ins info" style="margin-bottom:12px">
+        <strong>框架前提</strong>
+        美元稳定币长期繁荣 = 美元霸权链上延伸。需要判断：政府控制力加强还是变弱？"主权个人"逻辑是否成立？
+      </div>
+      <div style="padding:12px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--green);margin-bottom:8px">
+        <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:4px">H0.1 弱国政府控制力持续削弱 <span class="b b-g" style="margin-left:6px">高确定性</span></div>
+        <div style="font-size:11px;color:var(--text2)">从 2012 年开始趋势明确；驱动力：货币贬值、资本管制失效、技术扩散<br>Tron USDT +40% 增速，与 crypto 无关 — 真实需求</div>
+      </div>
+      <div style="padding:12px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--yellow);margin-bottom:10px">
+        <div style="font-size:12px;font-weight:600;color:var(--yellow);margin-bottom:4px">H0.2 美国政府短期友好，长期不确定 <span class="b b-y" style="margin-left:6px">需观察</span></div>
+        <div style="font-size:11px;color:var(--text2)">推动立法、明确监管（GENIUS Act）；但可能是短期助推 — 威胁美元地位时可能反转</div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">美国政策重大逆转</div><div class="tp-sig">⚠️ 从友好转为敌对 — 框架性风险</div></div><span class="tp-time">持续监控</span><span class="b b-r">止损</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">稳定币法案通过 (GENIUS Act)</div><div class="tp-sig">制度化确认 — 降低不确定性</div></div><span class="tp-time">26 年 6-7 月</span><span class="b b-g">利好</span></div>
+      <div class="ins warn" style="margin-top:8px">
+        <strong>投资启示</strong>
+        5 年（3-5x）→ 风险可控，2-5% 仓位 ｜ 10 年（10x）→ 宏观是最大不确定性，不超 5%
+      </div>
+    </div>
+  </div>
+
+  <div class="h-header">
+    <div class="h-left">
+      <span class="h-id" style="background:rgba(167,139,250,.2);color:var(--purple)">H1</span>
+      <div><div class="h-title">稳定币市场规模：5 年达到 $1 万亿+</div><div class="h-sub">当前 $300B → 预测区间 $916B - $1,613B（3.1x - 5.4x）</div></div>
+    </div>
+    <div class="h-right">
+      <div class="conf"><div class="l">置信度</div><div class="v" style="color:var(--yellow)">60%</div><div class="conf-bar"><div class="conf-fill" style="width:60%;background:var(--yellow)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- 场景1: 新兴市场 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">场景 1：新兴市场美元化 — 核心增量来源</div><div class="belief-desc">从 $80B → $400B（增量 $320B）</div></div><div class="belief-right"><span class="b b-g">确定性：高</span><span class="b b-gr">$320B</span><span class="b b-gr">已在发生</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ev-item"><span class="ev-icon">📊</span><span>Tron 上 USDT 增速约 40%，与 crypto 涨跌关系不大 — 验证真实需求</span><span class="ev-src">链上数据</span></div>
+      <div class="ev-item"><span class="ev-icon">📌</span><span>驱动力：物理现钞替代、本地 M2 替代、资本外逃</span></div>
+      <div class="logic">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:6px">逻辑链条</div>
+        <div class="step">弱国货币贬值/通胀</div><div class="arr">↓</div>
+        <div class="step">居民寻求美元资产保值</div><div class="arr">↓</div>
+        <div class="step">传统渠道受限（银行、外汇管制）</div><div class="arr">↓</div>
+        <div class="step">稳定币成为替代方案</div><div class="arr">↓</div>
+        <div class="step" style="color:var(--yellow)">⚠️ USDT 因网络效应/OTC 流动性占主导（非 USDC）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 场景2: RWA -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">场景 2：RWA（现实资产上链）⭐ 核心变量</div><div class="belief-desc">增量 $300B+ · 全球金融资产 $500-900 万亿的链上潜力</div></div><div class="belief-right"><span class="b b-o">确定性：待验证</span><span class="b b-gr">$300B+</span><span class="b b-gr">26 年 H2</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ev-item"><span class="ev-icon">📊</span><span>当前 RWA TVL 约 $24B，200% 增速 — 规模小但增速极快</span><span class="ev-src">DefiLlama</span></div>
+      <div class="ev-item"><span class="ev-icon">📌</span><span>资产上链后，需要现金腿上链才能提升结算速度（T+0 vs T+2/T+3）</span></div>
+      <div class="ev-item"><span class="ev-icon">📌</span><span>结算资金占 RWA TVL 的 10%-30%，当前贡献仅 $2B-$3B</span></div>
+      <div class="ev-item"><span class="ev-icon">🔮</span><span>潜力计算：假设 $2 万亿 RWA × 15% 结算 = <strong style="color:var(--green)">$3,000B</strong></span></div>
+      <div class="logic">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:6px">逻辑链条</div>
+        <div class="step">股票/债券等资产上链</div><div class="arr">↓</div>
+        <div class="step">交易需要 T+0 结算（传统 T+2/T+3）</div><div class="arr">↓</div>
+        <div class="step">现金侧必须也在链上</div><div class="arr">↓</div>
+        <div class="step">需要一个现金等价物配对</div><div class="arr">↓</div>
+        <div class="step" style="color:var(--green);font-weight:600">这个"配对位置"一旦占住，有排他性</div>
+      </div>
+      <div class="ins danger">
+        <strong>关键不确定性</strong>
+        银行存款代币 vs 银行稳定币 vs USDC — 谁会成为现金腿？<br>
+        稳定币能不能当成美元来用（成为链上结算货币）？
+      </div>
+      <!-- 嵌入拐点 -->
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">稳定币法案细则发布</div><div class="tp-sig">稳定币能否当美元用 — 核心拐点</div></div><span class="tp-time">26 年 6-7 月</span><span class="b b-g">利好</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">RWA TVL 突破 $100B</div><div class="tp-sig">规模拐点 — 从小众到主流</div></div><span class="tp-time">待观察</span><span class="b b-gr">观察</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Canton 链现金腿选择</div><div class="tp-sig">RWA 路线验证</div></div><span class="tp-time">待观察</span><span class="b b-g">利好</span></div>
+    </div>
+  </div>
+
+  <!-- 场景3: Crypto -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">场景 3：Crypto 市场</div><div class="belief-desc">新增市值 × 5%-10% 资金沉淀；对总市值影响约 5%-10%</div></div><div class="belief-right"><span class="b b-y">确定性：中</span><span class="b b-gr">$100B</span><span class="b b-gr">周期性</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ev-item"><span class="ev-icon">📌</span><span>计算：crypto 市值 $2T → $4T，增量 $2T × 5%-10% = $100B</span></div>
+      <div class="ev-item"><span class="ev-icon">📊</span><span>市场已跌 40%，USDC 只流出 2-3%（有滞后）— 短期跌，长期微涨</span></div>
+    </div>
+  </div>
+
+  <!-- 场景4: 跨境支付 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">场景 4：跨境支付</div><div class="belief-desc">资金周转快留存不多；权力在 Stripe 手上，Circle 没有 to C 能力</div></div><div class="belief-right"><span class="b b-y">确定性：中</span><span class="b b-gr">$100B</span><span class="b b-gr">已发生</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ev-item"><span class="ev-icon">📌</span><span>$5 万亿 B2B 支付 ÷ 50 周转率 = $1,000B 留存</span></div>
+      <div class="ev-item"><span class="ev-icon">📌</span><span>参考：全球 B2B 规模 3%-4%；Stripe $1.5 万亿；Visa $15 万亿</span></div>
+      <div class="ev-item"><span class="ev-icon">⚠️</span><span>可能出现类似支付宝的存在，用户无感 — Circle 在此场景下竞争力弱</span></div>
+    </div>
+  </div>
+
+  <!-- 场景5: AI Agent -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">场景 5：AI Agent 支付 — 最有想象空间</div><div class="belief-desc">5 年内看不到显著贡献，但长期可能低估</div></div><div class="belief-right"><span class="b b-r">确定性：低</span><span class="b b-gr">$25-250B</span><span class="b b-gr">5 年后</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ev-item"><span class="ev-icon">📌</span><span>算法 1：AI 占 GDP($110T) 5% × 10% 链上 × 5% 沉淀 = $250B</span></div>
+      <div class="ev-item"><span class="ev-icon">📌</span><span>算法 2：1 亿 agent × $250 = $250B</span></div>
+      <div class="ev-item"><span class="ev-icon">📌</span><span>短期：1 亿人 × $100 = $100B，体量有限</span></div>
+      <div class="ev-item"><span class="ev-icon">✨</span><span style="color:var(--purple)">Claude 配支付功能时选择了 USDC — 早期信号</span><span class="ev-src">Anthropic</span></div>
+      <div class="ev-item"><span class="ev-icon">✨</span><span style="color:var(--purple)">Agent 数量可能指数增长，可能低估长期潜力</span></div>
+    </div>
+  </div>
+
+  <!-- 增量汇总 -->
+  <div class="card">
+    <div class="card-title">增量来源汇总</div>
+    <table class="tbl">
+      <thead><tr><th>场景</th><th>增量</th><th>确定性</th><th>时间</th><th>USDC 竞争力</th></tr></thead>
+      <tbody>
+        <tr><td>新兴市场美元化</td><td class="mono" style="color:var(--green)">$320B</td><td><span class="b b-g">高</span></td><td>已发生</td><td><span class="b b-r">弱</span> USDT 主导</td></tr>
+        <tr style="background:rgba(249,115,22,.04)"><td><strong>RWA ⭐</strong></td><td class="mono" style="color:var(--orange)">$300B+</td><td><span class="b b-o">待验证</span></td><td>26 年 H2</td><td><span class="b b-g">强</span> 核心机会</td></tr>
+        <tr><td>Crypto</td><td class="mono">$100B</td><td><span class="b b-y">中</span></td><td>周期性</td><td>DeFi 强 / CEX 弱</td></tr>
+        <tr><td>跨境支付</td><td class="mono">$100B</td><td><span class="b b-y">中</span></td><td>已发生</td><td><span class="b b-r">弱</span> 权力在支付公司</td></tr>
+        <tr><td>AI Agent</td><td class="mono" style="color:var(--purple)">$25-250B</td><td><span class="b b-r">低</span></td><td>5 年后</td><td><span class="b b-y">中</span></td></tr>
+        <tr style="font-weight:700;border-top:2px solid var(--border)"><td>合计</td><td class="mono">$845B - $1,070B</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 补充拐点 -->
+  <div class="card">
+    <div class="card-title">🎯 其他 H1 拐点</div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">银行接受 USDC 作为抵押品</div><div class="tp-sig">传统金融认可信号</div></div><span class="tp-time">待观察</span><span class="b b-g">利好</span></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 3: H2 市占率
+     ============================================================ -->
+<div id="h2" class="page">
+  <div class="h-header">
+    <div class="h-left">
+      <span class="h-id" style="background:rgba(52,211,153,.2);color:var(--green)">H2</span>
+      <div><div class="h-title">USDC 能占住 RWA 配对位置</div><div class="h-sub">当前市占率 24.67% → 预测 20% / 27% / 30% · 护城河 6-7 分</div></div>
+    </div>
+    <div class="h-right">
+      <div class="conf"><div class="l">置信度</div><div class="v" style="color:var(--yellow)">50%</div><div class="conf-bar"><div class="conf-fill" style="width:50%;background:var(--yellow)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- 核心论点 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">核心论点：RWA 配对位置的排他性</div><div class="belief-desc">流动性聚合到头部 → 位置一旦占住难以替换</div></div><div class="belief-right"><span class="b b-g">核心逻辑</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ins ok" style="margin-bottom:12px">
+        <strong>关键证据</strong>
+        Hyperliquid 上特斯拉/USDC 的交易量是特斯拉/USDT、特斯拉/平台币的 <strong style="font-size:16px">10 倍</strong> — 流动性聚合效应的实证
+      </div>
+      <div class="logic">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:6px">逻辑链条</div>
+        <div class="step">RWA 资产上链</div><div class="arr">↓</div>
+        <div class="step">需要稳定币配对交易</div><div class="arr">↓</div>
+        <div class="step">流动性会聚合到头部</div><div class="arr">↓</div>
+        <div class="step">一旦 USDC 占住"配对位置"</div><div class="arr">↓</div>
+        <div class="step" style="color:var(--green);font-weight:600">位置具有排他性，难以替换</div>
+      </div>
+      <div class="ins danger" style="margin-top:10px">
+        <strong>不确定性</strong>
+        现金腿选择：银行存款代币 vs 银行稳定币 vs USDC — USDC 不一定能拿到这个位置
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">RWA 平台明确选择 USDC 作为现金腿</div><div class="tp-sig">核心论点验证 — 加仓信号</div></div><span class="tp-time">持续观察</span><span class="b b-g">加仓</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Securitize 等平台采用 USDC</div><div class="tp-sig">机构认可 — 加仓信号</div></div><span class="tp-time">持续观察</span><span class="b b-g">加仓</span></div>
+    </div>
+  </div>
+
+  <!-- 各场景竞争力 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">各场景 USDC 竞争力分析</div><div class="belief-desc">RWA + DeFi 强；新兴市场 + CEX + 跨境弱</div></div><div class="belief-right"><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="comp"><div style="font-weight:500">新兴市场美元化</div><span class="b b-r">弱</span><div style="font-size:11px;color:var(--text3)">USDT 主导：网络效应、OTC 流动性、时间信誉；合规反而是限制</div></div>
+      <div class="comp" style="background:rgba(52,211,153,.06)"><div style="font-weight:500">RWA 上链 ⭐</div><span class="b b-g">强</span><div style="font-size:11px;color:var(--text3)">中立网络（非交易所发）、合规牌照、流动性正反馈、BlackRock BUILD 已选 USDC</div></div>
+      <div class="comp"><div style="font-weight:500">Crypto (CEX)</div><span class="b b-r">弱</span><div style="font-size:11px;color:var(--text3)">USDT 保持领先，币安合约基本 USDT；维持 6:3 格局</div></div>
+      <div class="comp" style="background:rgba(52,211,153,.06)"><div style="font-weight:500">Crypto (DeFi)</div><span class="b b-g">强</span><div style="font-size:11px;color:var(--text3)">Coinbase 生态、链上原生场景保持领先</div></div>
+      <div class="comp"><div style="font-weight:500">跨境支付</div><span class="b b-r">弱</span><div style="font-size:11px;color:var(--text3)">由上游应用主导（Stripe）；PayPal PYUSD 失败案例；Circle 没 to C 能力</div></div>
+      <div class="comp"><div style="font-weight:500">AI Agent</div><span class="b b-y">中</span><div style="font-size:11px;color:var(--text3)">Claude 选了 USDC，AI 需要合规透明支付通道；但短期量不大</div></div>
+      <div style="padding:12px;background:var(--bg2);border-radius:8px;margin-top:10px;border-left:3px solid var(--orange)">
+        <div style="font-size:12px;font-weight:600;color:var(--orange);margin-bottom:4px">核心观点</div>
+        <div style="font-size:12px;color:var(--text2)">"交易场景下（CEX、股票、RWA），有流动性约束，会是 winner take most；其他细分场景碎片化、差异化低，利润率会被压低。"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 反信号与竞争者 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">⚠️ 反信号与竞争者</div><div class="belief-desc">USDH > 10% = 止损；Stripe 26/04 拿牌 = 竞争加剧</div></div><div class="belief-right"><span class="b b-r">风险</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="comp"><div style="font-weight:500">USDT (Tether)</div><span class="b b-gr">共存</span><div style="font-size:11px;color:var(--text3)">新兴市场主导；S&P 下调评级至 "Weak" 可能利好 USDC</div></div>
+      <div class="comp"><div style="font-weight:500">Hyperliquid USDH</div><span class="b b-y">中等</span><div style="font-size:11px;color:var(--text3)">目前约 $1B（4-5%）— 如果突破 10% 说明 USDC 竞争力不够</div></div>
+      <div class="comp"><div style="font-weight:500">Stripe / Bridge</div><span class="b b-r">高威胁</span><div style="font-size:11px;color:var(--text3)">2026/04 拿 OCC 牌照；有 to C 能力和商家网络</div></div>
+      <div class="comp"><div style="font-weight:500">交易所稳定币</div><span class="b b-y">待验证</span><div style="font-size:11px;color:var(--text3)">流动性聚合效应是否够强来抵御交易所自建</div></div>
+      <div class="comp"><div style="font-weight:500">PayPal PYUSD</div><span class="b b-g">低威胁</span><div style="font-size:11px;color:var(--text3)">投入大补贴多最后失败 — 反面案例</div></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Hyperliquid USDH 市占率突破 10%</div><div class="tp-sig">⚠️ USDC 竞争力不够 — 止损信号</div></div><span class="tp-time">持续监控</span><span class="b b-r">止损</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Stripe / Bridge 拿牌后的动作</div><div class="tp-sig">竞争加剧 — 利空信号</div></div><span class="tp-time">2026 年 4 月</span><span class="b b-r">利空</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">交易所内 USDC 存量变化</div><div class="tp-sig">趋势确认</div></div><span class="tp-time">季度追踪</span><span class="b b-gr">观察</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">市占率连续两季度下降 > 3 个百分点</div><div class="tp-sig">⚠️ 止损条件</div></div><span class="tp-time">季度追踪</span><span class="b b-r">止损</span></div>
+    </div>
+  </div>
+
+  <!-- 护城河 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">🏰 护城河分析 — 综合 6-7 分（窄护城河）</div><div class="belief-desc">不是 A+ 级公司；P/E 上限 25x</div></div><div class="belief-right"><span class="b b-y">6-7/10</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="moat"><div class="moat-h"><span style="font-size:12px;font-weight:500">网络效应</span><span class="mono" style="font-size:14px;font-weight:600;color:var(--yellow)">5/10</span></div><div class="moat-bar"><div class="moat-fill" style="width:50%"></div></div><div class="moat-note">不是 N² 级别，是线性的网络效应</div></div>
+      <div class="moat"><div class="moat-h"><span style="font-size:12px;font-weight:500">转换成本</span><span class="mono" style="font-size:14px;font-weight:600;color:var(--yellow)">5/10</span></div><div class="moat-bar"><div class="moat-fill" style="width:50%"></div></div><div class="moat-note">显性低，隐性中（"位置转换成本" — 交易对迁移成本高）</div></div>
+      <div class="moat"><div class="moat-h"><span style="font-size:12px;font-weight:500">CCTP 基础设施</span><span class="mono" style="font-size:14px;font-weight:600;color:var(--yellow)">6/10</span></div><div class="moat-bar"><div class="moat-fill" style="width:60%"></div></div><div class="moat-note">所有链支持最好（12 链、210 路由），有技术积累</div></div>
+      <div class="moat"><div class="moat-h"><span style="font-size:12px;font-weight:500">流动性聚合</span><span class="mono" style="font-size:14px;font-weight:600;color:var(--yellow)">6/10</span></div><div class="moat-bar"><div class="moat-fill" style="width:60%"></div></div><div class="moat-note">金融倾向聚合但不独占；RWA 场景可能形成更强聚合</div></div>
+      <div class="moat"><div class="moat-h"><span style="font-size:12px;font-weight:500">合规牌照</span><span class="mono" style="font-size:14px;font-weight:600;color:var(--yellow)">5/10</span></div><div class="moat-bar"><div class="moat-fill" style="width:50%"></div></div><div class="moat-note">有价值但可复制；OCC 牌照获批是里程碑</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 4: H3 利润率
+     ============================================================ -->
+<div id="h3" class="page">
+  <div class="h-header">
+    <div class="h-left">
+      <span class="h-id" style="background:rgba(249,115,22,.2);color:var(--orange)">H3</span>
+      <div><div class="h-title">商业模式能转型到按流量收费</div><div class="h-sub">当前利息收入占 96% · 利率敏感 · Coinbase 分成 55%</div></div>
+    </div>
+    <div class="h-right">
+      <div class="conf"><div class="l">置信度</div><div class="v" style="color:var(--red)">25%</div><div class="conf-bar"><div class="conf-fill" style="width:25%;background:var(--red)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- 当前问题 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">当前商业模式的结构性问题</div><div class="belief-desc">收入 = USDC × 利率 × 40% — 线性增长、外生变量、分成过高</div></div><div class="belief-right"><span class="b b-r">结构性</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div style="background:var(--bg);padding:10px;border-radius:6px;font-family:var(--mono);font-size:12px;margin-bottom:10px">
+        <span style="color:var(--text2)">收入</span> <span style="color:var(--text3)">=</span> <span style="color:var(--blue)">USDC</span> <span style="color:var(--text3)">×</span> <span style="color:var(--orange)">利率</span> <span style="color:var(--text3)">×</span> <span style="color:var(--red)">40%</span>
+      </div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--red)">❌</span><span><strong>Coinbase 分成过高：</strong>55% 给 Coinbase，Circle 只拿 45%（约 52% 总收入分给 Coinbase）</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--red)">❌</span><span><strong>利率敏感性极高：</strong>利率变 1%，利润变动 20%-30%</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--red)">❌</span><span><strong>不挂钩交易量：</strong>收益线性，不享受交易量增长红利</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--red)">❌</span><span><strong>外生变量：</strong>利率由美联储决定，Circle 完全没有掌控力</span></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">📉 利率敏感性</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px"><span class="mono" style="font-size:12px;color:var(--text2)">4% → 3%</span><span style="font-size:12px;font-weight:500;color:var(--red)">利润下降约 25%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px"><span class="mono" style="font-size:12px;color:var(--text2)">3% → 2%</span><span style="font-size:12px;font-weight:500;color:var(--red)">利润下降约 33%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border-radius:6px"><span class="mono" style="font-size:12px;color:var(--text2)">3% → 4%</span><span style="font-size:12px;font-weight:500;color:var(--green)">利润上升约 33%</span></div>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">美联储利率决议</div><div class="tp-sig">利润率直接影响 — 利率变 1% 利润变 20-30%</div></div><span class="tp-time">持续监控</span><span class="b b-gr">观察</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Coinbase 合同重谈结果</div><div class="tp-sig">当前 55% 分成 — 结果可能利好或利空</div></div><span class="tp-time">2026 Q4</span><span class="b b-y">关键</span></div>
+    </div>
+  </div>
+
+  <!-- 转型方向 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">商业模式转型方向：从利息 → 按流量收费</div><div class="belief-desc">CPN、ARC、CCTP、开发者钱包 — 多路径探索中</div></div><div class="belief-right"><span class="b b-y">进行中</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="tf-row"><div style="font-weight:500">按交易量/流量收费</div><div style="font-size:11px;color:var(--text3)">当前 <5%</div><span class="b b-g">核心方向</span></div>
+      <div class="tf-row"><div style="font-weight:500">CCTP 跨链转账</div><div style="font-size:11px;color:var(--text3)">目前无法收费</div><span class="b b-y">有可能</span></div>
+      <div class="tf-row"><div style="font-weight:500">CPN 机构转换网络</div><div style="font-size:11px;color:var(--text3)">$3.4B 年化 TPV</div><span class="b b-g">可按流量收费</span></div>
+      <div class="tf-row"><div style="font-weight:500">ARC 区块链</div><div style="font-size:11px;color:var(--text3)">测试网阶段</div><span class="b b-y">待验证</span></div>
+      <div class="tf-row"><div style="font-weight:500">开发者钱包</div><div style="font-size:11px;color:var(--text3)">推广中</div><span class="b b-gr">不确定</span></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">非利息收入占比提升（当前约 4%）</div><div class="tp-sig">商业模式转型信号 — 拐点: >10%</div></div><span class="tp-time">季度追踪</span><span class="b b-g">加仓</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">CPN / ARC / CCTP 开始产生收费收入</div><div class="tp-sig">新收入来源验证</div></div><span class="tp-time">持续观察</span><span class="b b-g">加仓</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Circle Mint 占比突破 25%（当前 13.5%）</div><div class="tp-sig">降低 Coinbase 分成依赖</div></div><span class="tp-time">季度追踪</span><span class="b b-g">加仓</span></div>
+    </div>
+  </div>
+
+  <!-- P/E 约束 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">P/E 估值约束</div><div class="belief-desc">公司质量 6-7 分 · 即使乐观 P/E 也只给 25x</div></div><div class="belief-right"><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ins warn">
+        <strong>估值上限约束</strong>
+        公司质量 6-7 分，不是 A+ 级别 · 网络效应不是 N² 级别 · 即使乐观情景，P/E 也只给到 25x
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;text-align:center">
+        <div style="padding:10px;background:rgba(248,113,113,.08);border-radius:6px"><div style="font-size:10px;color:var(--text3)">悲观</div><div class="mono" style="font-size:20px;font-weight:600;color:var(--red)">20x</div></div>
+        <div style="padding:10px;background:rgba(251,191,36,.08);border-radius:6px"><div style="font-size:10px;color:var(--text3)">中性</div><div class="mono" style="font-size:20px;font-weight:600;color:var(--yellow)">20x</div></div>
+        <div style="padding:10px;background:rgba(52,211,153,.08);border-radius:6px"><div style="font-size:10px;color:var(--text3)">乐观</div><div class="mono" style="font-size:20px;font-weight:600;color:var(--green)">25x</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 观点分歧 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">💬 观点分歧</div><div class="belief-desc">利润率重要 vs 看 EPS×PE 乘数</div></div><div class="belief-right"><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="vp" style="border-left-color:var(--orange)">
+        <div style="font-size:12px;font-weight:600;color:var(--orange);margin-bottom:4px">观点 A：利润率很重要（权重约 20%）</div>
+        <div style="font-size:12px;color:var(--text2)">"利率变 1%，利润变 20-30%。利润率权重约 20%，不能忽略。Coinbase 55% 分成是结构性问题。"</div>
+      </div>
+      <div class="vp" style="border-left-color:var(--green)">
+        <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:4px">观点 B：不太关心利润率</div>
+        <div style="font-size:12px;color:var(--text2)">"规模增长 + 市场认为有网络效应 → P/E 一定会扩张。看 EPS × PE 乘数效应。网络效应叙事一旦成立，利润率不是核心。"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 5: 日志
+     ============================================================ -->
+<div id="log" class="page">
+  <!-- 更新日志 -->
+  <div class="card">
+    <div class="card-title">更新日志 <span class="b b-b">新事件 → 影响哪个假设 → 调整概率 → 记录</span></div>
+    <div class="log-form" id="logForm">
+      <input type="date" id="logDate" value="2026-02-10">
+      <input type="text" id="logEvent" placeholder="事件/证据描述...">
+      <input type="text" id="logProb" placeholder="概率调整...">
+      <input type="number" id="logEV" placeholder="新 EV" step="0.1">
+      <button onclick="addLog()">添加</button>
+    </div>
+    <div style="max-height:500px;overflow-y:auto">
+      <table class="log-tbl" id="logTbl">
+        <thead><tr><th style="width:100px">日期</th><th>事件/证据</th><th style="width:200px">概率调整</th><th style="width:80px;text-align:right">期望值</th></tr></thead>
+        <tbody id="logBody">
+          <tr><td class="mono" style="color:var(--text3)">2026-02-05</td><td>初始评估 — 基于会议讨论建立框架</td><td><span class="b b-r">悲观 20%</span> <span class="b b-y">中性 50%</span> <span class="b b-g">乐观 30%</span></td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$73</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 所有拐点汇总 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">🎯 所有拐点汇总 <span class="b b-gr">点击切换状态: ○→◑→●→●负</span></div>
+    <div class="sep" style="margin-top:0">H1 市场规模</div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">稳定币法案细则</strong><div style="font-size:11px;color:var(--text3)">稳定币能否当美元用 · 26 年 6-7 月</div></div><span class="b b-g">利好</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">RWA TVL 突破 $100B</strong><div style="font-size:11px;color:var(--text3)">规模拐点 · 待观察</div></div><span class="b b-gr">观察</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Canton 链现金腿选择</strong><div style="font-size:11px;color:var(--text3)">RWA 路线验证 · 待观察</div></div><span class="b b-g">利好</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">银行接受 USDC 抵押品</strong><div style="font-size:11px;color:var(--text3)">传统金融认可 · 待观察</div></div><span class="b b-g">利好</span></div>
+
+    <div class="sep">H2 市占率</div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">RWA 平台选 USDC 现金腿</strong><div style="font-size:11px;color:var(--text3)">核心论点验证 · 持续观察</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Securitize 等采用 USDC</strong><div style="font-size:11px;color:var(--text3)">机构认可 · 持续观察</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary bear"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Hyperliquid USDH > 10%</strong><div style="font-size:11px;color:var(--text3)">竞争力不够 · 持续监控</div></div><span class="b b-r">止损</span></div>
+    <div class="tp-summary bear"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Stripe / Bridge 拿牌后动作</strong><div style="font-size:11px;color:var(--text3)">竞争加剧 · 2026/04</div></div><span class="b b-r">利空</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">市占率连续两季下降 >3pp</strong><div style="font-size:11px;color:var(--text3)">季度追踪 · 当前 24.67%</div></div><span class="b b-r">止损</span></div>
+
+    <div class="sep">H3 利润率</div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">非利息收入占比 >10%</strong><div style="font-size:11px;color:var(--text3)">商业模式转型 · 当前约 4%</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">CPN/ARC/CCTP 收费启动</strong><div style="font-size:11px;color:var(--text3)">新收入来源 · 持续观察</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Mint 占比 >25%</strong><div style="font-size:11px;color:var(--text3)">降低 Coinbase 依赖 · 当前 13.5%</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">美联储利率决议</strong><div style="font-size:11px;color:var(--text3)">利润率直接影响 · 持续</div></div><span class="b b-gr">观察</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Coinbase 合同重谈</strong><div style="font-size:11px;color:var(--text3)">55% 分成 · 2026 Q4</div></div><span class="b b-y">关键</span></div>
+  </div>
+
+  <!-- 关键时间线 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">📅 关键时间节点</div>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;font-size:11px">
+      <div style="padding:12px 8px;background:rgba(251,191,36,.08);border-radius:6px;border:1px solid rgba(251,191,36,.15)"><div style="color:var(--yellow);font-weight:600">2026/04</div><div style="color:var(--text3);margin-top:4px">Stripe OCC 牌照</div></div>
+      <div style="padding:12px 8px;background:rgba(248,113,113,.08);border-radius:6px;border:1px solid rgba(248,113,113,.15)"><div style="color:var(--red);font-weight:600">2026/06</div><div style="color:var(--text3);margin-top:4px">解禁期</div></div>
+      <div style="padding:12px 8px;background:rgba(52,211,153,.08);border-radius:6px;border:1px solid rgba(52,211,153,.15)"><div style="color:var(--green);font-weight:600">2026/06-07</div><div style="color:var(--text3);margin-top:4px">⭐ 法案细则</div></div>
+      <div style="padding:12px 8px;background:rgba(248,113,113,.08);border-radius:6px;border:1px solid rgba(248,113,113,.15)"><div style="color:var(--red);font-weight:600">2026/10</div><div style="color:var(--text3);margin-top:4px">解禁期</div></div>
+      <div style="padding:12px 8px;background:rgba(249,115,22,.08);border-radius:6px;border:1px solid rgba(249,115,22,.15)"><div style="color:var(--orange);font-weight:600">2026 Q4</div><div style="color:var(--text3);margin-top:4px">Coinbase 重谈</div></div>
+      <div style="padding:12px 8px;background:rgba(77,140,245,.08);border-radius:6px;border:1px solid rgba(77,140,245,.15)"><div style="color:var(--blue);font-weight:600">每季度</div><div style="color:var(--text3);margin-top:4px">Circle 财报</div></div>
+    </div>
+  </div>
+
+  <div class="ins info">
+    <strong>使用说明</strong>
+    新事件发生时：① 判断影响哪个假设 → ② 到对应页面更新拐点状态（点击切换 ○→◑→●→●负）→ ③ 调总览页概率滑块 → ④ 在此添加日志。所有修改自动保存浏览器 localStorage。
+  </div>
+</div>
+
+<footer>
+  本看板基于讨论分析整理，仅供投资研究参考<br>
+  拐点可点击切换 · 概率可拖动 · 日志可添加 · 修改自动保存 localStorage
+</footer>
+</div>
+
+<script>
+let prices={p:24,n:58,o:151};
+const SEGS=['crypto','emerging','cross','rwa','ai'];
+function gi(id){return parseFloat(document.getElementById(id).value)||0}
+function so(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function fmtM(v){const a=Math.abs(v);if(a>=1000)return(v<0?'-':'')+'$'+(a/1000).toFixed(1)+'B';return(v<0?'-':'')+'$'+a.toFixed(0)+'M'}
+
+function toggleModel(){const d=document.getElementById('modelDetail'),a=document.getElementById('modelArrow');if(d.style.display==='none'){d.style.display='block';a.style.transform='rotate(180deg)'}else{d.style.display='none';a.style.transform=''}}
+
+function recalc(){
+  const shares=gi('m-shares'),dr=gi('m-discount'),yrs=gi('m-years'),cp=gi('m-cp');
+  const df=1/Math.pow(1+dr/100,yrs);
+  ['p','n','o'].forEach(k=>{
+    let totalStab=0,totalUsdc=0;
+    SEGS.forEach(seg=>{
+      const sz=gi('s-'+k+'-'+seg+'-size'),sh=gi('s-'+k+'-'+seg+'-share');
+      totalStab+=sz;totalUsdc+=sz*sh/100;
+    });
+    so('c-'+k+'-stab','$'+totalStab.toFixed(0)+'B');
+    so('c-'+k+'-usdc','$'+totalUsdc.toFixed(1)+'B');
+    const rate=gi('m-'+k+'-rate'),rldc=gi('m-'+k+'-rldc'),opex=gi('m-'+k+'-opex'),tax=gi('m-'+k+'-tax'),pe=gi('m-'+k+'-pe');
+    const interest=totalUsdc*rate/100*1000;
+    const gross=interest*rldc/100;
+    const oper=gross-opex;
+    const net=oper*(1-tax/100);
+    const biz=net*pe;
+    const future=shares>0?biz/shares:0;
+    const present=future*df;
+    prices[k]=Math.round(present);
+    so('c-'+k+'-interest',fmtM(interest));so('c-'+k+'-gross',fmtM(gross));
+    so('c-'+k+'-oper',fmtM(oper));so('c-'+k+'-net',fmtM(net));
+    so('c-'+k+'-biz',fmtM(biz));so('c-'+k+'-future','$'+future.toFixed(1));
+    so('c-'+k+'-present','$'+Math.round(present));so('sp-'+k,'$'+Math.round(present));
+  });
+  so('hp',cp);so('treeCP',cp);so('evP',cp);
+  calcEV();save();
+}
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+function upProb(k,v){
+  v=Math.max(0,Math.min(100,parseInt(v)||0));
+  const keys=['p','n','o'],others=keys.filter(x=>x!==k);
+  document.getElementById('sl-'+k).value=v;
+  const rem=100-v;
+  const ov=others.map(x=>parseInt(document.getElementById('sl-'+x).value));
+  const os=ov.reduce((a,b)=>a+b,0);
+  if(os>0){let al=0;others.forEach((x,i)=>{const sh=i===others.length-1?rem-al:Math.round((ov[i]/os)*rem);document.getElementById('sl-'+x).value=sh;document.getElementById('pr-'+x).textContent=sh+'%';al+=sh})}
+  else{const h=Math.floor(rem/2);document.getElementById('sl-'+others[0]).value=h;document.getElementById('pr-'+others[0]).textContent=h+'%';document.getElementById('sl-'+others[1]).value=rem-h;document.getElementById('pr-'+others[1]).textContent=(rem-h)+'%'}
+  document.getElementById('pr-'+k).textContent=v+'%';
+  calcEV();save();
+}
+
+function calcEV(){
+  const p=+document.getElementById('sl-p').value,n=+document.getElementById('sl-n').value,o=+document.getElementById('sl-o').value;
+  const cp=gi('m-cp');
+  const ev=(prices.p*p/100+prices.n*n/100+prices.o*o/100).toFixed(1);
+  so('evV','$'+ev);so('hev',ev);
+  document.getElementById('evF').textContent=`$${prices.p}×${p}% + $${prices.n}×${n}% + $${prices.o}×${o}%`;
+  const r=ev/cp,prem=((cp/ev-1)*100).toFixed(0);
+  let t,c;
+  if(r>1.2){t='低估 -'+Math.abs(prem)+'%';c='var(--green)'}
+  else if(r<0.8){t='高估 +'+prem+'%';c='var(--red)'}
+  else if(r<1){t='溢价 +'+prem+'%';c='var(--orange)'}
+  else{t='折价 -'+Math.abs(prem)+'%';c='var(--green)'}
+  const d=document.getElementById('evD');d.textContent=t;d.style.color=c;
+  const bg=r>1.2?'rgba(52,211,153,.15)':r<0.8?'rgba(248,113,113,.15)':r<1?'rgba(249,115,22,.15)':'rgba(52,211,153,.15)';
+  const te=document.getElementById('treeEV');if(te)te.textContent='$'+ev;
+  const tv=document.getElementById('treeVerdict');
+  if(tv){tv.textContent=(r>=1?'低估':'略高估')+' '+t.split(' ')[1];tv.style.color=c;tv.style.background=bg}
+  const act=r>1.2?'考虑加仓':r<0.8?'考虑减仓':'持有观察';
+  const hv=document.getElementById('hverdict');
+  hv.textContent=(r>=1?'低估':'略高估')+' '+t.split(' ')[1]+' · '+act;hv.style.color=c;hv.style.background=bg;
+}
+
+function cycleTp(el){const d=el.querySelector('.tp-dot');cycle(d);save()}
+function cycleTpDot(el){cycle(el);save()}
+function cycle(d){const s=['pending','approaching','triggered','negative'];const c=s.findIndex(x=>d.classList.contains(x));const nx=(c+1)%s.length;s.forEach(x=>d.classList.remove(x));d.classList.add(s[nx])}
+
+function addLog(){
+  const dt=document.getElementById('logDate').value,ev=document.getElementById('logEvent').value,pr=document.getElementById('logProb').value,val=document.getElementById('logEV').value;
+  if(!ev)return;
+  const tb=document.getElementById('logBody'),tr=document.createElement('tr');
+  tr.innerHTML=`<td class="mono" style="color:var(--text3)">${dt}</td><td>${ev}</td><td style="font-size:11px">${pr||'-'}</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">${val?'$'+val:'-'}</td>`;
+  tb.insertBefore(tr,tb.firstChild);
+  document.getElementById('logEvent').value='';document.getElementById('logProb').value='';document.getElementById('logEV').value='';
+  save();
+}
+
+function save(){
+  const st={probs:{p:+document.getElementById('sl-p').value,n:+document.getElementById('sl-n').value,o:+document.getElementById('sl-o').value},segs:{},model:{},global:{shares:gi('m-shares'),discount:gi('m-discount'),years:gi('m-years'),cp:gi('m-cp')},tp:[],logs:[]};
+  ['p','n','o'].forEach(k=>{
+    st.segs[k]={};SEGS.forEach(seg=>{st.segs[k][seg]={size:gi('s-'+k+'-'+seg+'-size'),share:gi('s-'+k+'-'+seg+'-share')}});
+    st.model[k]={};['rate','rldc','opex','tax','pe'].forEach(f=>{st.model[k][f]=gi('m-'+k+'-'+f)});
+  });
+  document.querySelectorAll('.tp-dot').forEach(d=>{st.tp.push(['pending','approaching','triggered','negative'].find(s=>d.classList.contains(s))||'pending')});
+  document.querySelectorAll('#logBody tr').forEach(r=>{const c=r.querySelectorAll('td');if(c.length>=4)st.logs.push({d:c[0].textContent,e:c[1].textContent,p:c[2].innerHTML,v:c[3].textContent})});
+  localStorage.setItem('crcl-v3',JSON.stringify(st));
+}
+
+function load(){
+  const r=localStorage.getItem('crcl-v3');if(!r)return;
+  try{
+    const st=JSON.parse(r);
+    if(st.probs){['p','n','o'].forEach(k=>{document.getElementById('sl-'+k).value=st.probs[k];document.getElementById('pr-'+k).textContent=st.probs[k]+'%'})}
+    if(st.global){['shares','discount','years','cp'].forEach(f=>{const el=document.getElementById('m-'+f);if(el&&st.global[f]!=null)el.value=st.global[f]})}
+    if(st.segs){['p','n','o'].forEach(k=>{if(st.segs[k]){SEGS.forEach(seg=>{if(st.segs[k][seg]){const e1=document.getElementById('s-'+k+'-'+seg+'-size'),e2=document.getElementById('s-'+k+'-'+seg+'-share');if(e1&&st.segs[k][seg].size!=null)e1.value=st.segs[k][seg].size;if(e2&&st.segs[k][seg].share!=null)e2.value=st.segs[k][seg].share}})}})}
+    if(st.model){['p','n','o'].forEach(k=>{if(st.model[k]){['rate','rldc','opex','tax','pe'].forEach(f=>{const el=document.getElementById('m-'+k+'-'+f);if(el&&st.model[k][f]!=null)el.value=st.model[k][f]})}})}
+    if(st.tp){const dots=document.querySelectorAll('.tp-dot');dots.forEach((d,i)=>{if(st.tp[i]){['pending','approaching','triggered','negative'].forEach(s=>d.classList.remove(s));d.classList.add(st.tp[i])}})}
+    if(st.logs&&st.logs.length>1){const tb=document.getElementById('logBody');tb.innerHTML='';st.logs.forEach(l=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="mono" style="color:var(--text3)">${l.d}</td><td>${l.e}</td><td style="font-size:11px">${l.p}</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">${l.v}</td>`;tb.appendChild(tr)})}
+  }catch(e){console.warn(e)}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{load();recalc()});
+</script>
+</body>
+</html>
