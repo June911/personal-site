@@ -933,7 +933,7 @@ function save(){
     st.model[k]={};['rate','rldc','opex','tax','pe'].forEach(f=>{st.model[k][f]=gi('m-'+k+'-'+f)});
   });
   document.querySelectorAll('.tp-dot').forEach(d=>{st.tp.push(['pending','approaching','triggered','negative'].find(s=>d.classList.contains(s))||'pending')});
-  document.querySelectorAll('#logBody tr').forEach(r=>{const c=r.querySelectorAll('td');if(c.length>=4)st.logs.push({d:c[0].textContent,e:c[1].textContent,p:c[2].innerHTML,v:c[3].textContent})});
+  /* logs not persisted — HTML source is the single source of truth */
   localStorage.setItem('crcl-v3',JSON.stringify(st));
 }
 
@@ -946,7 +946,7 @@ function load(){
     if(st.segs){['p','n','o'].forEach(k=>{if(st.segs[k]){SEGS.forEach(seg=>{if(st.segs[k][seg]){const e1=document.getElementById('s-'+k+'-'+seg+'-size'),e2=document.getElementById('s-'+k+'-'+seg+'-share');if(e1&&st.segs[k][seg].size!=null)e1.value=st.segs[k][seg].size;if(e2&&st.segs[k][seg].share!=null)e2.value=st.segs[k][seg].share}})}})}
     if(st.model){['p','n','o'].forEach(k=>{if(st.model[k]){['rate','rldc','opex','tax','pe'].forEach(f=>{const el=document.getElementById('m-'+k+'-'+f);if(el&&st.model[k][f]!=null)el.value=st.model[k][f]})}})}
     if(st.tp){const dots=document.querySelectorAll('.tp-dot');dots.forEach((d,i)=>{if(st.tp[i]){['pending','approaching','triggered','negative'].forEach(s=>d.classList.remove(s));d.classList.add(st.tp[i])}})}
-    if(st.logs&&st.logs.length>1){const tb=document.getElementById('logBody');tb.innerHTML='';st.logs.forEach(l=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="mono" style="color:var(--text3)">${l.d}</td><td>${l.e}</td><td style="font-size:11px">${l.p}</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">${l.v}</td>`;tb.appendChild(tr)})}
+    /* logs loaded from HTML source, not localStorage */
   }catch(e){console.warn(e)}
 }
 
