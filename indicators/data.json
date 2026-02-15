@@ -1,0 +1,110 @@
+{
+  "updated_at": "2026-02-15T16:49:59Z",
+  "indicators": {
+    "ahr999": {
+      "value": 0.33,
+      "display": "0.33 (低于阈值)",
+      "triggered": true,
+      "level": "行动",
+      "btc_price": 69016.97
+    },
+    "sth-nupl": {
+      "value": -0.299,
+      "display": "STH-NUPL -0.299",
+      "triggered": true,
+      "level": "行动"
+    },
+    "mvrv-zscore": {
+      "value": 0.52,
+      "display": "Z-Score 0.52",
+      "triggered": false,
+      "level": null
+    },
+    "puell-multiple": {
+      "value": 0.8,
+      "display": "Puell 0.80",
+      "triggered": false,
+      "level": null
+    },
+    "hash-ribbons": {
+      "value": -1,
+      "display": "投降中 (MA30/MA60: -4.3%)",
+      "triggered": false,
+      "level": "投降"
+    },
+    "fear-greed-crypto": {
+      "value": 8,
+      "display": "8 (Extreme Fear)",
+      "triggered": true,
+      "level": "重仓"
+    },
+    "funding-rate": {
+      "value": 1,
+      "display": "当前 -0.0024%，连续负 1 次",
+      "triggered": false,
+      "level": null,
+      "current_rate": -0.0024
+    },
+    "stablecoin-supply": {
+      "value": 1.3,
+      "display": "$306.5B, 90d +1.3%",
+      "triggered": false,
+      "level": null
+    },
+    "crypto-vc-funding": {
+      "value": 1338.0,
+      "display": "$1,338M/月 (3M均), 60 deals/月",
+      "triggered": false,
+      "level": null,
+      "deals_1m": 60
+    },
+    "vix-spike": {
+      "value": 20.6,
+      "display": "VIX 20.6",
+      "triggered": false,
+      "level": null
+    },
+    "ma200-deviation": {
+      "value": 5.5,
+      "display": "偏离 +5.5%",
+      "triggered": false,
+      "level": null
+    },
+    "double-drop-spy-gld": {
+      "value": "-0.65,1.91",
+      "display": "SPY -0.65%, GLD 1.91%",
+      "triggered": false,
+      "level": null
+    },
+    "double-drop-spy-tlt": {
+      "value": "-0.65,3.67",
+      "display": "SPY -0.65%, TLT 3.67%",
+      "triggered": false,
+      "level": null
+    },
+    "schd-qqq-ratio": {
+      "value": 109.91,
+      "display": "比率 109.91 (↑ SCHD 走强 (risk-off))",
+      "triggered": false,
+      "level": "防御"
+    },
+    "miner-shutdown-price": {
+      "value": null,
+      "display": null,
+      "triggered": false,
+      "level": null
+    },
+    "etf-net-directional-flow": {
+      "value": null,
+      "display": null,
+      "triggered": false,
+      "level": null
+    },
+    "ico-market-heat": {
+      "value": null,
+      "display": null,
+      "triggered": false,
+      "level": null
+    }
+  }
+}
