@@ -5,64 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>指标看板 — june</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/dashboard.css">
   <style>
-    :root {
-      --bg: #0a0e17; --card: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.08);
-      --text: #e8eaed; --dim: #5a6270; --muted: #8892a0;
-      --cyan: #00d9ff; --gold: #ffd700; --green: #00ff88; --pink: #ff6b9d; --orange: #ff9500;
+    /* Summary items */
+    .summary { display: flex; gap: 10px; flex-wrap: wrap; }
+    .summary-item {
+      padding: 6px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--mono);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); padding: 0; font-size: 13px; line-height: 1.5; }
-    /* Site nav */
-    .site-nav { background: #111827; border-bottom: 3px solid #222; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; height: 48px; }
-    .site-nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
-    .site-nav-shapes { display: flex; gap: 5px; align-items: center; }
-    .site-nav-shapes .c { width: 10px; height: 10px; background: #D02020; border-radius: 50%; }
-    .site-nav-shapes .s { width: 9px; height: 9px; background: #1040C0; }
-    .site-nav-shapes .t { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #F0C020; }
-    .site-nav-title { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
-    .site-nav-back { color: var(--muted); font-size: 12px; text-decoration: none; padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px; transition: all 0.15s; }
-    .site-nav-back:hover { color: var(--cyan); border-color: var(--cyan); }
-    .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem; }
-
-    /* Header */
-    .header { text-align: center; padding: 1.5rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.2rem; }
-    .title { font-size: 1.3rem; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
-    .summary { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
-    .summary-item { padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; }
-    .summary-item.active { background: rgba(255,107,157,0.1); border: 1px solid rgba(255,107,157,0.3); color: var(--pink); }
-    .summary-item.quiet { background: rgba(0,255,136,0.05); border: 1px solid rgba(0,255,136,0.15); color: var(--muted); }
+    .summary-item.active { border-color: var(--red); color: var(--red); background: rgba(208,32,32,.08); }
+    .summary-item.quiet { border-color: var(--border); color: var(--text3); }
     .summary-item b { font-size: 1.1rem; }
-    .timestamp { font-size: 0.7rem; color: var(--dim); margin-top: 0.6rem; }
-
-    /* Tabs */
-    .tabs { display: flex; gap: 0.4rem; margin-bottom: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-    .tab { padding: 0.4rem 1rem; background: none; border: none; border-radius: 6px 6px 0 0; cursor: pointer; color: var(--dim); font-size: 0.8rem; font-weight: 500; transition: all 0.15s; }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--cyan); background: rgba(0,217,255,0.08); }
-    .panel { display: none; }
-    .panel.active { display: block; }
 
     /* Tier sections */
-    .tier-section { margin-bottom: 1.2rem; }
-    .tier-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; padding: 0 0.2rem; }
-    .tier-label { font-size: 0.75rem; font-weight: 600; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; }
-    .tier-desc { font-size: 0.7rem; color: var(--dim); }
+    .tier-section { margin-bottom: 20px; }
+    .tier-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .tier-label { font-size: 12px; font-weight: 900; color: var(--yellow); text-transform: uppercase; letter-spacing: 0.08em; }
+    .tier-desc { font-size: 11px; color: var(--text3); }
 
     /* Indicator table */
-    .indicator-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    .indicator-table thead th { text-align: left; padding: 0.5rem 0.6rem; color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
-    .indicator-table tbody td { padding: 0.6rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .indicator-table { width: 100%; border-collapse: collapse; background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .indicator-table thead th { text-align: left; padding: 8px 10px; color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; background: var(--bg3); border-bottom: 2px solid var(--border); }
+    .indicator-table tbody td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.06); vertical-align: middle; font-size: 13px; }
     .indicator-table tbody tr:last-child td { border-bottom: none; }
-    .indicator-table tbody tr:hover { background: rgba(0,217,255,0.03); }
+    .indicator-table tbody tr:hover { background: rgba(240,192,32,.03); }
 
     /* Row triggered highlight */
-    .row-triggered { background: rgba(255,107,157,0.05) !important; }
-    .row-triggered td:first-child { box-shadow: inset 3px 0 0 var(--pink); }
+    .row-triggered { background: rgba(208,32,32,.05) !important; }
+    .row-triggered td:first-child { box-shadow: inset 3px 0 0 var(--red); }
 
-    /* Column widths */
-    .col-name { font-weight: 600; white-space: nowrap; }
+    /* Column styles */
+    .col-name { font-weight: 700; white-space: nowrap; }
     .col-status { white-space: nowrap; }
     .col-value { max-width: 220px; }
     .col-threshold { max-width: 180px; }
@@ -70,79 +48,89 @@
     .col-timing { white-space: nowrap; }
 
     /* Status badges */
-    .status-triggered { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 600; background: rgba(255,107,157,0.15); color: var(--pink); }
-    .status-ok { color: var(--dim); font-size: 0.75rem; }
-    .status-watch { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; background: rgba(255,149,0,0.12); color: var(--orange); }
+    .status-triggered { display: inline-block; padding: 2px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 700; background: rgba(208,32,32,.15); color: #e54545; border: 1px solid rgba(208,32,32,.3); }
+    .status-ok { color: var(--text3); font-size: 12px; }
+    .status-watch { display: inline-block; padding: 2px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 700; background: rgba(249,115,22,.12); color: var(--orange); border: 1px solid rgba(249,115,22,.25); }
 
     /* Value */
-    .value { font-size: 0.8rem; color: var(--text); }
-    .manual-link { color: var(--cyan); text-decoration: none; font-size: 0.75rem; opacity: 0.7; }
+    .value { font-size: 13px; color: var(--text); font-weight: 500; }
+    .manual-link { color: var(--yellow); text-decoration: none; font-size: 12px; opacity: 0.8; font-weight: 600; }
     .manual-link:hover { opacity: 1; text-decoration: underline; }
-    .dim { color: var(--dim); font-size: 0.75rem; }
+    .dim { color: var(--text3); font-size: 12px; }
 
     /* Winrate bar */
-    .wr-bar { display: inline-block; width: 50px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; vertical-align: middle; margin-right: 0.4rem; overflow: hidden; }
-    .wr-fill { display: block; height: 100%; border-radius: 2px; }
-    .wr-text { font-size: 0.75rem; color: var(--muted); vertical-align: middle; }
+    .wr-bar { display: inline-block; width: 50px; height: 5px; background: var(--bg3); border-radius: var(--radius); vertical-align: middle; margin-right: 6px; overflow: hidden; border: 1px solid var(--border); }
+    .wr-fill { display: block; height: 100%; border-radius: var(--radius); }
+    .wr-text { font-size: 12px; color: var(--text2); vertical-align: middle; font-family: var(--mono); font-weight: 600; }
 
     /* Timing badges */
-    .timing-lead { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 8px; background: rgba(0,255,136,0.1); color: var(--green); }
-    .timing-coin { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 8px; background: rgba(255,255,255,0.04); color: var(--dim); }
-    .timing-lag { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 8px; background: rgba(255,107,157,0.08); color: var(--pink); opacity: 0.7; }
+    .timing-lead { font-size: 10px; padding: 2px 6px; border-radius: var(--radius); background: rgba(52,211,153,.12); color: var(--green); font-weight: 700; border: 1px solid rgba(52,211,153,.25); }
+    .timing-coin { font-size: 10px; padding: 2px 6px; border-radius: var(--radius); background: rgba(255,255,255,.04); color: var(--text3); font-weight: 700; border: 1px solid var(--border); }
+    .timing-lag { font-size: 10px; padding: 2px 6px; border-radius: var(--radius); background: rgba(208,32,32,.08); color: #e54545; font-weight: 700; border: 1px solid rgba(208,32,32,.2); }
 
     /* Expandable detail rows */
     .indicator-table tbody tr.data-row { cursor: pointer; }
-    .indicator-table tbody tr.data-row:hover { background: rgba(0,217,255,0.05); }
-    .indicator-table tbody tr.data-row .col-name { position: relative; padding-left: 1.2rem; }
-    .indicator-table tbody tr.data-row .col-name::before { content: '\25b8'; position: absolute; left: 0.4rem; top: 50%; transform: translateY(-50%); font-size: 0.6rem; color: var(--dim); transition: transform 0.15s; }
-    .indicator-table tbody tr.data-row.open .col-name::before { transform: translateY(-50%) rotate(90deg); color: var(--cyan); }
+    .indicator-table tbody tr.data-row:hover { background: rgba(240,192,32,.04); }
+    .indicator-table tbody tr.data-row .col-name { position: relative; padding-left: 1.4rem; }
+    .indicator-table tbody tr.data-row .col-name::before { content: '\25b8'; position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text3); transition: transform 0.15s; }
+    .indicator-table tbody tr.data-row.open .col-name::before { transform: translateY(-50%) rotate(90deg); color: var(--yellow); }
     .detail-row { display: none; }
     .detail-row.open { display: table-row; }
-    .detail-row td { padding: 0.6rem 0.8rem 0.8rem 1.2rem; background: rgba(0,217,255,0.02); border-bottom: 1px solid var(--border); }
-    .detail-content { font-size: 0.75rem; line-height: 1.7; color: var(--muted); }
-    .detail-content strong { color: var(--text); font-weight: 600; }
-    .detail-content .detail-label { color: var(--dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.4rem; }
+    .detail-row td { padding: 10px 14px 12px 1.4rem; background: rgba(240,192,32,.02); border-bottom: 2px solid var(--border); }
+    .detail-content { font-size: 12px; line-height: 1.8; color: var(--text2); }
+    .detail-content strong { color: var(--text); font-weight: 700; }
+    .detail-content .detail-label { color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-right: 6px; font-weight: 700; }
 
     /* History timeline */
-    .tl-group { margin-bottom: 1rem; }
-    .tl-date { font-size: 0.75rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.3rem; padding-left: 1rem; position: relative; }
-    .tl-date::before { content: ''; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); transform: translateY(-50%); }
-    .tl-items { padding-left: 1rem; border-left: 1px solid var(--border); margin-left: 2px; }
-    .tl-item { padding: 0.5rem 0.8rem; margin-bottom: 0.3rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
-    .tl-indicator { font-weight: 600; font-size: 0.8rem; margin-bottom: 0.15rem; }
-    .tl-value { font-size: 0.75rem; color: var(--pink); font-weight: 500; }
-    .tl-detail { font-size: 0.7rem; color: var(--dim); margin-top: 0.1rem; }
-    .empty-state { text-align: center; padding: 2rem; color: var(--dim); }
-
-    /* Loading & error */
-    .loading { text-align: center; padding: 3rem; color: var(--dim); }
-    .error-msg { text-align: center; padding: 2rem; color: var(--pink); background: rgba(255,107,157,0.05); border: 1px solid rgba(255,107,157,0.2); border-radius: 8px; margin: 1rem 0; }
+    .tl-group { margin-bottom: 16px; }
+    .tl-date { font-size: 13px; font-weight: 900; color: var(--yellow); margin-bottom: 6px; padding-left: 18px; position: relative; text-transform: uppercase; }
+    .tl-date::before { content: ''; position: absolute; left: 0; top: 50%; width: 8px; height: 8px; background: var(--red); transform: translateY(-50%); }
+    .tl-items { padding-left: 18px; border-left: 3px solid var(--border); margin-left: 3px; }
+    .tl-item { padding: 8px 12px; margin-bottom: 6px; background: var(--bg2); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+    .tl-indicator { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+    .tl-value { font-size: 12px; color: var(--red); font-weight: 700; font-family: var(--mono); }
+    .tl-detail { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .empty-state { text-align: center; padding: 3rem; color: var(--text3); font-weight: 500; }
 
     @media (max-width: 768px) {
-      body { padding: 0; }
-      .container { padding: 0.8rem; }
-      .indicator-table { font-size: 0.75rem; }
+      .indicator-table { font-size: 12px; }
       .col-threshold, .col-timing { display: none; }
       .wr-bar { width: 30px; }
+      .summary { justify-content: center; }
     }
   </style>
 </head>
 <body>
-  <nav class="site-nav">
-    <a href="../index.html" class="site-nav-logo">
-      <div class="site-nav-shapes"><div class="c"></div><div class="s"></div><div class="t"></div></div>
-      <span class="site-nav-title">june</span>
-    </a>
-    <a href="../index.html" class="site-nav-back">&larr; 返回首页</a>
+  <nav class="dash-nav">
+    <div class="dash-nav-inner">
+      <a href="../index.html" class="dash-nav-logo">
+        <div class="nav-shapes">
+          <div class="shape-circle"></div>
+          <div class="shape-square"></div>
+          <div class="shape-triangle"></div>
+        </div>
+        <span class="nav-title">june</span>
+      </a>
+      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="../index.html#dashboards">看板</a></li>
+        <li><a href="index.html" class="active">指标</a></li>
+        <li><a href="../index.html#articles">文章</a></li>
+      </ul>
+    </div>
   </nav>
   <div class="container">
-    <div class="header">
-      <div class="title">指标看板</div>
-      <div class="summary" id="summary">
-        <div class="summary-item quiet">加载中...</div>
+    <div class="page-header">
+      <div>
+        <h1>指标看板</h1>
       </div>
-      <div class="timestamp" id="timestamp"></div>
+      <div class="page-header-right">
+        <div class="summary" id="summary">
+          <div style="color:var(--text3)">加载中...</div>
+        </div>
+      </div>
     </div>
+    <div id="timestamp" style="font-size:11px;color:var(--text3);margin-bottom:16px"></div>
 
     <div class="tabs">
       <div class="tab active" onclick="switchTab('btc')">BTC 抄底</div>
@@ -275,8 +263,8 @@
       let color;
       if (pct >= 90) color = 'var(--green)';
       else if (pct >= 70) color = 'var(--cyan)';
-      else if (pct >= 50) color = 'var(--gold)';
-      else color = 'var(--pink)';
+      else if (pct >= 50) color = 'var(--yellow)';
+      else color = 'var(--red)';
       return `<span class="wr-bar"><span class="wr-fill" style="width:${pct}%;background:${color};"></span></span>`;
     }
 

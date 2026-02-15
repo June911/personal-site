@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETH Valuation — 安全结算层框架</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="../styles/dashboard.css">
+<style>
+/* Dashboard wrapper */
+.dashboard { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+/* Pillar card header */
+.pillar-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.pillar-head .name { font-size: 15px; font-weight: 900; text-transform: uppercase; }
+.pillar-head .weight { font-size: 12px; color: var(--text3); }
+.pillar-head .price { font-family: var(--mono); font-size: 22px; font-weight: 900; }
+
+/* Heatmap */
+.hm-tbl { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
+.hm-tbl th { padding: 6px 8px; color: var(--text3); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.hm-tbl td { padding: 6px 8px; border: 2px solid var(--bg3); }
+.hm-cell { border-radius: var(--radius); font-size: 11px; font-weight: 600; }
+
+/* Old class compat */
+.hm { text-align: right; }
+.hm .l { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.hm .v { font-family: var(--mono); font-size: 22px; font-weight: 900; }
+
+/* Timestamp footer */
+.ts { text-align: center; padding: 20px; color: var(--text3); font-size: 11px; border-top: 3px solid var(--border); margin-top: 24px; }
+.ts a { color: var(--yellow); text-decoration: none; }
+.ts a:hover { text-decoration: underline; }
+
+@media (max-width: 900px) {
+  .dashboard { padding: 16px; }
+  .page-header { flex-direction: column; text-align: left; }
+  .page-header-right { justify-content: flex-start; }
+  .sc-badges { justify-content: flex-start; }
+}
+</style>
+</head>
+<body>
+<nav class="dash-nav">
+  <div class="dash-nav-inner">
+    <a href="../index.html" class="dash-nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="../index.html#dashboards" class="active">看板</a></li>
+      <li><a href="../indicators/index.html">指标</a></li>
+      <li><a href="../index.html#articles">文章</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="dashboard">
+
+<!-- HEADER -->
+<div class="page-header">
+  <div>
+    <h1>ETH Valuation</h1>
+    <div class="page-header-sub">安全结算层框架 · 四象限估值 · 2026-02-12 21:40</div>
+  </div>
+  <div class="page-header-right">
+    <div class="header-metric"><div class="label">当前价格</div><div class="value">$1,986 <span style="font-size:12px;color:var(--green)">+1.4%</span></div></div>
+    <div class="header-metric"><div class="label">公允价值 (Base)</div><div class="value" style="color:var(--yellow)">$2,170</div></div>
+    <div class="verdict-badge" style="background:rgba(240,192,32,.1);color:var(--yellow);border-color:rgba(240,192,32,.3)">略低估 +9%</div>
+  </div>
+</div>
+
+<!-- Scenario badges -->
+<div class="sc-badges">
+  <div class="sc-badge"><span style="color:var(--red)">Bear</span> $1,665</div>
+  <div class="sc-badge active"><span style="color:var(--yellow)">Base</span> $2,170</div>
+  <div class="sc-badge"><span style="color:var(--green)">Bull</span> $3,120</div>
+  <div class="sc-badge" style="margin-left:auto"><span style="color:var(--text3)">Regime</span> Neutral</div>
+  <div class="sc-badge"><span style="color:var(--text3)">动态适配</span> $2,170</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showPage('valuation',this)">估值</button>
+  <button class="tab" onclick="showPage('scenarios',this)">情景分析</button>
+  <button class="tab" onclick="showPage('data',this)">数据源</button>
+</div>
+
+<!-- ========== PAGE 1: 估值 ========== -->
+<div id="valuation" class="page active">
+
+  <!-- Chart -->
+  <div class="card">
+    <div class="card-title">各象限估值 vs 当前价</div>
+    <div class="chart-wrap">
+      <canvas id="pillarChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Pillar cards: 2x2 grid -->
+  <div class="g g2">
+
+    <!-- 安全结算层 -->
+    <div class="card">
+      <div class="pillar-head">
+        <div>
+          <div class="name">安全结算层</div>
+          <div class="weight"><span class="b b-c">45%</span></div>
+        </div>
+        <div class="price" style="color:var(--red)">$2,119</div>
+      </div>
+
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Validator Economics (收益均衡)</div>
+      <div style="margin-bottom:12px">
+        <div class="metric"><span class="k">VE 隐含公允价</span><span class="v" style="color:var(--yellow)">$2,119</span></div>
+        <div class="metric"><span class="k">Validator Premium</span><span class="v">1.07x</span></div>
+        <div class="metric"><span class="k">Staking APR</span><span class="v">3.2%</span></div>
+        <div class="metric"><span class="k">目标实际收益率</span><span class="v">3.0%</span></div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Staking DCF (永续折现)</div>
+      <div style="margin-bottom:12px">
+        <div class="metric"><span class="k">总质押 ETH</span><span class="v">34,000,000</span></div>
+        <div class="metric"><span class="k">年化质押收入</span><span class="v">$2.2B</span></div>
+        <div class="metric"><span class="k">DCF 终值</span><span class="v">$27.0B</span></div>
+        <div class="metric"><span class="k">DCF 公允价</span><span class="v" style="color:var(--yellow)">$224</span></div>
+      </div>
+
+      <div class="formula">
+        <span style="color:var(--text3);font-size:11px">▸ Validator Economics</span><br>
+        <span class="hl">VE_fair</span> = (APR × price) / target_yield = (<span class="val">3.2%</span> × <span class="val">$1,986</span>) / <span class="val">3%</span> = <span class="res">$2,119</span> <span style="color:var(--text3);font-size:10px">⚠ 含 current_price</span><br>
+        <span style="color:var(--text3);font-size:11px">▸ Staking DCF</span><br>
+        <span class="hl">annual_rev</span> = staked × APR × price = <span class="val">34,000,000</span> × <span class="val">3.2%</span> × <span class="val">$1,986</span><br>
+        <span class="hl">DCF</span> = annual_rev / (r - g) = $2.2B / (10% - 2%) = <span class="res">$27.0B</span><br>
+        <span class="hl">fair_price</span> = DCF / supply = <span class="res">$224</span>
+      </div>
+
+      <div class="ins warn">
+        <strong>局限</strong> 两个子模型均含循环引用：revenue = f(current_price)。VE 直接用当前价计算隐含公允价，DCF 以当前价推导收入。原文将 VE 定位为"方向性相对估值工具"而非独立定价锚。
+      </div>
+    </div>
+
+    <!-- 货币属性 -->
+    <div class="card">
+      <div class="pillar-head">
+        <div>
+          <div class="name">货币属性</div>
+          <div class="weight"><span class="b b-p">35%</span></div>
+        </div>
+        <div class="price" style="color:var(--blue)">$2,750</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div class="metric"><span class="k">链上日结算量</span><span class="v">$7.7B <span class="b b-g">实时</span></span></div>
+        <div class="metric"><span class="k">M_tx (高频结算)</span><span class="v">$140.7B</span></div>
+        <div class="metric"><span class="k">M_defi (DeFi 周转)</span><span class="v">$44.1B</span></div>
+        <div class="metric"><span class="k">M_collateral (抵押品)</span><span class="v">$147.2B</span></div>
+        <div class="metric"><span class="k">总 M</span><span class="v" style="color:var(--blue)">$331.9B</span></div>
+      </div>
+
+      <div class="formula">
+        <span class="hl">M_tx</span> = (onchain_vol_24h × 365) / V_high = ($7.7B × 365) / 20 = <span class="res">$140.7B</span><br>
+        <span class="hl">M_defi</span> = (ETH_TVL × turnover) / V_med = ($55.1B × 4) / 5 = <span class="res">$44.1B</span><br>
+        <span class="hl">M_collateral</span> = (staked + DeFi_locked) × price × (1 + liq_prem) = <span class="res">$147.2B</span><br>
+        <span class="hl">fair_price</span> = (M_tx + M_defi + M_collateral) / supply = <span class="res">$2,750</span>
+      </div>
+    </div>
+
+    <!-- 平台效应 -->
+    <div class="card">
+      <div class="pillar-head">
+        <div>
+          <div class="name">平台效应</div>
+          <div class="weight"><span class="b b-o">10%</span></div>
+        </div>
+        <div class="price" style="color:var(--orange)">$451</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div class="metric"><span class="k">活跃地址 (日)</span><span class="v">500,000 <span class="b b-y">估算</span></span></div>
+        <div class="metric"><span class="k">M_metcalfe (用户网络)</span><span class="v">$51.2B</span></div>
+        <div class="metric"><span class="k">L2 加权 TVL</span><span class="v">$3.2B</span></div>
+        <div class="metric"><span class="k">M_l2 (信任加权)</span><span class="v">$3.2B</span></div>
+        <div class="metric"><span class="k">M_network 合计</span><span class="v" style="color:var(--orange)">$54.4B</span></div>
+      </div>
+
+      <div class="formula">
+        <span style="color:var(--text3);font-size:11px">▸ Metcalfe 项</span><br>
+        <span class="hl">M_metcalfe</span> = a × users^b = <span class="val">2,000</span> × <span class="val">500,000</span>^<span class="val">1.3</span> = <span class="res">$51.2B</span><br>
+        <span style="color:var(--text3);font-size:11px">▸ L2 信任项</span><br>
+        <span class="hl">M_l2</span> = m × Σ(L2_TVL_i × trust_i) = <span class="val">1.0</span> × $3.2B = <span class="res">$3.2B</span><br>
+        <span style="color:var(--text3);font-size:11px">▸ 合计</span><br>
+        <span class="hl">M_network</span> = M_metcalfe + M_l2 = <span class="res">$54.4B</span><br>
+        <span class="hl">fair_price</span> = M_network / supply = <span class="res">$451</span>
+      </div>
+
+      <div class="ins info">
+        <strong>注意</strong> 活跃地址数据暂用默认值（CoinGecko 免费 API 不提供），接入 Etherscan/Dune 后可获取实时数据。Metcalfe 系数 (a, b) 为经验值。
+      </div>
+
+      <!-- L2 Trust Score Table -->
+      <div style="margin-top:12px">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">L2 信任分</div>
+        <table class="tbl">
+          <thead><tr><th>L2</th><th>TVL</th><th>信任分</th><th>加权</th></tr></thead>
+          <tbody><tr><td>Base</td><td class='mono'>$4.0B</td><td class='mono'>0.7</td><td class='mono'>$2.8B</td></tr>
+<tr><td>Starknet</td><td class='mono'>$287.6M</td><td class='mono'>0.5</td><td class='mono'>$143.8M</td></tr>
+<tr><td>Mantle</td><td class='mono'>$256.8M</td><td class='mono'>0.4</td><td class='mono'>$102.7M</td></tr>
+<tr><td>Scroll</td><td class='mono'>$196.9M</td><td class='mono'>0.5</td><td class='mono'>$98.4M</td></tr>
+<tr><td>Linea</td><td class='mono'>$106.1M</td><td class='mono'>0.5</td><td class='mono'>$53.0M</td></tr>
+<tr><td>Blast</td><td class='mono'>$34.9M</td><td class='mono'>0.4</td><td class='mono'>$14.0M</td></tr>
+<tr><td>Mode</td><td class='mono'>$2.0M</td><td class='mono'>0.3</td><td class='mono'>$608,939</td></tr>
+<tr><td>Optimism</td><td class='mono'>$0</td><td class='mono'>0.8</td><td class='mono'>$0</td></tr>
+</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 收入底线 -->
+    <div class="card">
+      <div class="pillar-head">
+        <div>
+          <div class="name">收入底线</div>
+          <div class="weight"><span class="b b-y">10%</span></div>
+        </div>
+        <div class="price" style="color:var(--yellow)">$102</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div class="metric"><span class="k">日费用</span><span class="v">$675,268</span></div>
+        <div class="metric"><span class="k">日收入</span><span class="v">$337,634</span></div>
+        <div class="metric"><span class="k">年化费用</span><span class="v">$246.5M</span></div>
+        <div class="metric"><span class="k">年化收入</span><span class="v">$123.2M</span></div>
+        <div class="metric"><span class="k">P/S Floor</span><span class="v">$102</span></div>
+        <div class="metric"><span class="k">Fee Yield Floor</span><span class="v">$102</span></div>
+      </div>
+
+      <div class="formula">
+        <span class="hl">P/S floor</span> = (annual_rev × P/S) / supply = ($123.2M × 100) / 120,692,542 = <span class="res">$102</span><br>
+        <span class="hl">Fee Yield floor</span> = (annual_fees / target_yield) / supply = ($246.5M / 2%) / 120,692,542 = <span class="res">$102</span><br>
+        <span class="hl">fair_price</span> = min(P/S, Fee_Yield) = <span class="res">$102</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Composite -->
+  <div class="card">
+    <div class="card-title">加权综合估值</div>
+    <div class="formula" style="font-size:14px;text-align:center;padding:20px">
+      <span class="hl">composite</span> =
+      <span class="val">45%</span> × $2,119 +
+      <span class="val">35%</span> × $2,750 +
+      <span class="val">10%</span> × $451 +
+      <span class="val">10%</span> × $102 =
+      <span class="res" style="font-size:18px"> $2,170</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE 2: 情景分析 ========== -->
+<div id="scenarios" class="page">
+
+  <!-- Regime Adaptation — 精确匹配 IOSG 原文 -->
+  <div class="card">
+    <div class="card-title">状态适配 (Regime Adaptation) <span class="b b-b">Neutral</span></div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
+      根据宏观环境动态调整四象限权重。避险期安全性主导 (50%)；牛市平台效应放大 (35%)；狂热期网络效应主导 (65%)。
+    </div>
+    <table class="tbl">
+      <thead><tr><th>象限</th><th style="color:var(--red)">Risk-Off</th><th style="color:var(--yellow)">Neutral</th><th style="color:var(--green)">Risk-On</th><th style="color:var(--orange)">Euphoria</th></tr></thead>
+      <tbody>
+        <tr><td>安全结算层</td><td class="mono">50%</td><td class="mono">50%</td><td class="mono">35%</td><td class="mono">20%</td></tr>
+        <tr><td>货币属性</td><td class="mono">25%</td><td class="mono">40%</td><td class="mono">30%</td><td class="mono">15%</td></tr>
+        <tr><td>平台效应</td><td class="mono">0%</td><td class="mono">0%</td><td class="mono">35%</td><td class="mono">65%</td></tr>
+        <tr><td>收入底线</td><td class="mono">25%</td><td class="mono">10%</td><td class="mono">5%</td><td class="mono">0%</td></tr>
+        <tr style="border-top:2px solid var(--border)"><td style="color:var(--text3)">IOSG 参考区间</td>
+          <td class="mono" style="color:var(--red)">$1,700-$2,400</td>
+          <td class="mono" style="color:var(--yellow)">$2,200-$2,800</td>
+          <td class="mono" style="color:var(--green)">$3,200-$4,500</td>
+          <td class="mono" style="color:var(--orange)">&gt;$4,500</td>
+        </tr>
+        <tr style="font-weight:700"><td>本模型估值</td>
+          <td class="mono">$2,170</td>
+          <td class="mono">$2,170</td>
+          <td class="mono">$3,120</td>
+          <td class="mono">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="ins info" style="margin-top:8px">
+      当前 Regime: <strong>Neutral</strong> · 动态公允价值 $2,170
+    </div>
+  </div>
+
+  <!-- Parameter table -->
+  <div class="card">
+    <div class="card-title">情景参数</div>
+    <table class="tbl">
+      <thead><tr><th>参数</th><th style="color:var(--red)">Bear</th><th style="color:var(--yellow)">Base</th><th style="color:var(--green)">Bull</th></tr></thead>
+      <tbody><tr><td>目标实际收益率</td><td class='mono'>4%</td><td class='mono'>3%</td><td class='mono'>2%</td></tr>
+<tr><td>折现率</td><td class='mono'>12%</td><td class='mono'>10%</td><td class='mono'>8%</td></tr>
+<tr><td>增长率</td><td class='mono'>1%</td><td class='mono'>2%</td><td class='mono'>3%</td></tr>
+<tr><td>高频周转率 V</td><td class='mono'>25</td><td class='mono'>20</td><td class='mono'>15</td></tr>
+<tr><td>中频周转率 V</td><td class='mono'>8</td><td class='mono'>5</td><td class='mono'>3</td></tr>
+<tr><td>流动性溢价</td><td class='mono'>10%</td><td class='mono'>20%</td><td class='mono'>30%</td></tr>
+<tr><td>DeFi 周转率</td><td class='mono'>2</td><td class='mono'>4</td><td class='mono'>6</td></tr>
+<tr><td>Metcalfe 系数 a</td><td class='mono'>1000.0</td><td class='mono'>2000.0</td><td class='mono'>4000.0</td></tr>
+<tr><td>Metcalfe 指数 b</td><td class='mono'>1.2</td><td class='mono'>1.3</td><td class='mono'>1.3</td></tr>
+<tr><td>L2 TVL 系数 m</td><td class='mono'>0.8</td><td class='mono'>1.0</td><td class='mono'>1.3</td></tr>
+<tr><td>P/S 倍数</td><td class='mono'>50</td><td class='mono'>100</td><td class='mono'>150</td></tr>
+<tr><td>目标费用收益率</td><td class='mono'>3%</td><td class='mono'>2%</td><td class='mono'>1%</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <!-- Scenario valuations -->
+  <div class="card">
+    <div class="card-title">各象限估值</div>
+    <table class="tbl">
+      <thead><tr><th>象限</th><th style="color:var(--red)">Bear</th><th style="color:var(--yellow)">Base</th><th style="color:var(--green)">Bull</th></tr></thead>
+      <tbody>
+        <tr><td>安全结算层 (45%)</td><td class='mono'>$1,589</td><td class='mono' style='color:var(--yellow)'>$2,119</td><td class='mono'>$3,178</td></tr>
+<tr><td>货币属性 (35%)</td><td class='mono'>$2,164</td><td class='mono' style='color:var(--yellow)'>$2,750</td><td class='mono'>$3,788</td></tr>
+<tr><td>平台效应 (10%)</td><td class='mono'>$78</td><td class='mono' style='color:var(--yellow)'>$451</td><td class='mono'>$884</td></tr>
+<tr><td>收入底线 (10%)</td><td class='mono'>$51</td><td class='mono' style='color:var(--yellow)'>$102</td><td class='mono'>$153</td></tr>
+
+        <tr style="border-top:2px solid var(--border);font-weight:700">
+          <td>综合公允价值</td>
+          <td class="mono" style="color:var(--red)">$1,665</td>
+          <td class="mono" style="color:var(--yellow)">$2,170</td>
+          <td class="mono" style="color:var(--green)">$3,120</td>
+        </tr>
+        <tr>
+          <td>vs 当前价 ($1,986)</td>
+          <td class="mono">-16%</td>
+          <td class="mono">+9%</td>
+          <td class="mono">+57%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Sensitivity heatmap -->
+  <div class="card">
+    <div class="card-title">DCF 敏感度矩阵 <span class="b b-b">折现率 × 增长率 → 公允价格</span></div>
+    <div style="overflow-x:auto">
+      <table class="hm-tbl">
+        <thead><tr><th></th><th class='mono'>0%</th><th class='mono'>1%</th><th class='mono'>2%</th><th class='mono'>3%</th><th class='mono'>4%</th><th class='mono'>5%</th></tr></thead>
+        <tbody><tr><td class='mono' style='font-weight:600;color:var(--text3)'>7%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$256</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$298</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$358</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$448</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$597</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$895</td></tr>
+<tr><td class='mono' style='font-weight:600;color:var(--text3)'>8%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$224</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$256</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$298</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$358</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$448</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$597</td></tr>
+<tr><td class='mono' style='font-weight:600;color:var(--text3)'>9%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$199</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$224</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$256</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$298</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$358</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$448</td></tr>
+<tr><td class='mono' style='font-weight:600;color:var(--text3)'>10%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$179</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$199</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$224</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$256</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$298</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$358</td></tr>
+<tr><td class='mono' style='font-weight:600;color:var(--text3)'>11%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$163</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$179</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$199</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$224</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$256</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$298</td></tr>
+<tr><td class='mono' style='font-weight:600;color:var(--text3)'>12%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$149</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$163</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$179</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$199</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$224</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$256</td></tr>
+<tr><td class='mono' style='font-weight:600;color:var(--text3)'>14%</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$128</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$138</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$149</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$163</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$179</td><td class='hm-cell mono' style='background:rgba(248,113,113,.12)'>$199</td></tr>
+</tbody>
+      </table>
+    </div>
+    <div style="font-size:10px;color:var(--text3);margin-top:8px;text-align:center">行 = 折现率 · 列 = 增长率 · 颜色 = 相对当前价 (绿 &gt; 2x · 浅绿 &gt; 1.3x · 黄 &gt; 0.8x · 红 &lt; 0.8x)</div>
+  </div>
+</div>
+
+<!-- ========== PAGE 3: 数据源 ========== -->
+<div id="data" class="page">
+
+  <!-- Live data -->
+  <div class="card">
+    <div class="card-title">实时数据</div>
+    <table class="tbl">
+      <thead><tr><th>指标</th><th>值</th><th>来源</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr><td>ETH 价格</td><td class="mono">$1,986</td><td>CoinGecko</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>市值</td><td class="mono">$239.7B</td><td>CoinGecko</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>流通供应量</td><td class="mono">120,692,542 ETH</td><td>CoinGecko</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>24h 交易量</td><td class="mono">$21.9B</td><td>CoinGecko</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>质押 APR</td><td class="mono">3.2%</td><td>CoinGecko</td><td><span class="b b-y">估算</span></td></tr>
+        <tr><td>总质押量</td><td class="mono">34,000,000 ETH</td><td>CoinGecko</td><td><span class="b b-y">估算</span></td></tr>
+        <tr><td>Ethereum TVL</td><td class="mono">$55.1B</td><td>DefiLlama</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>日费用</td><td class="mono">$675,268</td><td>DefiLlama</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>日收入</td><td class="mono">$337,634</td><td>DefiLlama</td><td><span class="b b-y">估算</span></td></tr>
+        <tr><td>链上日结算量</td><td class="mono">$7.7B</td><td>DefiLlama DEX × 3.5</td><td><span class="b b-g">实时</span></td></tr>
+        <tr><td>日活跃地址</td><td class="mono">500,000</td><td>默认值</td><td><span class="b b-y">估算</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- L2 TVL -->
+  <div class="card">
+    <div class="card-title">L2 TVL 分布</div>
+    <table class="tbl">
+      <thead><tr><th>L2</th><th>TVL</th><th>信任分</th><th>加权 TVL</th></tr></thead>
+      <tbody><tr><td>Base</td><td class='mono'>$4.0B</td><td class='mono'>0.7</td><td class='mono'>$2.8B</td></tr>
+<tr><td>Starknet</td><td class='mono'>$287.6M</td><td class='mono'>0.5</td><td class='mono'>$143.8M</td></tr>
+<tr><td>Mantle</td><td class='mono'>$256.8M</td><td class='mono'>0.4</td><td class='mono'>$102.7M</td></tr>
+<tr><td>Scroll</td><td class='mono'>$196.9M</td><td class='mono'>0.5</td><td class='mono'>$98.4M</td></tr>
+<tr><td>Linea</td><td class='mono'>$106.1M</td><td class='mono'>0.5</td><td class='mono'>$53.0M</td></tr>
+<tr><td>Blast</td><td class='mono'>$34.9M</td><td class='mono'>0.4</td><td class='mono'>$14.0M</td></tr>
+<tr><td>Mode</td><td class='mono'>$2.0M</td><td class='mono'>0.3</td><td class='mono'>$608,939</td></tr>
+<tr><td>Optimism</td><td class='mono'>$0</td><td class='mono'>0.8</td><td class='mono'>$0</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <!-- Methodology -->
+  <div class="card">
+    <div class="card-title">方法论</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.8">
+      <p style="margin-bottom:12px">
+        <strong>框架来源：</strong>IOSG Ventures 2026-02 Weekly Brief #313《以太坊再定价：从 Rollup-Centric 到"安全性结算层"》(Jacob Zhao & Jiawei)。复用 Hashed ethval.com 底层模型，在估值架构与权重逻辑上重塑：结构映射至四大价值象限，显著上调安全性与结算溢价权重，弱化协议收入与 L2 扩张贡献。
+      </p>
+      <p style="margin-bottom:12px">
+        <strong>核心主张：</strong>ETH 的定价正从现金流模型转向资产溢价模型。"安全性结算层 + 原生货币属性"是价值中枢，平台效应与收入分别是牛市放大器和熊市安全垫。
+      </p>
+      <p style="margin-bottom:12px">
+        <strong>四象限逻辑：</strong><br>
+        1. <span style="color:var(--red)">安全结算层 (45%)</span> — Validator Economics (收益均衡) + Staking DCF (永续折现)，刻画全球安全结算层的制度性溢价。避险期权重上调。<br>
+        2. <span style="color:var(--blue)">货币属性 (35%)</span> — 分层 MV=PQ (高频结算/中频金融/低频抵押)，量化 ETH 在三个货币功能的结构性需求。<br>
+        3. <span style="color:var(--orange)">平台效应 (10%)</span> — 信任修正 Metcalfe: a×users^b + m×Σ(L2_TVL×trust)。增长期权，牛市放大器。<br>
+        4. <span style="color:var(--yellow)">收入底线 (10%)</span> — min(P/S floor, Fee Yield floor)。现金流地板，熊市托底。
+      </p>
+    </div>
+  </div>
+
+  <!-- Limitations -->
+  <div class="card">
+    <div class="card-title">局限性</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.8">
+      <ol style="padding-left:18px">
+        <li style="margin-bottom:6px"><strong>循环引用：</strong>Validator Economics 和 Staking DCF 均用 current_price 计算收入。原文明确指出：含现价输入的模型不作为公允价值锚，仅作仓位与风险偏好调节指标</li>
+        <li style="margin-bottom:6px"><strong>安全性溢价不可证伪：</strong>"安全结算层"价值本质是制度性叙事溢价，无法被链上数据否决</li>
+        <li style="margin-bottom:6px"><strong>活跃地址为默认值：</strong>Metcalfe 项需要日活跃地址数据，当前使用 500K 默认值（CoinGecko 免费 API 不提供）。接入 Etherscan/Dune 可改善</li>
+        <li style="margin-bottom:6px"><strong>参数主观性高：</strong>discount_rate、velocity、trust_score、Metcalfe 系数等均为主观选择，敏感度高。请参考情景分析 tab 的敏感度矩阵评估影响</li>
+        <li style="margin-bottom:6px"><strong>动态校准简化：</strong>原文的 Regime Adaptation 包含宏观资金成本、市场相对强弱、链上拥挤度三层约束。当前仅用 24h 价格变动粗略判定，远未达到原文精度</li>
+        <li><strong>快照时刻：</strong>所有数据为运行时点值，不含时间序列趋势分析</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="ts">
+  框架来源: <a href="https://mp.weixin.qq.com/s/uL5EuMvwgt3VoMpu9j01Zw" target="_blank">IOSG Weekly Brief #313 — 以太坊再定价：从 Rollup-Centric 到"安全性结算层"</a><br>
+  数据截至 2026-02-12 21:40 · 仅供研究参考
+</div>
+
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+// Tab switching
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Pillar chart
+const ctx = document.getElementById('pillarChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['安全结算层 (45%)', '货币属性 (35%)', '平台效应 (10%)', '收入底线 (10%)', '综合公允价值'],
+    datasets: [{
+      label: '公允价格',
+      data: [2119, 2750, 451, 102, 2170],
+      backgroundColor: [
+        'rgba(208, 32, 32, 0.6)',
+        'rgba(16, 64, 192, 0.6)',
+        'rgba(240, 192, 32, 0.6)',
+        'rgba(52, 211, 153, 0.6)',
+        'rgba(208, 32, 32, 0.8)',
+      ],
+      borderColor: [
+        'rgba(208, 32, 32, 1)',
+        'rgba(16, 64, 192, 1)',
+        'rgba(240, 192, 32, 1)',
+        'rgba(52, 211, 153, 1)',
+        'rgba(208, 32, 32, 1)',
+      ],
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) { return '$' + ctx.raw.toLocaleString(); }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        ticks: { color: '#666666', callback: function(v) { return '$' + (v >= 1000 ? (v/1000) + 'K' : v); } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#999999', font: { size: 12 } }
+      }
+    }
+  },
+  plugins: [{
+    afterDraw: function(chart) {
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+      const currentPrice = 1986;
+      const x = xScale.getPixelForValue(currentPrice);
+      const ctx = chart.ctx;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = '#f87171';
+      ctx.lineWidth = 2;
+      ctx.moveTo(x, yScale.top);
+      ctx.lineTo(x, yScale.bottom);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f87171';
+      ctx.font = '11px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('当前 $' + currentPrice.toLocaleString(), x, yScale.top - 6);
+      ctx.restore();
+    }
+  }]
+});
+</script>
+</body>
+</html>
