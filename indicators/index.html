@@ -115,7 +115,8 @@
     .empty-state { text-align: center; padding: 2rem; color: var(--dim); }
 
     @media (max-width: 768px) {
-      body { padding: 0.8rem; }
+      body { padding: 0; }
+      .container { padding: 0.8rem; }
       .indicator-table { font-size: 0.75rem; }
       .col-threshold, .col-timing { display: none; }
       .wr-bar { width: 30px; }
@@ -134,11 +135,11 @@
     <div class="header">
       <div class="title">指标看板</div>
       <div class="summary">
-        <div class="summary-item active">BTC 抄底 <b>1/10</b></div>
+        <div class="summary-item active">BTC 抄底 <b>2/10</b></div>
         <div class="summary-item quiet">SPY 抄底 <b>0/5</b></div>
         <div class="summary-item quiet">逃顶 <b>0/2</b></div>
       </div>
-      <div class="timestamp">2026-02-11 10:54</div>
+      <div class="timestamp">2026-02-13 16:12</div>
     </div>
 
     <div class="tabs">
@@ -164,10 +165,10 @@
     <th class="col-timing">领先性</th>
   </tr></thead>
   <tbody>
-<tr class="data-row" onclick="toggleDetail(this)">
+<tr class="row-triggered data-row" onclick="toggleDetail(this)">
   <td class="col-name">Ahr999</td>
-  <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><a href="https://www.coinglass.com/pro/i/ahr999" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-status"><span class="status-triggered">触发 · 行动</span></td>
+  <td class="col-value"><span class="value">0.30 (低于阈值)</span></td>
   <td class="col-threshold"><span class="dim">< 0.45</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:100%;background:var(--green);"></span></span><span class="wr-text">100%</span></td>
   <td class="col-timing"><span class="timing-lead">Leading</span></td>
@@ -176,7 +177,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">Funding Rate</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><span class="value">当前 0.0014%，连续负 0 次</span></td>
+  <td class="col-value"><span class="value">当前 0.0007%，连续负 0 次</span></td>
   <td class="col-threshold"><span class="dim">连续 ≥7 次负</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:93%;background:var(--green);"></span></span><span class="wr-text">93%</span></td>
   <td class="col-timing"><span class="timing-lead">Leading</span></td>
@@ -246,7 +247,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">稳定币供给增速</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><a href="https://stablecoins.llama.fi/stablecoincharts/all" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-value"><span class="value">$305.5B, 90d +0.8%</span></td>
   <td class="col-threshold"><span class="dim">90d 增速见底回升</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:75%;background:var(--cyan);"></span></span><span class="wr-text">75%</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -277,10 +278,10 @@
   <td class="col-timing"><span class="timing-lag">Lagging</span></td>
 </tr>
 <tr class="detail-row"><td colspan="6"><div class="detail-content"><span class="detail-label">原理</span> 过滤基差交易噪音后的真实机构资金方向。ETF 流入 + CME OI 同步上升 = 基差交易（非方向性）；ETF 流出 + OI 下降 = 真实机构撤退。<br><span class="detail-label">为什么有效</span> 单看 ETF 流入/流出容易被 Basis Trade 误导，需要与 CME 持仓量交叉验证才能判断真实方向。</div></td></tr>
-<tr class="data-row row-triggered" onclick="toggleDetail(this)">
+<tr class="row-triggered data-row" onclick="toggleDetail(this)">
   <td class="col-name">Fear & Greed</td>
-  <td class="col-status"><span class="status-triggered">触发 · 行动</span></td>
-  <td class="col-value"><span class="value">11 (Extreme Fear)</span></td>
+  <td class="col-status"><span class="status-triggered">触发 · 重仓</span></td>
+  <td class="col-value"><span class="value">9 (Extreme Fear)</span></td>
   <td class="col-threshold"><span class="dim">< 15</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:54%;background:var(--gold);"></span></span><span class="wr-text">54%</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -307,7 +308,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">MA200 偏离</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><span class="value">偏离 +7.5%</span></td>
+  <td class="col-value"><span class="value">偏离 +5.6%</span></td>
   <td class="col-threshold"><span class="dim">SPY 偏离 MA200 < -15%</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:78%;background:var(--cyan);"></span></span><span class="wr-text">78%</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -316,7 +317,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">VIX 恐慌</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><span class="value">VIX 17.8</span></td>
+  <td class="col-value"><span class="value">VIX 20.8</span></td>
   <td class="col-threshold"><span class="dim">> 40</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:91%;background:var(--green);"></span></span><span class="wr-text">91%</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -325,7 +326,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">双跌 SPY+GLD</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><span class="value">SPY 0.02%, GLD 3.92%</span></td>
+  <td class="col-value"><span class="value">SPY -1.20%, GLD -0.64%</span></td>
   <td class="col-threshold"><span class="dim">SPY 7d跌>7% 且 GLD跌>3%</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:85%;background:var(--cyan);"></span></span><span class="wr-text">85%</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -334,7 +335,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">双跌 SPY+TLT</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><span class="value">SPY 0.02%, TLT 2.00%</span></td>
+  <td class="col-value"><span class="value">SPY -1.20%, TLT 2.85%</span></td>
   <td class="col-threshold"><span class="dim">SPY 7d跌>7% 且 TLT跌>2%</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:80%;background:var(--cyan);"></span></span><span class="wr-text">80%</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -359,7 +360,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">SCHD/QQQ 轮动</td>
   <td class="col-status"><span class="status-watch">防御</span></td>
-  <td class="col-value"><span class="value">比率 110.02 (↑ SCHD 走强 (risk-off))</span></td>
+  <td class="col-value"><span class="value">比率 112.39 (↑ SCHD 走强 (risk-off))</span></td>
   <td class="col-threshold"><span class="dim">比率飙升后见顶回落</span></td>
   <td class="col-winrate"><span class="wr-text">-</span></td>
   <td class="col-timing"><span class="timing-coin">Coincident</span></td>
@@ -386,7 +387,7 @@
 <tr class="data-row" onclick="toggleDetail(this)">
   <td class="col-name">Crypto VC 融资</td>
   <td class="col-status"><span class="status-ok">正常</span></td>
-  <td class="col-value"><a href="https://defillama.com/raises" target="_blank" class="manual-link" onclick="event.stopPropagation()">查看数据源</a></td>
+  <td class="col-value"><span class="value">$1,430M/月 (3M均), 63 deals/月</span></td>
   <td class="col-threshold"><span class="dim">3M均 > $2.5B 或 单月 > 100 deals</span></td>
   <td class="col-winrate"><span class="wr-bar"><span class="wr-fill" style="width:100%;background:var(--green);"></span></span><span class="wr-text">100%</span></td>
   <td class="col-timing"><span class="timing-lead">Leading</span></td>
@@ -421,6 +422,18 @@
     </div>
     <div id="panel-history" class="panel">
       <div class="tl-group">
+  <div class="tl-date">2026-02-13</div>
+  <div class="tl-items"><div class="tl-item">
+  <div class="tl-indicator">Ahr999</div>
+  <div class="tl-signal">Ahr999<0.45</div>
+  <div class="tl-detail">BTC &middot; BTC 抄底区，考虑加仓</div>
+</div><div class="tl-item">
+  <div class="tl-indicator">Fear & Greed</div>
+  <div class="tl-signal">FNG<10</div>
+  <div class="tl-detail">BTC &middot; 关注 BTC 抄底机会</div>
+</div></div>
+</div>
+<div class="tl-group">
   <div class="tl-date">2026-02-11</div>
   <div class="tl-items"><div class="tl-item">
   <div class="tl-indicator">Fear & Greed</div>
