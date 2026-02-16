@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-02-16T02:30:26Z",
+  "updated_at": "2026-02-16T13:10:42Z",
   "indicators": {
     "ahr999": {
-      "value": 0.32,
-      "display": "0.32 (低于阈值)",
+      "value": 0.34,
+      "display": "0.34 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 68383.47
+      "btc_price": 69774.9
     },
     "sth-nupl": {
       "value": -0.316,
