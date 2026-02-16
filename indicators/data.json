@@ -1,59 +1,58 @@
 {
-  "updated_at": "2026-02-15T16:49:59Z",
+  "updated_at": "2026-02-16T02:30:26Z",
   "indicators": {
     "ahr999": {
-      "value": 0.33,
-      "display": "0.33 (低于阈值)",
+      "value": 0.32,
+      "display": "0.32 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 69016.97
+      "btc_price": 68383.47
     },
     "sth-nupl": {
-      "value": -0.299,
-      "display": "STH-NUPL -0.299",
+      "value": -0.316,
+      "display": "STH-NUPL -0.316",
       "triggered": true,
       "level": "行动"
     },
     "mvrv-zscore": {
-      "value": 0.52,
-      "display": "Z-Score 0.52",
+      "value": 0.48,
+      "display": "Z-Score 0.48",
       "triggered": false,
-      "level": null
+      "level": "关注"
     },
     "puell-multiple": {
-      "value": 0.8,
-      "display": "Puell 0.80",
+      "value": 0.95,
+      "display": "Puell 0.95",
       "triggered": false,
       "level": null
     },
     "hash-ribbons": {
       "value": -1,
-      "display": "投降中 (MA30/MA60: -4.3%)",
+      "display": "投降中 (MA30/MA60: -3.6%)",
       "triggered": false,
       "level": "投降"
     },
     "fear-greed-crypto": {
-      "value": 8,
-      "display": "8 (Extreme Fear)",
+      "value": 12,
+      "display": "12 (Extreme Fear)",
       "triggered": true,
-      "level": "重仓"
+      "level": "行动"
     },
     "funding-rate": {
-      "value": 1,
-      "display": "当前 -0.0024%，连续负 1 次",
+      "value": null,
+      "display": "获取失败",
       "triggered": false,
-      "level": null,
-      "current_rate": -0.0024
+      "level": null
     },
     "stablecoin-supply": {
-      "value": 1.3,
-      "display": "$306.5B, 90d +1.3%",
+      "value": 1.5,
+      "display": "$306.7B, 90d +1.5%",
       "triggered": false,
       "level": null
     },
     "crypto-vc-funding": {
-      "value": 1338.0,
-      "display": "$1,338M/月 (3M均), 60 deals/月",
+      "value": 1256.0,
+      "display": "$1,256M/月 (3M均), 60 deals/月",
       "triggered": false,
       "level": null,
       "deals_1m": 60
