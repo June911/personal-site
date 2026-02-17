@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-02-17T02:27:17Z",
+  "updated_at": "2026-02-17T13:10:41Z",
   "indicators": {
     "ahr999": {
-      "value": 0.33,
-      "display": "0.33 (低于阈值)",
+      "value": 0.32,
+      "display": "0.32 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 69050.3
+      "btc_price": 67888.08
     },
     "sth-nupl": {
       "value": -0.313,
@@ -45,21 +45,21 @@
       "level": null
     },
     "stablecoin-supply": {
-      "value": 1.5,
-      "display": "$306.8B, 90d +1.5%",
+      "value": 1.6,
+      "display": "$307.0B, 90d +1.6%",
       "triggered": false,
       "level": null
     },
     "crypto-vc-funding": {
-      "value": 1221.0,
-      "display": "$1,221M/月 (3M均), 60 deals/月",
+      "value": 1223.0,
+      "display": "$1,223M/月 (3M均), 64 deals/月",
       "triggered": false,
       "level": null,
-      "deals_1m": 60
+      "deals_1m": 64
     },
     "vix-spike": {
-      "value": 21.2,
-      "display": "VIX 21.2",
+      "value": 20.6,
+      "display": "VIX 20.6",
       "triggered": false,
       "level": null
     },
@@ -70,14 +70,14 @@
       "level": null
     },
     "double-drop-spy-gld": {
-      "value": "nan,nan",
-      "display": "SPY nan%, GLD nan%",
+      "value": "-0.65,1.91",
+      "display": "SPY -0.65%, GLD 1.91%",
       "triggered": false,
       "level": null
     },
     "double-drop-spy-tlt": {
-      "value": "nan,nan",
-      "display": "SPY nan%, TLT nan%",
+      "value": "-0.65,3.67",
+      "display": "SPY -0.65%, TLT 3.67%",
       "triggered": false,
       "level": null
     },
