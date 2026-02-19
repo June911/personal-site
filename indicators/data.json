@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-02-19T02:29:24Z",
+  "updated_at": "2026-02-19T13:13:14Z",
   "indicators": {
     "ahr999": {
       "value": 0.31,
       "display": "0.31 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 66900.12
+      "btc_price": 66361.67
     },
     "sth-nupl": {
       "value": -0.354,
@@ -58,8 +58,8 @@
       "deals_1m": 60
     },
     "vix-spike": {
-      "value": 19.6,
-      "display": "VIX 19.6",
+      "value": NaN,
+      "display": "VIX nan",
       "triggered": false,
       "level": null
     },
