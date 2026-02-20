@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-02-20T02:25:39Z",
+  "updated_at": "2026-02-20T13:05:11Z",
   "indicators": {
     "ahr999": {
       "value": 0.31,
       "display": "0.31 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 67180.13
+      "btc_price": 67158.2
     },
     "sth-nupl": {
       "value": null,
@@ -51,10 +51,11 @@
       "level": null
     },
     "crypto-vc-funding": {
-      "value": null,
-      "display": "获取失败",
+      "value": 906.0,
+      "display": "$906M/月 (3M均), 58 deals/月",
       "triggered": false,
-      "level": null
+      "level": null,
+      "deals_1m": 58
     },
     "vix-spike": {
       "value": 20.2,
