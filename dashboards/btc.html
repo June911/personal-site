@@ -1106,8 +1106,189 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
       </div>
     </div>
 
+    <!-- Indicator reference panels -->
+    <div class="sep" style="margin-top:24px">指标参考卡片 <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none">点击展开回测数据与阈值</span></div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">Ahr999 囤币指标</div><div class="belief-desc">BTC 相对定投成本的偏离度 · btc.x.fish / CoinGlass</div></div>
+        <div class="belief-right"><span class="b b-g" style="font-size:9px">一级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">&lt; 0.45 抄底</span>
+          <span class="b" style="background:var(--blue);color:#fff;font-size:10px">0.45-1.2 定投</span>
+          <span class="b" style="background:var(--yellow);color:#111;font-size:10px">1.2-6 持有</span>
+          <span class="b" style="background:var(--red);color:#fff;font-size:10px">&gt; 6 逃顶</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史触发</strong>：
+          <div class="ev-item"><span class="ev-icon">●</span>2019-01 Ahr999=0.38 → 6M +172%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2020-03 Ahr999=0.29（COVID）→ 6M +61%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-06 Ahr999=0.22（Luna 崩盘）→ 6M +10%（横盘）</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-11 Ahr999=0.24（FTX 崩盘）→ 6M +57%</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">公式：Ahr999 = (BTC价格 / 200日均成本) × (BTC价格 / 拟合增长价格)</div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">STH-NUPL 短期持有者未实现盈亏</div><div class="belief-desc">短期持有者（&lt;155天）的集体盈亏状态 · Glassnode / CoinGlass</div></div>
+        <div class="belief-right"><span class="b b-g" style="font-size:9px">一级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">&lt; -0.25 投降</span>
+          <span class="b" style="background:var(--blue);color:#fff;font-size:10px">-0.25~0 亏损</span>
+          <span class="b" style="background:var(--yellow);color:#111;font-size:10px">0~0.5 盈利</span>
+          <span class="b" style="background:var(--red);color:#fff;font-size:10px">&gt; 0.5 过热</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史触发</strong>：
+          <div class="ev-item"><span class="ev-icon">●</span>2024-08 STH-NUPL=-0.24 → 短期新高</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2024-09 STH-NUPL=-0.21 → BTC 反弹突破 $65K</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2025-03 STH-NUPL=-0.18 → 本轮底部确认</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">当前极度接近触发线（-0.248），短期持有者接近投降</div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">MVRV Z-Score 市值/已实现市值</div><div class="belief-desc">衡量 BTC 市值相对已实现市值的偏离 · LookIntoBitcoin / Glassnode</div></div>
+        <div class="belief-right"><span class="b b-y" style="font-size:9px">二级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">&lt; 0 极度低估</span>
+          <span class="b" style="background:var(--blue);color:#fff;font-size:10px">0-2 正常</span>
+          <span class="b" style="background:var(--yellow);color:#111;font-size:10px">2-6 偏高</span>
+          <span class="b" style="background:var(--red);color:#fff;font-size:10px">&gt; 6 极端泡沫</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史触发</strong>：
+          <div class="ev-item"><span class="ev-icon">●</span>2015-01 Z=-0.50 → 6M +42%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2018-12 Z=-0.35 → 6M +161%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2020-03 Z=-0.15 → 6M +61%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-06 Z=-0.40 → 6M +10%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-11 Z=-0.30 → 6M +57%</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">Z-Score = (市值 - 已实现市值) / std(市值)。需配合一级指标使用。</div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">Funding Rate 资金费率</div><div class="belief-desc">永续合约多空博弈成本 · Binance API</div></div>
+        <div class="belief-right"><span class="b b-g" style="font-size:9px">一级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">≥7次连续负 → 买入</span>
+          <span class="b" style="background:var(--yellow);color:#111;font-size:10px">5次连续负 → 关注</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史触发（7次连续负策略 93%胜率）</strong>：
+          <div class="ev-item"><span class="ev-icon">●</span>2022-05 Luna → 6M -17%（唯一失败案例）</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-06 3AC → 6M +10%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-11 FTX → 6M +57%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2023-08 → 6M +112%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2024-01 → 6M +45%</div>
+        </div>
+        <div style="margin-top:8px;padding:6px 10px;background:rgba(248,113,113,.1);border-left:3px solid var(--red);border-radius:var(--radius);font-size:10px;color:var(--text2)">
+          ⚠️ 失败案例：2022-05 Luna 崩盘，系统性连环清算导致底部继续下探。当市场出现黑天鹅级爆雷时谨慎使用。
+        </div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">稳定币供给增速</div><div class="belief-desc">稳定币总供给量环比变化（360日均值）· DeFi Llama</div></div>
+        <div class="belief-right"><span class="b b-y" style="font-size:9px">二级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">360d增速转正 → 买入</span>
+          <span class="b" style="background:var(--red);color:#fff;font-size:10px">持续负增长 → 观望</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史触发（100%胜率，4次信号）</strong>：
+          <div class="ev-item"><span class="ev-icon">●</span>2022-12 增速转正 → 6M +57%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2023-03 增速加速 → 6M +28%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2023-06 增速再确认 → 6M +68%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2023-10 增速突破 → 6M +112%</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">当前 90d 增速约 -0.1%，尚未转正。稳定币 = 加密市场的"货币供给"，增速转正是资金回流信号。</div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">Hash Ribbons 算力丝带</div><div class="belief-desc">矿工投降后的恢复买入信号 · Bitcoin Magazine Pro</div></div>
+        <div class="belief-right"><span class="b b-y" style="font-size:9px">二级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">30d MA 上穿 60d MA → 买入</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史信号（9 次信号，7 胜 2 负 = 78%）</strong>：
+          <div class="ev-item"><span class="ev-icon">●</span>2019-01 → +340%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2019-12 → +22%</div>
+          <div class="ev-item"><span class="ev-icon" style="color:var(--red)">✗</span>2020-04 → -12%（牛市中段假信号）</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2020-07 → +175%</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2021-08 → +70%</div>
+          <div class="ev-item"><span class="ev-icon" style="color:var(--red)">✗</span>2022-08 → -29%（FTX 黑天鹅）</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2023-01 → +120%</div>
+        </div>
+        <div style="margin-top:8px;padding:6px 10px;background:rgba(248,113,113,.1);border-left:3px solid var(--red);border-radius:var(--radius);font-size:10px;color:var(--text2)">
+          ⚠️ 失败规律：牛市中段（非真底部）和黑天鹅事件后易出假信号。需配合价格趋势确认。
+        </div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">Puell Multiple 矿工收入倍数</div><div class="belief-desc">每日矿工收入相对 365 日均值的倍数 · Glassnode</div></div>
+        <div class="belief-right"><span class="b b-y" style="font-size:9px">二级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">&lt; 0.5 矿工投降</span>
+          <span class="b" style="background:var(--blue);color:#fff;font-size:10px">0.5-1.2 正常</span>
+          <span class="b" style="background:var(--red);color:#fff;font-size:10px">&gt; 4.0 过热</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          68% 胜率，低于 Funding Rate（93%）和 Ahr999（85%）。适合作为辅助验证指标而非独立决策依据。矿工收入受减半周期影响大，减半后容易触发假信号。
+        </div>
+      </div>
+    </div>
+
+    <div class="belief">
+      <div class="belief-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="belief-title">VC Funding 风投融资额（逃顶）</div><div class="belief-desc">Crypto VC 季度融资总额 · DeFi Llama Raises</div></div>
+        <div class="belief-right"><span class="b b-g" style="font-size:9px">一级</span><span class="arrow">▼</span></div>
+      </div>
+      <div class="belief-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="b" style="background:var(--red);color:#fff;font-size:10px">&gt; $4B 极端过热</span>
+          <span class="b" style="background:var(--yellow);color:#111;font-size:10px">&gt; $2.5B 过热</span>
+          <span class="b" style="background:var(--blue);color:#fff;font-size:10px">$600M-$2.5B 正常</span>
+          <span class="b" style="background:var(--green);color:#111;font-size:10px">&lt; $400M 买入</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8">
+          <strong>历史周期</strong>：
+          <div class="ev-item"><span class="ev-icon" style="color:var(--red)">●</span>2021-Q4 月均 $4.6B → 6M 后 BTC -48%</div>
+          <div class="ev-item"><span class="ev-icon" style="color:var(--red)">●</span>2022-Q1 月均 $3.8B → 仍在顶部区间</div>
+          <div class="ev-item"><span class="ev-icon">●</span>2022-Q4 月均 $380M → 底部确认区</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">当前月均约 $3B（过热区），尚未到极端。VC 融资是上游领先指标：热钱涌入 → 项目增多 → ICO 供给过剩 → 倍数压缩。</div>
+      </div>
+    </div>
+
     <div class="ins info" style="margin-top:12px">
-      <strong>使用说明</strong>：一级指标可单独使用，二级需配合其他指标，辅助仅用于验证。输入当前值后自动判断触发状态（绿点=买入信号，红点=卖出信号）。所有值自动保存 localStorage。
+      <strong>使用说明</strong>：一级指标可单独使用，二级需配合其他指标，辅助仅用于验证。输入当前值后自动判断触发状态（绿点=买入信号，红点=卖出信号）。所有值自动保存 localStorage。点击指标参考卡片可展开查看回测数据和阈值。
     </div>
   </div>
 </div>
