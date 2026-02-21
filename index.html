@@ -644,23 +644,23 @@ img { max-width: 100%; display: block; }
         </div>
         <a href="dashboards/circle.html" class="btn btn-blue" style="margin-top:16px">查看看板 →</a>
       </div>
-      <!-- 侧边卡片：更多标的 -->
+      <!-- 侧边卡片 -->
       <div class="circle-side">
-        <div class="circle-card">
-          <h4>Crypto</h4>
-          <div class="value" id="crypto-prices">BTC · ETH</div>
-          <div class="label">链上指标 + 周期追踪</div>
-        </div>
-        <div class="circle-card">
-          <h4>Stock</h4>
-          <div class="value" id="stock-prices">CRCL</div>
-          <div class="label">信念看板 + 估值模型</div>
-        </div>
-        <div class="circle-card" style="opacity:0.5">
-          <h4>Coming Soon</h4>
-          <div class="value">···</div>
-          <div class="label">更多标的持续更新</div>
-        </div>
+        <a href="dashboards/eth-valuation.html" class="circle-card" style="text-decoration:none;color:inherit;cursor:pointer">
+          <h4>ETH 估值</h4>
+          <div class="value" id="eth-price">ETH</div>
+          <div class="label">安全结算层框架 · 四象限估值</div>
+        </a>
+        <a href="dashboards/aave.html" class="circle-card" style="text-decoration:none;color:inherit;cursor:pointer">
+          <h4>Aave (AAVE)</h4>
+          <div class="value">AAVE</div>
+          <div class="label">链上借贷龙头 · 贝叶斯信念链</div>
+        </a>
+        <a href="dashboards/btc.html" class="circle-card" style="text-decoration:none;color:inherit;cursor:pointer">
+          <h4>Bitcoin (BTC)</h4>
+          <div class="value">BTC</div>
+          <div class="label">重力模型 · 机构 13F · 储备立法</div>
+        </a>
       </div>
     </div>
   </div>
@@ -728,15 +728,12 @@ img { max-width: 100%; display: block; }
 <script>
 (function(){
   fetch('prices.json').then(r=>r.json()).then(d=>{
-    if(d.BTC && d.BTC.price){
-      const btc = d.BTC.price >= 1000 ? '$' + Math.round(d.BTC.price/1000) + 'K' : '$' + d.BTC.price;
+    if(d.ETH && d.ETH.price){
       const eth = '$' + d.ETH.price.toLocaleString('en-US', {maximumFractionDigits: 0});
-      const bc = d.BTC.change_24h >= 0 ? '#34d399' : '#f87171';
       const ec = d.ETH.change_24h >= 0 ? '#34d399' : '#f87171';
-      const el = document.getElementById('crypto-prices');
+      const el = document.getElementById('eth-price');
       if(el) el.innerHTML =
-        'BTC ' + btc + ' <span style="font-size:14px;color:' + bc + '">' + (d.BTC.change_24h>=0?'+':'') + d.BTC.change_24h.toFixed(1) + '%</span>' +
-        '<br>ETH ' + eth + ' <span style="font-size:14px;color:' + ec + '">' + (d.ETH.change_24h>=0?'+':'') + d.ETH.change_24h.toFixed(1) + '%</span>';
+        'ETH ' + eth + ' <span style="font-size:14px;color:' + ec + '">' + (d.ETH.change_24h>=0?'+':'') + d.ETH.change_24h.toFixed(1) + '%</span>';
     }
     if(d.CRCL && d.CRCL.price){
       const cc = d.CRCL.change_24h >= 0 ? '#34d399' : '#f87171';

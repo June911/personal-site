@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin (BTC) 信念看板 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/dashboard.css">
+<style>
+/* Dashboard wrapper */
+.dashboard { max-width: 1440px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.header { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 18px; border-bottom: 3px solid var(--border); margin-bottom: 0; }
+.header h1 { font-size: 22px; font-weight: 900; text-transform: uppercase; color: var(--white); }
+.header-sub { font-size: 11px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.hm { text-align: right; }
+.hm .l { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.hm .v { font-family: var(--mono); font-size: 20px; font-weight: 900; }
+.verdict { padding: 7px 14px; border: 2px solid var(--border); border-radius: var(--radius); font-size: 12px; font-weight: 700; }
+
+/* Scenario row */
+.sc-row { display: grid; grid-template-columns: 80px 90px 1fr 90px; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius); margin-bottom: 8px; }
+.sc-row input[type=range] { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; outline: none; cursor: pointer; background: var(--bg3); }
+.sc-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,.3); }
+.ev-box { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); margin-top: 12px; box-shadow: var(--shadow-sm); }
+
+/* Hypothesis header */
+.h-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); margin-bottom: 20px; box-shadow: var(--shadow); }
+.h-left { display: flex; align-items: center; gap: 16px; }
+.h-id { font-family: var(--mono); font-size: 13px; padding: 6px 14px; border-radius: var(--radius); font-weight: 900; }
+.h-title { font-size: 18px; font-weight: 900; text-transform: uppercase; }
+.h-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.h-right { display: flex; align-items: center; gap: 20px; }
+.conf { text-align: center; }
+.conf .l { font-size: 10px; color: var(--text3); font-weight: 700; text-transform: uppercase; }
+.conf .v { font-family: var(--mono); font-size: 24px; font-weight: 900; }
+.conf-bar { width: 120px; height: 6px; background: var(--bg); border-radius: var(--radius); margin-top: 4px; border: 1px solid var(--border); }
+.conf-fill { height: 100%; border-radius: var(--radius); transition: width .3s; }
+
+/* Belief node */
+.belief { background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; box-shadow: var(--shadow-sm); }
+.belief-head { padding: 16px 18px; display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; user-select: none; }
+.belief-head:hover { background: rgba(255,255,255,.02); }
+.belief-body { padding: 0 18px 16px; display: none; }
+.belief.open .belief-body { display: block; }
+.belief-title { font-size: 14px; font-weight: 700; }
+.belief-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.belief-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.arrow { font-size: 14px; color: var(--text3); transition: transform .2s; margin-left: 6px; }
+.belief.open .arrow { transform: rotate(180deg); }
+
+/* Evidence */
+.ev-item { display: flex; gap: 8px; padding: 7px 0; font-size: 12px; color: var(--text2); border-bottom: 1px solid rgba(255,255,255,.04); }
+.ev-item:last-child { border-bottom: none; }
+.ev-icon { color: var(--text3); flex-shrink: 0; width: 18px; text-align: center; }
+.ev-src { font-size: 10px; color: var(--text3); font-family: var(--mono); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
+
+/* Tipping point */
+.tp { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--bg3); border-radius: var(--radius); margin-top: 6px; cursor: pointer; transition: background .15s; border: 2px solid transparent; }
+.tp:hover { border-color: var(--border); background: var(--bg4); }
+.tp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 2px solid; transition: all .2s; }
+.tp-dot.pending { background: transparent; border-color: var(--text3); }
+.tp-dot.approaching { background: var(--yellow); border-color: var(--yellow); box-shadow: 0 0 6px rgba(240,192,32,.4); }
+.tp-dot.triggered { background: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(52,211,153,.4); }
+.tp-dot.negative { background: var(--red); border-color: var(--red); box-shadow: 0 0 6px rgba(208,32,32,.4); }
+.tp-text { flex: 1; font-size: 12px; font-weight: 600; }
+.tp-sig { font-size: 10px; color: var(--text3); }
+.tp-time { font-size: 11px; font-family: var(--mono); color: var(--text3); white-space: nowrap; }
+
+/* Logic chain */
+.logic { background: var(--bg3); border: 2px solid var(--border); border-radius: var(--radius); padding: 12px; margin-top: 10px; font-size: 12px; }
+.logic .step { padding: 2px 0; color: var(--text2); }
+.logic .arr { color: var(--text3); font-size: 10px; padding: 1px 0; }
+
+/* Tipping points summary */
+.tp-summary { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--bg3); border-radius: var(--radius); margin-bottom: 6px; border-left: 3px solid var(--border); }
+.tp-summary.bull { border-left-color: var(--green); }
+.tp-summary.bear { border-left-color: var(--red); }
+.tp-summary.key { border-left-color: var(--yellow); }
+
+/* Separator */
+.sep { font-size: 13px; font-weight: 900; color: var(--text2); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+
+/* Mind map tree */
+.tree { display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
+.tree-line { width: 3px; height: 28px; background: var(--border); }
+.tree-node { position: relative; text-align: center; }
+.tree-branch { display: flex; gap: 16px; position: relative; padding-top: 28px; }
+.tree-branch::before { content: ''; position: absolute; top: 0; left: calc(50% / 5 + 20px); right: calc(50% / 5 + 20px); height: 3px; background: var(--border); }
+.tree-branch .tree-node::before { content: ''; position: absolute; top: -28px; left: 50%; width: 3px; height: 28px; background: var(--border); }
+.tree-root { padding: 16px 28px; background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); min-width: 320px; box-shadow: var(--shadow); }
+.tree-h0 { padding: 14px 24px; background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all .15s; box-shadow: var(--shadow-sm); }
+.tree-h0:hover { border-color: var(--yellow); transform: translateY(-1px); }
+.tree-h { flex: 1; min-width: 200px; max-width: 320px; padding: 16px; background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); text-align: left; cursor: pointer; transition: all .15s; box-shadow: var(--shadow-sm); }
+.tree-h:hover { border-color: var(--yellow); transform: translateY(-2px); box-shadow: 6px 6px 0 0 #333; }
+.tree-h .sub-list { margin-top: 10px; font-size: 11px; color: var(--text2); line-height: 1.8; }
+.tree-h .tp-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.tree-h .tp-mini { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 8px; background: var(--bg3); border-radius: var(--radius); border: 1px solid var(--border); }
+.tree-h .tp-mini-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* Gravity bars */
+.grav-bar { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.grav-label { width: 100px; font-size: 12px; color: var(--text2); font-weight: 500; }
+.grav-track { flex: 1; height: 8px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border); position: relative; }
+.grav-fill { height: 100%; border-radius: var(--radius); transition: width .3s; }
+.grav-score { font-family: var(--mono); font-size: 14px; font-weight: 700; width: 50px; text-align: right; }
+
+/* Inst table */
+.inst-row { display: grid; grid-template-columns: 30px 1fr 100px 90px 90px 90px 1fr; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg3); border-radius: var(--radius); margin-bottom: 4px; font-size: 12px; border: 1px solid var(--border); }
+.inst-row.head { background: transparent; border: none; font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 700; letter-spacing: .05em; }
+
+/* Legislation tracker */
+.leg-card { padding: 14px 18px; background: var(--bg3); border-radius: var(--radius); margin-bottom: 8px; border: 1px solid var(--border); border-left: 3px solid var(--border); }
+.leg-card.active { border-left-color: var(--green); }
+.leg-card.pending { border-left-color: var(--yellow); }
+.leg-card.failed { border-left-color: var(--red); }
+
+/* Input styling */
+.mi { background: rgba(240,192,32,.12); border: 2px solid rgba(240,192,32,.25); border-radius: var(--radius); padding: 4px 8px; color: var(--text); font-family: var(--mono); font-size: 12px; width: 80px; text-align: right; }
+.mi:focus { outline: none; border-color: var(--yellow); background: rgba(240,192,32,.2); }
+
+/* Log */
+.log-form { display: grid; grid-template-columns: 120px 1fr 180px 80px; gap: 8px; padding: 14px; background: var(--bg3); border: 2px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; }
+.log-form input, .log-form select { background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); padding: 8px 12px; color: var(--text); font-size: 12px; font-family: var(--font); }
+.log-form input:focus { outline: none; border-color: var(--yellow); }
+.log-form button { background: var(--blue); border: 2px solid var(--blue); border-radius: var(--radius); padding: 8px 16px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; box-shadow: var(--shadow-sm); }
+.log-form button:hover { opacity: .85; }
+.log-tbl { width: 100%; border-collapse: collapse; }
+.log-tbl th, .log-tbl td { padding: 10px 12px; text-align: left; border-bottom: 2px solid rgba(255,255,255,.06); font-size: 12px; }
+.log-tbl th { font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 700; position: sticky; top: 0; background: var(--bg2); }
+
+/* Comp row */
+.comp { display: grid; grid-template-columns: 130px 70px 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--bg3); border-radius: var(--radius); margin-bottom: 6px; border: 1px solid var(--border); }
+
+footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px; border-top: 3px solid var(--border); margin-top: 28px; }
+
+/* Bottom checklist */
+.check-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg3); border-radius: var(--radius); margin-bottom: 6px; border: 1px solid var(--border); cursor: pointer; transition: all .15s; }
+.check-item:hover { border-color: var(--border); background: var(--bg4); }
+.check-box { width: 18px; height: 18px; border: 2px solid var(--text3); border-radius: 2px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all .2s; }
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); color: #111; }
+.check-item.partial .check-box { background: var(--yellow); border-color: var(--yellow); color: #111; }
+.check-label { font-size: 12px; font-weight: 600; flex: 1; }
+.check-detail { font-size: 11px; color: var(--text3); }
+
+@media (max-width: 1000px) {
+  .g2, .ga { grid-template-columns: 1fr; }
+  .tree-branch { flex-direction: column; align-items: center; padding-top: 0; }
+  .tree-branch::before { display: none; }
+  .tree-branch .tree-node::before { display: none; }
+  .h-header { flex-direction: column; gap: 12px; text-align: left; }
+  .inst-row { grid-template-columns: 30px 1fr 80px 80px 1fr; }
+  .inst-row .hide-m { display: none; }
+  .log-form { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<nav class="dash-nav">
+  <div class="dash-nav-inner">
+    <a href="../index.html" class="dash-nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="../index.html#dashboards" class="active">看板</a></li>
+      <li><a href="../indicators/index.html">指标</a></li>
+      <li><a href="../index.html#articles">文章</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="dashboard">
+
+<!-- HEADER -->
+<header class="header">
+  <div>
+    <h1>Bitcoin (BTC) 投资信念看板</h1>
+    <div class="header-sub">重力模型 · 贝叶斯假设 · 机构追踪 · 储备立法</div>
+  </div>
+  <div class="header-right">
+    <div class="hm"><div class="l">Gravity Score</div><div class="v" style="color:var(--yellow)">34<span style="font-size:12px;color:var(--text3)">/40</span></div></div>
+    <div class="verdict" style="background:rgba(240,192,32,.15);color:var(--yellow)">黑洞 · First Core</div>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showPage('overview',this)">总览</button>
+  <button class="tab" onclick="showPage('inst',this)">机构化</button>
+  <button class="tab" onclick="showPage('legis',this)">储备立法</button>
+  <button class="tab" onclick="showPage('log',this)">日志</button>
+</div>
+
+<!-- ============================================================
+     PAGE 1: 总览
+     ============================================================ -->
+<div id="overview" class="page active">
+
+  <!-- 思维导图 -->
+  <div class="tree">
+    <!-- 顶层: 投资论题 -->
+    <div class="tree-node tree-root">
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px">BTC 投资论题</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">数字时代需要价值储存工具，BTC 是唯一的林迪效应赢家</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--text3)">折现期望价值</div>
+          <div class="mono" style="font-size:26px;font-weight:700;color:var(--yellow)" id="treeEV">$91k</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--text3)">GRAVITY</div>
+          <div class="mono" style="font-size:26px;font-weight:700;color:var(--orange)">34/40</div>
+        </div>
+        <div style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:rgba(240,192,32,.15);color:var(--yellow)">黑洞</div>
+      </div>
+    </div>
+
+    <div class="tree-line"></div>
+
+    <!-- H0: 数字黄金 -->
+    <div class="tree-node tree-h0">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+        <span class="b b-y" style="font-size:11px">H0</span>
+        <span style="font-size:14px;font-weight:600">数字黄金地位不可撼动</span>
+        <span class="mono" style="font-size:14px;font-weight:700;color:var(--green)">90%</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">2100 万上限 · 15 年运行 · 林迪效应 · 证伪条件：出现更好的 SoV</div>
+    </div>
+
+    <div class="tree-line"></div>
+
+    <!-- 分支: H1-H4 -->
+    <div class="tree-branch">
+      <!-- H1 机构采用 -->
+      <div class="tree-node tree-h" onclick="showPage('inst',document.querySelectorAll('.tab')[1])" style="border-top:3px solid var(--green)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-g">H1 机构采用</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--yellow)">85%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">机构采用是长期趋势</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">~1,680 家机构 · 方向性多头 95%</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:85%;height:100%;background:var(--green);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · ETF 流入规模超预期 <span class="b b-g" style="font-size:9px">已验证</span><br>
+          · Mubadala 穿越崩盘 +46% <span class="b b-g" style="font-size:9px">强信号</span><br>
+          · Harvard 扩展至 ETH <span class="b b-y" style="font-size:9px">扩品种</span>
+        </div>
+        <div class="tp-list">
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>养老金直接配 ETF</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>机构数首降 14%</div>
+        </div>
+      </div>
+
+      <!-- H2 监管友好 -->
+      <div class="tree-node tree-h" onclick="showPage('legis',document.querySelectorAll('.tab')[2])" style="border-top:3px solid var(--blue)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-b">H2 监管友好</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--yellow)">80%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">监管保持友好态势</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">行政命令 + NH/TX/AZ 立法 + CLARITY Act</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:80%;height:100%;background:var(--blue);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · CLARITY Act 过众议院 <span class="b b-g" style="font-size:9px">利好</span><br>
+          · 行政命令已签 <span class="b b-g" style="font-size:9px">已生效</span><br>
+          · 下任总统可撤 <span class="b b-r" style="font-size:9px">风险</span>
+        </div>
+        <div class="tp-list">
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>CLARITY Act 参议院</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>主要国家禁止</div>
+        </div>
+      </div>
+
+      <!-- H3 量子安全 -->
+      <div class="tree-node tree-h" style="border-top:3px solid var(--purple)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-p">H3 量子安全</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--green)">85%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">量子计算 10 年+不威胁</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">椭圆曲线破解概率极低 · 有预警时间</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:85%;height:100%;background:var(--purple);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · 当前量子计算远不足 <span class="b b-g" style="font-size:9px">安全</span><br>
+          · 可升级加密算法 <span class="b b-g" style="font-size:9px">后备</span>
+        </div>
+      </div>
+
+      <!-- H4 主权储备 -->
+      <div class="tree-node tree-h" onclick="showPage('legis',document.querySelectorAll('.tab')[2])" style="border-top:3px solid var(--orange)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span class="b b-o">H4 主权储备</span>
+          <span class="mono" style="font-size:20px;font-weight:700;color:var(--yellow)">70%</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">多国储备趋势持续</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">联邦行政命令 + 3 州立法 + 10+ 国探索</div>
+        <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:70%;height:100%;background:var(--orange);border-radius:2px"></div></div>
+        <div class="sub-list">
+          · BITCOIN Act ~15-20% <span class="b b-r" style="font-size:9px">低概率</span><br>
+          · 州级是真正前线 <span class="b b-g" style="font-size:9px">落地中</span><br>
+          · 叙事持续强化 <span class="b b-y" style="font-size:9px">利好</span>
+        </div>
+        <div class="tp-list">
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>瑞士公投 · 26/Q2</div>
+          <div class="tp-mini"><span class="tp-mini-dot" style="background:var(--text3)"></span>Polymarket > 50%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 情景估值模型 -->
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">情景估值模型 <span class="b b-b">5 年 3 倍框架 · 未来价格折现到今天</span></div>
+
+    <!-- 折现参数 -->
+    <div style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);flex-wrap:wrap;align-items:center">
+      <div style="font-size:11px;color:var(--text3)">折现率 <input class="mi" id="m-discount" type="number" value="25" step="1" style="width:50px" oninput="calcEV()">%/年</div>
+      <div style="font-size:11px;color:var(--text3)">年数 <input class="mi" id="m-years" type="number" value="5" step="1" style="width:40px" oninput="calcEV()"></div>
+      <div style="font-size:11px;color:var(--text3)">折现因子 <span class="mono" style="color:var(--yellow)" id="df-display">0.328</span></div>
+      <div style="font-size:10px;color:var(--text3);margin-left:auto">5 年 3 倍 = 25%/年 · 情景价格是<strong style="color:var(--text2)">未来目标</strong>，折现后才是今天的价值</div>
+    </div>
+
+    <div class="g g2">
+      <div>
+        <div class="sc-row" style="background:rgba(248,113,113,.08)">
+          <div style="color:var(--red);font-weight:600">熊市</div>
+          <div class="mono" style="font-size:12px;color:var(--text3)">$<input class="mi" id="sp-bear" type="number" value="65" step="5" style="width:60px" oninput="calcEV()">k</div>
+          <input type="range" id="sl-bear" min="0" max="100" value="10" style="accent-color:var(--red)" oninput="upProb('bear',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--red);text-align:right" id="pr-bear">10%</div>
+        </div>
+        <div class="sc-row" style="background:rgba(251,191,36,.08)">
+          <div style="color:var(--yellow);font-weight:600">基准</div>
+          <div class="mono" style="font-size:12px;color:var(--text3)">$<input class="mi" id="sp-base" type="number" value="175" step="5" style="width:60px" oninput="calcEV()">k</div>
+          <input type="range" id="sl-base" min="0" max="100" value="55" style="accent-color:var(--yellow)" oninput="upProb('base',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--yellow);text-align:right" id="pr-base">55%</div>
+        </div>
+        <div class="sc-row" style="background:rgba(52,211,153,.08)">
+          <div style="color:var(--green);font-weight:600">牛市</div>
+          <div class="mono" style="font-size:12px;color:var(--text3)">$<input class="mi" id="sp-bull" type="number" value="500" step="10" style="width:60px" oninput="calcEV()">k</div>
+          <input type="range" id="sl-bull" min="0" max="100" value="35" style="accent-color:var(--green)" oninput="upProb('bull',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--green);text-align:right" id="pr-bull">35%</div>
+        </div>
+        <!-- 各情景折现价 -->
+        <div style="display:flex;gap:8px;margin-top:10px;font-size:11px">
+          <div style="flex:1;padding:6px 10px;background:rgba(248,113,113,.06);border-radius:var(--radius);text-align:center"><span style="color:var(--text3)">折现</span> <span class="mono" style="color:var(--red)" id="dp-bear">$21k</span></div>
+          <div style="flex:1;padding:6px 10px;background:rgba(251,191,36,.06);border-radius:var(--radius);text-align:center"><span style="color:var(--text3)">折现</span> <span class="mono" style="color:var(--yellow)" id="dp-base">$57k</span></div>
+          <div style="flex:1;padding:6px 10px;background:rgba(52,211,153,.06);border-radius:var(--radius);text-align:center"><span style="color:var(--text3)">折现</span> <span class="mono" style="color:var(--green)" id="dp-bull">$164k</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="ev-box" style="margin-top:0;height:100%;flex-direction:column;justify-content:center;align-items:center;gap:8px">
+          <div class="mono" style="font-size:11px;color:var(--text3)" id="evF">$65k×10% + $175k×55% + $500k×35%</div>
+          <div style="font-size:10px;color:var(--text3)">未来期望 <span class="mono" style="color:var(--text2)" id="evFuture">$278k</span></div>
+          <div style="width:40px;height:1px;background:var(--border)"></div>
+          <div style="font-size:10px;color:var(--text3)">÷ (1+25%)<sup>5</sup></div>
+          <div style="width:40px;height:1px;background:var(--border)"></div>
+          <div class="mono" style="font-size:36px;font-weight:700;color:var(--yellow)" id="evV">$91k</div>
+          <div style="font-size:12px;color:var(--text2)">折现后期望价值</div>
+          <div style="display:flex;gap:6px;margin-top:2px">
+            <span style="padding:4px 10px;background:rgba(52,211,153,.08);border-radius:4px;font-size:10px;color:var(--green)">EV > 价格×1.2: 加仓</span>
+            <span style="padding:4px 10px;background:rgba(248,113,113,.08);border-radius:4px;font-size:10px;color:var(--red)">EV < 价格×0.8: 减仓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:11px;color:var(--text3)">
+      <strong>长期目标</strong>：黄金市值的 20-50%（$3-8T）· 当前 BTC 市值约占黄金 ~10%
+    </div>
+  </div>
+
+  <!-- 重力分析 -->
+  <div class="card" style="margin-top:4px">
+    <div class="card-title">重力分析 <span class="b b-y">34/40 · 黑洞</span></div>
+    <div class="g g2">
+      <div>
+        <div class="grav-bar">
+          <div class="grav-label">质量 (Mass)</div>
+          <div class="grav-track"><div class="grav-fill" style="width:100%;background:var(--yellow)"></div></div>
+          <div class="grav-score" style="color:var(--yellow)">10/10</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);padding-left:110px;margin-top:-4px;margin-bottom:8px">2100 万上限 · 不可复制 · 终极稀缺</div>
+
+        <div class="grav-bar">
+          <div class="grav-label">摩擦力 (Friction)</div>
+          <div class="grav-track"><div class="grav-fill" style="width:90%;background:var(--green)"></div></div>
+          <div class="grav-score" style="color:var(--green)">9/10</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);padding-left:110px;margin-top:-4px;margin-bottom:8px">"数字黄金"心智锁死 · HODLer 文化 · ETF 锁定</div>
+
+        <div class="grav-bar">
+          <div class="grav-label">加速度</div>
+          <div class="grav-track"><div class="grav-fill" style="width:60%;background:var(--orange)"></div></div>
+          <div class="grav-score" style="color:var(--orange)">6/10</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);padding-left:110px;margin-top:-4px;margin-bottom:8px">正反馈存在但放缓 · 更像黄金稳态</div>
+
+        <div class="grav-bar">
+          <div class="grav-label">反脆弱</div>
+          <div class="grav-track"><div class="grav-fill" style="width:90%;background:var(--green)"></div></div>
+          <div class="grav-score" style="color:var(--green)">9/10</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);padding-left:110px;margin-top:-4px;margin-bottom:8px">15 年考验 · 无创始人 · 代码即法律</div>
+      </div>
+      <div>
+        <div class="ins ok">
+          <strong>黑洞裁决</strong>
+          终极质量，不可复制。认知锁死，持有者不会卖。加速度放缓但无关紧要——黑洞不需要加速。反脆弱性最强。
+        </div>
+        <div class="ins warn" style="margin-top:8px">
+          <strong>唯一真正风险</strong>
+          量子计算破解椭圆曲线加密（概率极低，且有预警时间可升级算法）
+        </div>
+        <div class="ins info" style="margin-top:8px">
+          <strong>缝合力评分低 (2/5) 但不重要</strong>
+          BTC 的价值不在于"连接"，在于"存在"。它是数字时代的黄金，不需要缝合力。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 核心结论 -->
+  <div class="g g4" style="margin-top:4px">
+    <div class="card" style="background:linear-gradient(135deg,rgba(240,192,32,.08),rgba(240,192,32,.02));border:1px solid rgba(240,192,32,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--yellow);margin-bottom:6px">黑洞级别资产</div>
+      <div style="font-size:12px;color:var(--text2)">闭眼拿 10 年，任何价格都可以买</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(52,211,153,.02));border:1px solid rgba(52,211,153,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:6px">制度性护城河形成中</div>
+      <div style="font-size:12px;color:var(--text2)">储备立法是 BTC 独有，其他 crypto 不具备</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(249,115,22,.08),rgba(249,115,22,.02));border:1px solid rgba(249,115,22,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--orange);margin-bottom:6px">情绪低点加仓</div>
+      <div style="font-size:12px;color:var(--text2)">唯一卖出条件：基本面崩塌（几乎不可能）</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(167,139,250,.02));border:1px solid rgba(167,139,250,.2)">
+      <div style="font-size:14px;font-weight:600;color:var(--purple);margin-bottom:6px">催化剂不断</div>
+      <div style="font-size:12px;color:var(--text2)">ETF → 储备 → 退休金 → 减半 · 每阶段新叙事</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 2: 机构化 — IBIT 13F 追踪
+     ============================================================ -->
+<div id="inst" class="page">
+  <div class="h-header">
+    <div class="h-left">
+      <span class="h-id" style="background:rgba(52,211,153,.2);color:var(--green)">H1</span>
+      <div><div class="h-title">机构采用是长期趋势</div><div class="h-sub">~1,680 家机构 · ETF 全年净流入 $254 亿 · 方向性多头占 95%</div></div>
+    </div>
+    <div class="h-right">
+      <div class="conf"><div class="l">置信度</div><div class="v" style="color:var(--green)">85%</div><div class="conf-bar"><div class="conf-fill" style="width:85%;background:var(--green)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- Q4 核心判断 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">Q4 2025 核心判断</div><div class="belief-desc">减 IBIT 不减 crypto — 头部机构在换工具而非退出</div></div><div class="belief-right"><span class="b b-g">关键洞察</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="ins ok" style="margin-bottom:12px">
+        <strong>一句话结论</strong>
+        头部机构不是在减 crypto 敞口，是在换工具 — 减 IBIT，不减 crypto。
+      </div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--green)">1</span><span><strong>Brevan Howard -85% 是换工具</strong>：从现货 basis trade 转向期权（call 800 万+put 500 万股），总敞口含期权仍 ~$9 亿。basis 利差压缩至 3-4%</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--green)">2</span><span><strong>Goldman -39% 是多元化</strong>：同时加仓 MSTR +11.4%，新建 XRP ETF ($1.52 亿) + SOL ETF ($1.09 亿)</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--green)">3</span><span><strong>Harvard -21% 是扩品种</strong>：新建 $8,680 万 ETHA — 首个常春藤配 ETH。IBIT 仍是最大公开持仓</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--yellow)">4</span><span><strong>中东主权基金 = 最坚定多头</strong>：Mubadala +46%（6 季零减仓），合计 $10.4 亿穿越 -50% 崩盘</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--blue)">5</span><span><strong>Basis trade 大洗牌</strong>：Brevan Howard 退出，Symmetry +3,606% / D.E. Shaw +345% / Jane Street +54% 入场</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--purple)">6</span><span><strong>香港通道加强</strong>：Laurore Ltd $4.36 亿新建仓（疑似中国资金经港入场），Avenir Tech $9.1 亿纹丝不动</span></div>
+      <div class="ev-item"><span class="ev-icon" style="color:var(--red)">7</span><span><strong>"深化"尚未到来</strong>：Q4 无新养老金/保险/企业入场，仅 Dartmouth 新建 $1,000 万。机构总数首降 14%</span></div>
+    </div>
+  </div>
+
+  <!-- Top 15 -->
+  <div class="card">
+    <div class="card-title">IBIT Top 15 机构持仓 · Q4 2025 <span class="b b-gr">数据截至 12/31 · 13F 于 2/17 提交</span></div>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>#</th><th>机构</th><th>类型</th><th style="text-align:right">持股(万)</th><th style="text-align:right">市值</th><th style="text-align:right">vs Q3</th><th>备注</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1</td><td style="font-weight:600">Goldman Sachs</td><td><span class="b b-b">投行</span></td><td class="mono" style="text-align:right">2,069</td><td class="mono" style="text-align:right">$8.1 亿</td><td style="text-align:right;color:var(--red)">-39%</td><td style="font-size:11px;color:var(--text3)">加仓 MSTR +11.4%，新建 XRP/SOL ETF</td></tr>
+        <tr><td class="mono">2</td><td style="font-weight:600">Jane Street</td><td><span class="b b-gr">做市商</span></td><td class="mono" style="text-align:right">2,032</td><td class="mono" style="text-align:right">$7.9 亿</td><td style="text-align:right;color:var(--green)">+54%</td><td style="font-size:11px;color:var(--text3)">delta-neutral</td></tr>
+        <tr><td class="mono">3</td><td style="font-weight:600">Avenir Tech</td><td><span class="b b-p">港资</span></td><td class="mono" style="text-align:right">1,829</td><td class="mono" style="text-align:right">$9.1 亿</td><td style="text-align:right;color:var(--text3)">持平</td><td style="font-size:11px;color:var(--text3)">亚洲最大持有者，纹丝不动</td></tr>
+        <tr><td class="mono">4</td><td style="font-weight:600">Morgan Stanley</td><td><span class="b b-b">投行</span></td><td class="mono" style="text-align:right">1,344</td><td class="mono" style="text-align:right">—</td><td style="text-align:right;color:var(--green)">+22%</td><td style="font-size:11px;color:var(--text3)">财富管理客户驱动</td></tr>
+        <tr><td class="mono">5</td><td style="font-weight:600">BlackRock</td><td><span class="b b-b">资管</span></td><td class="mono" style="text-align:right">1,277</td><td class="mono" style="text-align:right">—</td><td style="text-align:right;color:var(--green)">+23%</td><td style="font-size:11px;color:var(--text3)">自家产品</td></tr>
+        <tr style="background:rgba(240,192,32,.04)"><td class="mono">6</td><td style="font-weight:600">Mubadala</td><td><span class="b b-o">主权基金</span></td><td class="mono" style="text-align:right">1,270</td><td class="mono" style="text-align:right">$6.3 亿</td><td style="text-align:right;color:var(--green);font-weight:700">+46%</td><td style="font-size:11px;color:var(--yellow)">穿越崩盘加仓 · 6 季零减仓</td></tr>
+        <tr><td class="mono">7</td><td style="font-weight:600">Symmetry</td><td><span class="b b-c">对冲</span></td><td class="mono" style="text-align:right">1,268</td><td class="mono" style="text-align:right">$6.7 亿</td><td style="text-align:right;color:var(--green)">+3,606%</td><td style="font-size:11px;color:var(--text3)">basis trade 重新入场</td></tr>
+        <tr><td class="mono">8</td><td style="font-weight:600">D.E. Shaw</td><td><span class="b b-c">对冲</span></td><td class="mono" style="text-align:right">967</td><td class="mono" style="text-align:right">$5.1 亿</td><td style="text-align:right;color:var(--green)">+345%</td><td style="font-size:11px;color:var(--text3)">basis trade</td></tr>
+        <tr><td class="mono">9</td><td style="font-weight:600">Capula Mgmt</td><td><span class="b b-c">对冲</span></td><td class="mono" style="text-align:right">927</td><td class="mono" style="text-align:right">$4.9 亿</td><td style="text-align:right;color:var(--green)">+8.7%</td><td style="font-size:11px;color:var(--text3)"></td></tr>
+        <tr style="background:rgba(167,139,250,.04)"><td class="mono">10</td><td style="font-weight:600">Laurore Ltd (新)</td><td><span class="b b-p">港资</span></td><td class="mono" style="text-align:right">879</td><td class="mono" style="text-align:right">$4.4 亿</td><td style="text-align:right;color:var(--purple)">新建仓</td><td style="font-size:11px;color:var(--text3)">董事 Zhang Hui，疑似中国资金</td></tr>
+        <tr><td class="mono">11</td><td style="font-weight:600">Al Warda</td><td><span class="b b-o">阿布扎比</span></td><td class="mono" style="text-align:right">820</td><td class="mono" style="text-align:right">$4.1 亿</td><td style="text-align:right;color:var(--green)">+3%</td><td style="font-size:11px;color:var(--text3)"></td></tr>
+        <tr><td class="mono">12</td><td style="font-weight:600">Brevan Howard</td><td><span class="b b-c">对冲</span></td><td class="mono" style="text-align:right">550</td><td class="mono" style="text-align:right">$2.8 亿</td><td style="text-align:right;color:var(--red);font-weight:700">-85%</td><td style="font-size:11px;color:var(--yellow)">转期权 call 800 万+put 500 万股</td></tr>
+        <tr><td class="mono">13</td><td style="font-weight:600">Harvard</td><td><span class="b b-p">捐赠</span></td><td class="mono" style="text-align:right">535</td><td class="mono" style="text-align:right">$2.7 亿</td><td style="text-align:right;color:var(--red)">-21%</td><td style="font-size:11px;color:var(--text3)">同时新建 $8,680 万 ETHA</td></tr>
+        <tr><td class="mono">14</td><td style="font-weight:600">Barclays</td><td><span class="b b-b">投行</span></td><td class="mono" style="text-align:right">529</td><td class="mono" style="text-align:right">—</td><td style="text-align:right;color:var(--green)">+22.7%</td><td style="font-size:11px;color:var(--text3)"></td></tr>
+        <tr><td class="mono">15</td><td style="font-weight:600">Susquehanna</td><td><span class="b b-gr">做市商</span></td><td class="mono" style="text-align:right">393</td><td class="mono" style="text-align:right">—</td><td style="text-align:right;color:var(--green)">+71%</td><td style="font-size:11px;color:var(--text3)">含期权，delta-neutral</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- 持有者结构 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">IBIT 持有者结构 · Q4 2025</div>
+    <div class="g g2">
+      <div>
+        <div class="metric"><div class="k">散户 + 小机构</div><div class="v" style="color:var(--text)">~69%</div></div>
+        <div class="metric"><div class="k">投顾/财富管理</div><div class="v">~17%</div></div>
+        <div class="metric"><div class="k">Basis trade 对冲基金</div><div class="v" style="color:var(--cyan)">~5%</div></div>
+        <div class="metric"><div class="k">投行代客</div><div class="v">~3%</div></div>
+        <div class="metric"><div class="k">主权/养老/捐赠</div><div class="v" style="color:var(--orange)">~2%</div></div>
+        <div class="metric"><div class="k">做市商 (delta-neutral)</div><div class="v">~2%</div></div>
+        <div class="metric"><div class="k">方向性对冲基金</div><div class="v" style="color:var(--red)">~2% ↓</div></div>
+      </div>
+      <div>
+        <div class="ins info">
+          <strong>Q4 变化</strong>
+          Basis trade + 做市商占比上升（~5%→~7%），方向性对冲基金占比下降（Brevan Howard 退出现货）。散户 + 小机构仍占绝对多数。
+        </div>
+        <div class="ins warn" style="margin-top:8px">
+          <strong>"深化"阶段尚未到来</strong>
+          美国前 50 大学捐赠基金合计 $8,000 亿+，BTC 渗透率 <0.1%。养老金仅通过 MSTR 间接持有，尚无直接 ETF 配置。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 大学捐赠基金 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">大学捐赠基金 IBIT 持仓</div>
+    <table class="tbl">
+      <thead><tr><th>机构</th><th style="text-align:right">Endowment</th><th style="text-align:right">Q4 持仓</th><th style="text-align:right">占比</th><th>vs Q3</th><th>备注</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600">Harvard</td><td class="mono" style="text-align:right">$569 亿</td><td class="mono" style="text-align:right">$2.66 亿</td><td class="mono" style="text-align:right">0.47%</td><td style="color:var(--red)">-21%</td><td style="font-size:11px;color:var(--text3)">新建 $8,680 万 ETHA</td></tr>
+        <tr><td style="font-weight:600">Emory</td><td class="mono" style="text-align:right">$117 亿</td><td class="mono" style="text-align:right">$5,210 万</td><td class="mono" style="text-align:right">0.45%</td><td style="color:var(--text3)">—</td><td style="font-size:11px;color:var(--text3)"></td></tr>
+        <tr><td style="font-weight:600">Dartmouth</td><td class="mono" style="text-align:right">$90 亿</td><td class="mono" style="text-align:right">$1,000 万</td><td class="mono" style="text-align:right">0.11%</td><td style="color:var(--green)">新建仓</td><td style="font-size:11px;color:var(--text3)">同买 Grayscale ETH Mini Trust</td></tr>
+        <tr><td style="font-weight:600">Brown</td><td class="mono" style="text-align:right">$73 亿</td><td class="mono" style="text-align:right">$490 万</td><td class="mono" style="text-align:right"><0.1%</td><td style="color:var(--text3)">—</td><td style="font-size:11px;color:var(--text3)"></td></tr>
+        <tr><td style="font-weight:600">U of Austin</td><td class="mono" style="text-align:right">$2 亿</td><td class="mono" style="text-align:right">$500 万</td><td class="mono" style="text-align:right">2.5%</td><td style="color:var(--text3)">—</td><td style="font-size:11px;color:var(--text3)"></td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px">扩散路径：Emory (Q4'24) → Brown (Q1'25) → Harvard (Q2'25) → Dartmouth (Q4'25)</div>
+  </div>
+
+  <!-- 下跌中的行为 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">下跌中的机构行为模式</div><div class="belief-desc">Q4 首次出现头部方向性多头大规模减仓</div></div><div class="belief-right"><span class="b b-y">关键</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <table class="tbl">
+        <thead><tr><th>事件</th><th style="color:var(--green)">加仓</th><th>不动</th><th style="color:var(--red)">减仓</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500">Q1'25 (BTC -11%)</td><td style="font-size:11px">Goldman +28%, Mubadala +6%</td><td style="font-size:11px">Brevan Howard, Avenir</td><td style="font-size:11px">Wisconsin 清仓</td></tr>
+          <tr><td style="font-weight:500">Q2'25 ($61K 底部)</td><td style="font-size:11px">Brevan Howard +71%, Harvard 新建大仓</td><td style="font-size:11px">Mubadala, Avenir</td><td style="font-size:11px">无</td></tr>
+          <tr><td style="font-weight:500">Q3'25 (10月崩至 $48K)</td><td style="font-size:11px">Al Warda +230%, Harvard +257%</td><td style="font-size:11px">Mubadala, Goldman</td><td style="font-size:11px">无方向多头减仓</td></tr>
+          <tr style="background:rgba(240,192,32,.04)"><td style="font-weight:600">Q4'25 (崩盘后)</td><td style="font-size:11px;color:var(--green)">Mubadala +46%, Symmetry +3,606%, Jane Street +54%</td><td style="font-size:11px">Avenir 不动</td><td style="font-size:11px;color:var(--red)">Brevan Howard -85%, Goldman -39%, JPM -43%</td></tr>
+        </tbody>
+      </table>
+      <div class="ins info" style="margin-top:10px">
+        <strong>结论</strong>
+        Q4 是首次出现头部方向性多头大规模减仓。但 Brevan Howard 转期权（非清仓）、Goldman/Harvard 转向其他 crypto 标的 — 减的是 IBIT 仓位，不是 crypto 信仰。
+      </div>
+    </div>
+  </div>
+
+  <!-- 拐点 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">机构化拐点</div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">养老金/保险直接配置 BTC ETF</div><div class="tp-sig">"深化"阶段的标志 — 当前仅通过 MSTR 间接持有</div></div><span class="tp-time">持续监控</span><span class="b b-g">强烈利好</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">机构数持续下降（连续两季）</div><div class="tp-sig">⚠️ Q4 首降 14%，如果持续 = 采用见顶</div></div><span class="tp-time">Q1'26 13F</span><span class="b b-r">利空</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">ETF 大规模净流出（连续 30 天 > $1B）</div><div class="tp-sig">假设 #1 证伪条件</div></div><span class="tp-time">持续监控</span><span class="b b-r">止损</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Brevan Howard 期权到期后重建现货</div><div class="tp-sig">方向性信仰恢复信号</div></div><span class="tp-time">Q1'26</span><span class="b b-g">利好</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Harvard ETHA 引发其他 endowment 跟进 ETH</div><div class="tp-sig">crypto 在机构配置中从 BTC 扩展到生态</div></div><span class="tp-time">持续观察</span><span class="b b-gr">观察</span></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:10px">
+      <strong>下次更新</strong>：~2026-03 初（CoinShares Q4 汇总报告）/ 2026-05-15（Q1 2026 13F 截止）
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 3: 储备立法
+     ============================================================ -->
+<div id="legis" class="page">
+  <div class="h-header">
+    <div class="h-left">
+      <span class="h-id" style="background:rgba(249,115,22,.2);color:var(--orange)">H2+H4</span>
+      <div><div class="h-title">监管友好 + 主权储备趋势</div><div class="h-sub">行政命令已生效 · 3 州已立法 · 10+ 国探索 · Polymarket 32%</div></div>
+    </div>
+    <div class="h-right">
+      <div class="conf"><div class="l">监管友好</div><div class="v" style="color:var(--blue)">80%</div><div class="conf-bar"><div class="conf-fill" style="width:80%;background:var(--blue)"></div></div></div>
+      <div class="conf"><div class="l">主权储备</div><div class="v" style="color:var(--orange)">70%</div><div class="conf-bar"><div class="conf-fill" style="width:70%;background:var(--orange)"></div></div></div>
+    </div>
+  </div>
+
+  <!-- 联邦层面 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">美国联邦层面</div><div class="belief-desc">行政命令已生效 · BITCOIN Act 通过概率 ~15-20%</div></div><div class="belief-right"><span class="b b-g">行政命令</span><span class="b b-y">立法中</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="leg-card active">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:13px;font-weight:600">行政命令 — 战略比特币储备</div>
+          <span class="b b-g">已生效</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">2025-03-06 签署 · ~198,000 BTC · <strong style="color:var(--red)">不额外购买</strong>，仅保留没收的 BTC</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">象征意义 > 实质 — 把"是否持有"变成了"持有多少"</div>
+      </div>
+      <div class="leg-card pending">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:13px;font-weight:600">BITCOIN Act of 2025</div>
+          <span class="b b-y">委员会阶段</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">5 年购买 100 万 BTC（占总供应 4.8%）· 持有至少 20 年 · 需 ~$1,000 亿预算</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">通过概率 ~15-20% · 最早 2026 H2-2027 投票 · 财政约束是主要障碍</div>
+      </div>
+      <div class="leg-card active">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:13px;font-weight:600">CLARITY Act — BTC 定义为数字商品</div>
+          <span class="b b-g">过众议院</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">归 CFTC 监管 · 参议院投票预计 2026 Q1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 州级立法 -->
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">美国州级立法 — 真正落地的前线</div><div class="belief-desc">3 州已立法 · FL/UT 2026 跟进 · 三种模式</div></div><div class="belief-right"><span class="b b-g">3 州已立法</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <div class="sep" style="margin-top:0">已立法</div>
+      <div class="leg-card active">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:600">New Hampshire — HB 302 (首个)</div>
+          <span class="b b-g">2025-05 签署</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">最多 5% 州资金投资 BTC/贵金属 · 2025-11 发行首个 BTC 市政债 $1 亿</div>
+      </div>
+      <div class="leg-card active">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:600">Texas — SB 21</div>
+          <span class="b b-g">2025-06 签署</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">建立德州战略 BTC 储备 · 2025-11 购买 ~$500 万 IBIT（占位）</div>
+      </div>
+      <div class="leg-card active" style="border-left-color:var(--yellow)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:600">Arizona — HB 2749</div>
+          <span class="b b-y">仅被动</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">仅用没收资产建立储备，不允许主动购买 · 范围最窄</div>
+      </div>
+
+      <div class="sep">2026 年活跃</div>
+      <div class="leg-card pending">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:600">Florida — HB 1039</div>
+          <span class="b b-y">2026 会期</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">建立战略加密储备基金，CFO 可投公共资金</div>
+      </div>
+      <div class="leg-card pending">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:600">Utah — HB 230</div>
+          <span class="b b-y">众议院 8-1 通过</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2)">最多 5% 州资金投资数字资产 · 进参议院</div>
+      </div>
+
+      <div class="sep">已失败</div>
+      <div style="font-size:12px;color:var(--text3);padding:8px 14px;background:var(--bg3);border-radius:var(--radius);border: 1px solid var(--border)">Montana、North Dakota、Pennsylvania、Wyoming（2025 轮）— 未通过委员会</div>
+
+      <div class="ins info" style="margin-top:12px">
+        <strong>州级立法模式</strong>
+        <div style="margin-top:6px;font-size:12px">
+          <strong style="color:var(--green)">主动投资型</strong>（NH, TX, UT, FL）：州财务官可将 x% 公共资金投资 BTC/ETF<br>
+          <strong style="color:var(--yellow)">被动积累型</strong>（AZ）：仅用没收资产，不主动购买<br>
+          <strong style="color:var(--text2)">共识</strong>：ETF 是首选工具 · 5% 上限 · 报告义务更严
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全球 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">全球进展 — 各国政府 BTC 持仓</div><div class="belief-desc">~534,000 BTC · 约占总供应 2.5%</div></div><div class="belief-right"><span class="b b-gr">10+ 国探索</span><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <table class="tbl">
+        <thead><tr><th>#</th><th>国家</th><th style="text-align:right">BTC 数量</th><th>状态</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td style="font-weight:600">美国</td><td class="mono" style="text-align:right">207,189</td><td><span class="b b-g">已确认</span></td><td style="font-size:11px;color:var(--text3)">行政命令储备</td></tr>
+          <tr><td class="mono">2</td><td style="font-weight:600">中国</td><td class="mono" style="text-align:right">~194,000</td><td><span class="b b-gr">估计</span></td><td style="font-size:11px;color:var(--text3)">未公开承认</td></tr>
+          <tr><td class="mono">3</td><td style="font-weight:600">英国</td><td class="mono" style="text-align:right">~61,000</td><td><span class="b b-g">已确认</span></td><td style="font-size:11px;color:var(--text3)">没收资产，未建储备</td></tr>
+          <tr><td class="mono">4</td><td style="font-weight:600">乌克兰</td><td class="mono" style="text-align:right">46,351</td><td><span class="b b-g">已确认</span></td><td style="font-size:11px;color:var(--text3)">捐赠 + 没收</td></tr>
+          <tr style="background:rgba(240,192,32,.04)"><td class="mono">5</td><td style="font-weight:600">不丹</td><td class="mono" style="text-align:right">13,029</td><td><span class="b b-g">已确认</span></td><td style="font-size:11px;color:var(--yellow)">国有挖矿（水电）· 占 GDP 28%</td></tr>
+          <tr><td class="mono">6</td><td style="font-weight:600">萨尔瓦多</td><td class="mono" style="text-align:right">6,002</td><td><span class="b b-g">已确认</span></td><td style="font-size:11px;color:var(--text3)">全球首个 BTC 法定货币</td></tr>
+          <tr><td class="mono">7</td><td style="font-weight:600">阿联酋</td><td class="mono" style="text-align:right">4,748</td><td><span class="b b-g">已确认</span></td><td></td></tr>
+          <tr><td class="mono">8</td><td style="font-weight:600">芬兰</td><td class="mono" style="text-align:right">1,981</td><td><span class="b b-g">已确认</span></td><td style="font-size:11px;color:var(--text3)">没收资产</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sep">立法/提案进展</div>
+      <div class="comp"><div style="font-weight:500">巴西</div><span class="b b-y">立法中</span><div style="font-size:11px;color:var(--text3)">最多 5% 外汇储备配置 BTC</div></div>
+      <div class="comp"><div style="font-weight:500">捷克</div><span class="b b-y">研究中</span><div style="font-size:11px;color:var(--text3)">央行考虑最多 5% 储备（€1400 亿）</div></div>
+      <div class="comp" style="background:rgba(240,192,32,.04)"><div style="font-weight:500">瑞士</div><span class="b b-o">征签中</span><div style="font-size:11px;color:var(--yellow)">公民倡议要求 SNB 持有 BTC · 2026 Q2 截止 · 全球首次公投</div></div>
+      <div class="comp"><div style="font-weight:500">俄罗斯</div><span class="b b-y">提案中</span><div style="font-size:11px;color:var(--text3)">普京称赞 BTC 替代外汇储备</div></div>
+      <div class="comp"><div style="font-weight:500">日本 / 波兰</div><span class="b b-gr">悬而未决</span><div style="font-size:11px;color:var(--text3)">储备提案已提交</div></div>
+      <div class="comp" style="border-left:3px solid var(--red)"><div style="font-weight:500">德国</div><span class="b b-r">反面</span><div style="font-size:11px;color:var(--text3)">2024 年出售全部没收 BTC · 持仓归零</div></div>
+    </div>
+  </div>
+
+  <!-- 供给冲击分析 -->
+  <div class="belief"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">供给侧冲击分析</div><div class="belief-desc">年新增供给 ~16.4 万 BTC · BITCOIN Act 购买量 20 万/年 > 年产量</div></div><div class="belief-right"><span class="arrow">▼</span></div></div>
+    <div class="belief-body">
+      <table class="tbl">
+        <thead><tr><th>场景</th><th style="text-align:right">额外买入</th><th style="text-align:right">占流通</th><th>影响</th></tr></thead>
+        <tbody>
+          <tr><td>仅联邦行政命令</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0%</td><td style="font-size:11px;color:var(--text3)">象征性</td></tr>
+          <tr><td>州级累计（5 年）</td><td class="mono" style="text-align:right">5-10 万</td><td class="mono" style="text-align:right">~0.5%</td><td style="font-size:11px;color:var(--yellow)">温和</td></tr>
+          <tr style="background:rgba(52,211,153,.04)"><td style="font-weight:600">BITCOIN Act 通过</td><td class="mono" style="text-align:right;font-weight:600">100 万</td><td class="mono" style="text-align:right;font-weight:600">~5%</td><td style="font-size:11px;color:var(--green);font-weight:600">重大供给冲击</td></tr>
+          <tr style="background:rgba(52,211,153,.04)"><td style="font-weight:600">全球多国跟进</td><td class="mono" style="text-align:right;font-weight:600">50-200 万</td><td class="mono" style="text-align:right;font-weight:600">2.5-10%</td><td style="font-size:11px;color:var(--green);font-weight:600">供给危机</td></tr>
+        </tbody>
+      </table>
+      <div class="ins warn" style="margin-top:10px">
+        <strong>市场定价评估</strong>
+        "行政命令级别"已完全定价 · "BITCOIN Act 通过"定价约 20-30% · "全球储备竞赛"几乎未定价<br>
+        Polymarket 储备概率：32%（从 21% 升至）— 突破 50% 为加仓信号
+      </div>
+    </div>
+  </div>
+
+  <!-- 拐点 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">储备立法拐点</div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">CLARITY Act 参议院投票</div><div class="tp-sig">BTC 正式定义为数字商品 — 制度性确认</div></div><span class="tp-time">2026 Q1</span><span class="b b-g">利好</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">瑞士公民倡议签名截止</div><div class="tp-sig">全球首次 BTC 央行储备公投 — 叙事催化剂</div></div><span class="tp-time">2026 Q2</span><span class="b b-g">利好</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Florida / Utah 州储备立法投票</div><div class="tp-sig">州级储备扩展</div></div><span class="tp-time">2026 H1</span><span class="b b-g">利好</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Polymarket 储备概率突破 50%</div><div class="tp-sig">市场预期拐点 — 加仓信号</div></div><span class="tp-time">持续监控</span><span class="b b-g">加仓</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">BITCOIN Act 参议院推进</div><div class="tp-sig">联邦级重大催化剂 — 100 万 BTC / 5 年</div></div><span class="tp-time">2026 H2-2027</span><span class="b b-g">利好</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">美国撤销行政命令 + 州级回退</div><div class="tp-sig">⚠️ 假设 #4 证伪条件</div></div><span class="tp-time">2028 大选</span><span class="b b-r">止损</span></div>
+    <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">主要国家禁止 BTC</div><div class="tp-sig">⚠️ 假设 #2 证伪条件</div></div><span class="tp-time">持续监控</span><span class="b b-r">止损</span></div>
+  </div>
+
+  <!-- 关键时间线 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">关键时间节点</div>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;font-size:11px">
+      <div style="padding:12px 8px;background:rgba(52,211,153,.08);border-radius:6px;border:1px solid rgba(52,211,153,.15)"><div style="color:var(--green);font-weight:600">2026 Q1</div><div style="color:var(--text3);margin-top:4px">CLARITY Act</div></div>
+      <div style="padding:12px 8px;background:rgba(249,115,22,.08);border-radius:6px;border:1px solid rgba(249,115,22,.15)"><div style="color:var(--orange);font-weight:600">2026 Q2</div><div style="color:var(--text3);margin-top:4px">瑞士公投</div></div>
+      <div style="padding:12px 8px;background:rgba(251,191,36,.08);border-radius:6px;border:1px solid rgba(251,191,36,.15)"><div style="color:var(--yellow);font-weight:600">2026 H1</div><div style="color:var(--text3);margin-top:4px">FL/UT 投票</div></div>
+      <div style="padding:12px 8px;background:rgba(77,140,245,.08);border-radius:6px;border:1px solid rgba(77,140,245,.15)"><div style="color:var(--blue);font-weight:600">2026 H2</div><div style="color:var(--text3);margin-top:4px">BITCOIN Act</div></div>
+      <div style="padding:12px 8px;background:rgba(248,113,113,.08);border-radius:6px;border:1px solid rgba(248,113,113,.15)"><div style="color:var(--red);font-weight:600">2028</div><div style="color:var(--text3);margin-top:4px">总统大选</div></div>
+      <div style="padding:12px 8px;background:rgba(167,139,250,.08);border-radius:6px;border:1px solid rgba(167,139,250,.15)"><div style="color:var(--purple);font-weight:600">2028 Q2</div><div style="color:var(--text3);margin-top:4px">BTC 减半</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 4: 日志
+     ============================================================ -->
+<div id="log" class="page">
+
+  <!-- 底部确认清单 -->
+  <div class="card">
+    <div class="card-title">底部确认清单 <span class="b b-r">点击切换状态</span></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Fear & Greed ≤ 15</div><div class="check-detail">当前指数变化追踪</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">STH-NUPL 触发 (< -0.2)</div><div class="check-detail">短期持有者投降信号</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Funding Rate 连续 7 次负</div><div class="check-detail">多头完全投降</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">支撑试探 ≥ 2 次</div><div class="check-detail">当前 1 次（$60k，02-06）</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">易理华 ETH 仓清完/爆仓</div><div class="check-detail">50 万 ETH 杠杆仓被动卖压消除</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">MSTR 卖币/澄清</div><div class="check-detail">心理冲击风险落地</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">矿机债务清算完成</div><div class="check-detail">70-80k 高位加仓矿机资不抵债</div></div>
+  </div>
+
+  <!-- 更新日志 -->
+  <div class="card">
+    <div class="card-title">更新日志 <span class="b b-b">事件 → 影响假设 → 调概率 → 记录</span></div>
+    <div class="log-form" id="logForm">
+      <input type="date" id="logDate" value="2026-02-21">
+      <input type="text" id="logEvent" placeholder="事件/证据描述...">
+      <input type="text" id="logProb" placeholder="概率调整...">
+      <button onclick="addLog()">添加</button>
+    </div>
+    <div style="max-height:500px;overflow-y:auto">
+      <table class="log-tbl" id="logTbl">
+        <thead><tr><th style="width:100px">日期</th><th>事件/证据</th><th style="width:220px">概率调整</th></tr></thead>
+        <tbody id="logBody">
+          <tr><td class="mono" style="color:var(--text3)">2026-02-20</td><td>IBIT 13F Q4 数据更新 — 减 IBIT 不减 crypto；Mubadala +46% 穿越崩盘；机构总数首降 14%</td><td>H1 机构采用 85% 维持；关注 Q1 是否连续下降</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-02-11</td><td>储备立法调研完成 — 联邦行政命令 + 3 州立法 + 10+ 国探索</td><td>H1 80%→<span class="b b-g">85%</span> · H2 75%→<span class="b b-g">80%</span> · 新增 H4 主权储备 <span class="b b-o">70%</span></td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-02-06</td><td>BTC $60k 暴跌（FTX 以来最大日跌 15%）· Funding 正（多头没投降）· 底部确认 4/7 未满足</td><td>触发信号但不充分 · 观察仓 · 等更多确认</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-02-05</td><td>初始化核心假设表格</td><td><span class="b b-y">H0 90%</span> <span class="b b-g">H1 80%</span> <span class="b b-b">H2 75%</span> <span class="b b-p">H3 85%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 所有拐点汇总 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">所有拐点汇总 <span class="b b-gr">点击切换状态: ○→◑→●→●负</span></div>
+
+    <div class="sep" style="margin-top:0">底部 / 市场结构</div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">易理华 ETH 仓清完</strong><div style="font-size:11px;color:var(--text3)">50 万 ETH 杠杆仓 · 被动卖压消除</div></div><span class="b b-y">关键</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">MSTR 卖币风险</strong><div style="font-size:11px;color:var(--text3)">可能卖 / 需澄清 · 心理冲击</div></div><span class="b b-r">风险</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Funding Rate 连续 7 次负</strong><div style="font-size:11px;color:var(--text3)">多头完全投降 · 抄底指标</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">支撑试探 ≥ 2 次</strong><div style="font-size:11px;color:var(--text3)">当前 1 次 · 底部确认</div></div><span class="b b-g">加仓</span></div>
+
+    <div class="sep">机构化</div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">养老金直接配 BTC ETF</strong><div style="font-size:11px;color:var(--text3)">"深化"阶段标志 · 持续监控</div></div><span class="b b-g">强利好</span></div>
+    <div class="tp-summary bear"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">ETF 大规模净流出（30 天 > $1B）</strong><div style="font-size:11px;color:var(--text3)">假设 #1 证伪条件</div></div><span class="b b-r">止损</span></div>
+    <div class="tp-summary bear"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">机构数连续两季下降</strong><div style="font-size:11px;color:var(--text3)">Q4 首降 14% · 如持续 = 采用见顶</div></div><span class="b b-r">利空</span></div>
+
+    <div class="sep">储备立法</div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">CLARITY Act 参议院通过</strong><div style="font-size:11px;color:var(--text3)">BTC 定义为数字商品 · 2026 Q1</div></div><span class="b b-g">利好</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">瑞士公投触发</strong><div style="font-size:11px;color:var(--text3)">全球首次 BTC 央行储备公投 · 2026 Q2</div></div><span class="b b-g">利好</span></div>
+    <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Polymarket 储备概率 > 50%</strong><div style="font-size:11px;color:var(--text3)">当前 32% · 市场预期拐点</div></div><span class="b b-g">加仓</span></div>
+    <div class="tp-summary bear"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">美国撤销行政命令 + 州级回退</strong><div style="font-size:11px;color:var(--text3)">假设 #4 证伪条件 · 2028 大选</div></div><span class="b b-r">止损</span></div>
+
+    <div class="sep">MSTR 风险</div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">MSTR Nasdaq 100 权重 < 0.10%</strong><div style="font-size:11px;color:var(--text3)">当前 0.13% · 连续 2 月末 + 排名 >100 → 季中移除</div></div><span class="b b-r">风险</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">MSTR 股价 < $75</strong><div style="font-size:11px;color:var(--text3)">当前 $125 · $63 = 季中移除触发线</div></div><span class="b b-r">风险</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">BTC 跌破 $55K（MSTR 折价区）</strong><div style="font-size:11px;color:var(--text3)">MSTR 进入 Nasdaq 剔除区</div></div><span class="b b-r">风险</span></div>
+  </div>
+
+  <!-- 催化剂历史 -->
+  <div class="card" style="margin-top:0">
+    <div class="card-title">催化剂演进历史</div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;gap:12px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius)"><span class="mono" style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0">2023</span><span style="font-size:12px">ETF 获批预期</span></div>
+      <div style="display:flex;gap:12px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius)"><span class="mono" style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0">2024 H1</span><span style="font-size:12px">ETF 流入规模超预期</span></div>
+      <div style="display:flex;gap:12px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius)"><span class="mono" style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0">2024 H2</span><span style="font-size:12px">总统大选 + 监管转向友好</span></div>
+      <div style="display:flex;gap:12px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius)"><span class="mono" style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0">2025 H1</span><span style="font-size:12px">战略比特币储备叙事爆发</span></div>
+      <div style="display:flex;gap:12px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius)"><span class="mono" style="font-size:11px;color:var(--text3);width:80px;flex-shrink:0">2025 H2</span><span style="font-size:12px">Bitcoin treasury companies 崛起</span></div>
+      <div style="display:flex;gap:12px;padding:8px 12px;background:rgba(240,192,32,.06);border-radius:var(--radius);border:1px solid rgba(240,192,32,.15)"><span class="mono" style="font-size:11px;color:var(--yellow);width:80px;flex-shrink:0">未来</span><span style="font-size:12px;color:var(--yellow)">财富机构推荐 → 退休金可购买 → 国家储备竞赛 → 2028 减半</span></div>
+    </div>
+    <div class="ins info" style="margin-top:10px">
+      <strong>核心洞察</strong>
+      催化剂导致了谢林点（Schelling Point），每个阶段都有新的叙事推动价格发现。BTC 不缺催化剂。
+    </div>
+  </div>
+
+  <div class="ins info">
+    <strong>使用说明</strong>
+    新事件发生时：1. 判断影响哪个假设 → 2. 到对应页面更新拐点状态（点击切换 ○→◑→●→●负）→ 3. 调总览页概率滑块 → 4. 在此添加日志。所有修改自动保存浏览器 localStorage。
+  </div>
+</div>
+
+<footer>
+  本看板基于公开数据和分析整理，仅供投资研究参考<br>
+  拐点可点击切换 · 概率可拖动 · 底部清单可勾选 · 日志可添加 · 修改自动保存 localStorage
+</footer>
+</div>
+
+<script>
+let prices={bear:65,base:175,bull:500};
+
+function gi(id){return parseFloat(document.getElementById(id).value)||0}
+function so(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function fmtK(v){return v>=1000?'$'+(v/1000).toFixed(0)+'M':'$'+Math.round(v)+'k'}
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+function upProb(k,v){
+  v=Math.max(0,Math.min(100,parseInt(v)||0));
+  const keys=['bear','base','bull'],others=keys.filter(x=>x!==k);
+  document.getElementById('sl-'+k).value=v;
+  const rem=100-v;
+  const ov=others.map(x=>parseInt(document.getElementById('sl-'+x).value));
+  const os=ov.reduce((a,b)=>a+b,0);
+  if(os>0){let al=0;others.forEach((x,i)=>{const sh=i===others.length-1?rem-al:Math.round((ov[i]/os)*rem);document.getElementById('sl-'+x).value=sh;document.getElementById('pr-'+x).textContent=sh+'%';al+=sh})}
+  else{const h=Math.floor(rem/2);document.getElementById('sl-'+others[0]).value=h;document.getElementById('pr-'+others[0]).textContent=h+'%';document.getElementById('sl-'+others[1]).value=rem-h;document.getElementById('pr-'+others[1]).textContent=(rem-h)+'%'}
+  document.getElementById('pr-'+k).textContent=v+'%';
+  calcEV();save();
+}
+
+function calcEV(){
+  prices.bear=gi('sp-bear');prices.base=gi('sp-base');prices.bull=gi('sp-bull');
+  const dr=gi('m-discount'),yrs=gi('m-years');
+  const df=1/Math.pow(1+dr/100,yrs);
+  so('df-display',df.toFixed(3));
+
+  const pb=+document.getElementById('sl-bear').value,pn=+document.getElementById('sl-base').value,po=+document.getElementById('sl-bull').value;
+
+  // 各情景折现价
+  const dbear=prices.bear*df,dbase=prices.base*df,dbull=prices.bull*df;
+  so('dp-bear',fmtK(dbear));so('dp-base',fmtK(dbase));so('dp-bull',fmtK(dbull));
+
+  // 未来期望
+  const evFuture=(prices.bear*pb/100+prices.base*pn/100+prices.bull*po/100);
+  so('evFuture',fmtK(evFuture));
+
+  // 折现后期望
+  const ev=evFuture*df;
+  so('evV',fmtK(ev));so('treeEV',fmtK(ev));
+
+  document.getElementById('evF').textContent='$'+prices.bear+'k×'+pb+'% + $'+prices.base+'k×'+pn+'% + $'+prices.bull+'k×'+po+'%';
+  save();
+}
+
+function cycleTp(el){const d=el.querySelector('.tp-dot');cycle(d);save()}
+function cycleTpDot(el){cycle(el);save()}
+function cycle(d){const s=['pending','approaching','triggered','negative'];const c=s.findIndex(x=>d.classList.contains(x));const nx=(c+1)%s.length;s.forEach(x=>d.classList.remove(x));d.classList.add(s[nx])}
+
+function toggleCheck(el){
+  if(el.classList.contains('checked')){el.classList.remove('checked');el.classList.remove('partial')}
+  else if(el.classList.contains('partial')){el.classList.remove('partial');el.classList.add('checked')}
+  else{el.classList.add('partial')}
+  save();
+}
+
+function addLog(){
+  const dt=document.getElementById('logDate').value,ev=document.getElementById('logEvent').value,pr=document.getElementById('logProb').value;
+  if(!ev)return;
+  const tb=document.getElementById('logBody'),tr=document.createElement('tr');
+  tr.innerHTML=`<td class="mono" style="color:var(--text3)">${dt}</td><td>${ev}</td><td style="font-size:11px">${pr||'-'}</td>`;
+  tb.insertBefore(tr,tb.firstChild);
+  document.getElementById('logEvent').value='';document.getElementById('logProb').value='';
+  save();
+}
+
+function save(){
+  const st={
+    probs:{bear:+document.getElementById('sl-bear').value,base:+document.getElementById('sl-base').value,bull:+document.getElementById('sl-bull').value},
+    prices:{bear:gi('sp-bear'),base:gi('sp-base'),bull:gi('sp-bull')},
+    discount:{rate:gi('m-discount'),years:gi('m-years')},
+    tp:[],checks:[]
+  };
+  document.querySelectorAll('.tp-dot').forEach(d=>{st.tp.push(['pending','approaching','triggered','negative'].find(s=>d.classList.contains(s))||'pending')});
+  document.querySelectorAll('.check-item').forEach(el=>{st.checks.push(el.classList.contains('checked')?2:el.classList.contains('partial')?1:0)});
+  localStorage.setItem('btc-v1',JSON.stringify(st));
+}
+
+function load(){
+  const r=localStorage.getItem('btc-v1');if(!r)return;
+  try{
+    const st=JSON.parse(r);
+    if(st.probs){['bear','base','bull'].forEach(k=>{document.getElementById('sl-'+k).value=st.probs[k];document.getElementById('pr-'+k).textContent=st.probs[k]+'%'})}
+    if(st.prices){['bear','base','bull'].forEach(k=>{const el=document.getElementById('sp-'+k);if(el&&st.prices[k]!=null)el.value=st.prices[k]})}
+    if(st.discount){const dr=document.getElementById('m-discount'),yr=document.getElementById('m-years');if(dr&&st.discount.rate!=null)dr.value=st.discount.rate;if(yr&&st.discount.years!=null)yr.value=st.discount.years}
+    if(st.tp){const dots=document.querySelectorAll('.tp-dot');dots.forEach((d,i)=>{if(st.tp[i]){['pending','approaching','triggered','negative'].forEach(s=>d.classList.remove(s));d.classList.add(st.tp[i])}})}
+    if(st.checks){document.querySelectorAll('.check-item').forEach((el,i)=>{if(st.checks[i]===2){el.classList.add('checked')}else if(st.checks[i]===1){el.classList.add('partial')}})}
+  }catch(e){console.warn(e)}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{load();calcEV()});
+</script>
+</body>
+</html>
