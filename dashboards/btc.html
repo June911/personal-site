@@ -146,6 +146,26 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
 .check-label { font-size: 12px; font-weight: 600; flex: 1; }
 .check-detail { font-size: 11px; color: var(--text3); }
 
+/* Anchor calculator */
+.anchor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.anchor-card{padding:14px 16px;background:var(--bg2);border:var(--border-w) solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+.anchor-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.anchor-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.anchor-name{font-size:13px;font-weight:700}.anchor-desc{font-size:10px;color:var(--text3);margin-top:1px}
+.anchor-price{font-size:22px;font-weight:900;color:var(--yellow);margin-left:auto}
+.anchor-params{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text3);align-items:center}
+.anchor-params label{display:flex;align-items:center;gap:4px}
+.anchor-summary{margin-top:16px;padding:16px;background:var(--bg2);border:var(--border-w) solid var(--border);border-radius:var(--radius)}
+
+/* Signal table */
+.sig-table{display:flex;flex-direction:column;gap:2px}
+.sig-row{display:grid;grid-template-columns:120px 110px 120px 50px 70px 50px;gap:8px;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);font-size:12px;border:1px solid var(--border)}
+.sig-row.sig-header{background:transparent;border:none;font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.05em;padding:4px 12px}
+.sig-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--text3)}
+.sig-dot.triggered{background:var(--green);border-color:var(--green);box-shadow:0 0 6px rgba(52,211,153,.4)}
+.sig-dot.triggered-top{background:var(--red);border-color:var(--red);box-shadow:0 0 6px rgba(248,113,113,.4)}
+.sig-dot.safe{background:transparent;border-color:var(--text3)}
+
 @media (max-width: 1000px) {
   .g2, .ga { grid-template-columns: 1fr; }
   .tree-branch { flex-direction: column; align-items: center; padding-top: 0; }
@@ -155,6 +175,9 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
   .inst-row { grid-template-columns: 30px 1fr 80px 80px 1fr; }
   .inst-row .hide-m { display: none; }
   .log-form { grid-template-columns: 1fr 1fr; }
+  .anchor-grid{grid-template-columns:1fr}
+  .sig-row{grid-template-columns:100px 1fr 90px 40px}
+  .sig-row .sig-wr,.sig-row .sig-tier{display:none}
 }
 </style>
 </head>
@@ -196,6 +219,8 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
   <button class="tab active" onclick="showPage('overview',this)">总览</button>
   <button class="tab" onclick="showPage('inst',this)">机构化</button>
   <button class="tab" onclick="showPage('legis',this)">储备立法</button>
+  <button class="tab" onclick="showPage('pricing',this)">定价</button>
+  <button class="tab" onclick="showPage('signals',this)">信号</button>
   <button class="tab" onclick="showPage('log',this)">日志</button>
 </div>
 
@@ -765,8 +790,8 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
     <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">STH-NUPL 触发 (< -0.2)</div><div class="check-detail">短期持有者投降信号</div></div>
     <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Funding Rate 连续 7 次负</div><div class="check-detail">多头完全投降</div></div>
     <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">支撑试探 ≥ 2 次</div><div class="check-detail">当前 1 次（$60k，02-06）</div></div>
-    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">易理华 ETH 仓清完/爆仓</div><div class="check-detail">50 万 ETH 杠杆仓被动卖压消除</div></div>
     <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">MSTR 卖币/澄清</div><div class="check-detail">心理冲击风险落地</div></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">MSTR Nasdaq 100 剔除风险</div><div class="check-detail">被动基金强制卖出 → 短期砸盘 → 买入机会（年度重平衡 12 月）</div></div>
     <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">矿机债务清算完成</div><div class="check-detail">70-80k 高位加仓矿机资不抵债</div></div>
   </div>
 
@@ -797,7 +822,6 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
     <div class="card-title">所有拐点汇总 <span class="b b-gr">点击切换状态: ○→◑→●→●负</span></div>
 
     <div class="sep" style="margin-top:0">底部 / 市场结构</div>
-    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">易理华 ETH 仓清完</strong><div style="font-size:11px;color:var(--text3)">50 万 ETH 杠杆仓 · 被动卖压消除</div></div><span class="b b-y">关键</span></div>
     <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">MSTR 卖币风险</strong><div style="font-size:11px;color:var(--text3)">可能卖 / 需澄清 · 心理冲击</div></div><span class="b b-r">风险</span></div>
     <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Funding Rate 连续 7 次负</strong><div style="font-size:11px;color:var(--text3)">多头完全投降 · 抄底指标</div></div><span class="b b-g">加仓</span></div>
     <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">支撑试探 ≥ 2 次</strong><div style="font-size:11px;color:var(--text3)">当前 1 次 · 底部确认</div></div><span class="b b-g">加仓</span></div>
@@ -839,6 +863,252 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
   <div class="ins info">
     <strong>使用说明</strong>
     新事件发生时：1. 判断影响哪个假设 → 2. 到对应页面更新拐点状态（点击切换 ○→◑→●→●负）→ 3. 调总览页概率滑块 → 4. 在此添加日志。所有修改自动保存浏览器 localStorage。
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 5: 定价锚定
+     ============================================================ -->
+<div id="pricing" class="page">
+  <div class="card">
+    <div class="card-title">多锚定价格计算器 <span class="b b-y">调参数看价格</span></div>
+    <div style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);flex-wrap:wrap;align-items:center">
+      <div style="font-size:11px;color:var(--text3)">BTC 流通量 <input class="mi" id="a-supply" type="number" value="19.8" step="0.1" style="width:55px" oninput="calcAnchors()"> M</div>
+      <div style="font-size:11px;color:var(--text3)">当前价 $<input class="mi" id="a-current" type="number" value="67" step="1" style="width:50px" oninput="calcAnchors()">k</div>
+      <div style="font-size:10px;color:var(--text3);margin-left:auto">BTC 没有现金流 · 定价靠可比市值和链上估值交叉验证</div>
+    </div>
+
+    <div class="anchor-grid">
+      <!-- 1. Gold -->
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div class="anchor-icon" style="background:rgba(240,192,32,.15);color:var(--yellow)">Au</div>
+          <div><div class="anchor-name">黄金市值比</div><div class="anchor-desc">数字黄金 · BTC 占黄金总市值</div></div>
+          <div class="anchor-price mono" id="ap-gold">$136k</div>
+        </div>
+        <div class="anchor-params">
+          <label>黄金市值 <input class="mi" id="a-gold-mcap" type="number" value="18" step="0.5" style="width:50px" oninput="calcAnchors()">T</label>
+          <label>占比 <input class="mi" id="a-gold-ratio" type="number" value="15" step="1" style="width:45px" oninput="calcAnchors()">%</label>
+        </div>
+      </div>
+
+      <!-- 2. Institutional -->
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div class="anchor-icon" style="background:rgba(52,211,153,.15);color:var(--green)">Fn</div>
+          <div><div class="anchor-name">机构配置比例</div><div class="anchor-desc">养老金+保险+财富管理配 BTC</div></div>
+          <div class="anchor-price mono" id="ap-inst">$126k</div>
+        </div>
+        <div class="anchor-params">
+          <label>全球 AUM <input class="mi" id="a-aum" type="number" value="250" step="10" style="width:55px" oninput="calcAnchors()">T</label>
+          <label>配比 <input class="mi" id="a-aum-pct" type="number" value="1" step="0.1" style="width:45px" oninput="calcAnchors()">%</label>
+        </div>
+      </div>
+
+      <!-- 3. M2 -->
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div class="anchor-icon" style="background:rgba(96,165,250,.15);color:var(--blue)">M2</div>
+          <div><div class="anchor-name">全球 M2 占比</div><div class="anchor-desc">BTC 市值占全球广义货币供给</div></div>
+          <div class="anchor-price mono" id="ap-m2">$53k</div>
+        </div>
+        <div class="anchor-params">
+          <label>全球 M2 <input class="mi" id="a-m2" type="number" value="105" step="5" style="width:55px" oninput="calcAnchors()">T</label>
+          <label>占比 <input class="mi" id="a-m2-pct" type="number" value="1" step="0.1" style="width:45px" oninput="calcAnchors()">%</label>
+        </div>
+      </div>
+
+      <!-- 4. Sovereign -->
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div class="anchor-icon" style="background:rgba(167,139,250,.15);color:var(--purple)">Sv</div>
+          <div><div class="anchor-name">主权储备需求</div><div class="anchor-desc">全球外汇储备配 BTC 的增量买盘</div></div>
+          <div class="anchor-price mono" id="ap-sov">$30k</div>
+        </div>
+        <div class="anchor-params">
+          <label>外汇储备 <input class="mi" id="a-fx" type="number" value="12" step="1" style="width:50px" oninput="calcAnchors()">T</label>
+          <label>配比 <input class="mi" id="a-fx-pct" type="number" value="5" step="1" style="width:45px" oninput="calcAnchors()">%</label>
+        </div>
+      </div>
+
+      <!-- 5. MVRV -->
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div class="anchor-icon" style="background:rgba(251,191,36,.15);color:var(--orange)">MV</div>
+          <div><div class="anchor-name">MVRV 链上估值</div><div class="anchor-desc">已实现市值 × MVRV 倍数 ÷ 流通量</div></div>
+          <div class="anchor-price mono" id="ap-mvrv">$66k</div>
+        </div>
+        <div class="anchor-params">
+          <label>已实现市值 <input class="mi" id="a-rcap" type="number" value="650" step="10" style="width:55px" oninput="calcAnchors()">B</label>
+          <label>MVRV <input class="mi" id="a-mvrv-r" type="number" value="2" step="0.1" style="width:45px" oninput="calcAnchors()">x</label>
+        </div>
+      </div>
+
+      <!-- 6. Mining cost -->
+      <div class="anchor-card">
+        <div class="anchor-head">
+          <div class="anchor-icon" style="background:rgba(248,113,113,.15);color:var(--red)">&#9874;</div>
+          <div><div class="anchor-name">矿工成本底</div><div class="anchor-desc">全网均电成本 · 物理硬底</div></div>
+          <div class="anchor-price mono" id="ap-mine">$45k</div>
+        </div>
+        <div class="anchor-params">
+          <label>均电成本 $<input class="mi" id="a-mine" type="number" value="45" step="5" style="width:50px" oninput="calcAnchors()">k</label>
+          <div style="font-size:10px;color:var(--text3)">低于此矿工关机 → 算力下降 → 难度调整</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Convergence bar -->
+    <div class="anchor-summary">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">锚定汇聚区间</div>
+      <div style="flex:1;height:24px;background:var(--bg);border-radius:12px;position:relative;border:1px solid var(--border);overflow:visible" id="anchor-bar"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--text3);font-family:var(--mono)">
+        <span>$0</span><span>$50k</span><span>$100k</span><span>$150k</span><span>$200k</span><span>$250k</span><span>$300k</span>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap" id="anchor-legend"></div>
+    </div>
+  </div>
+
+  <div class="ins info">
+    <strong>使用方法</strong>：调整各锚定的关键假设参数，观察隐含 BTC 价格。多个锚定汇聚的区间比单一数字更可信。矿工成本提供物理硬底，黄金比和机构配置提供趋势方向，MVRV 反映链上公允价值。
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 6: 信号面板
+     ============================================================ -->
+<div id="signals" class="page">
+  <div class="card">
+    <div class="card-title">信号仪表盘 <span class="b b-r" id="sig-count">0/8 底部信号</span> <span class="b b-g" id="sig-top-count">0/2 逃顶信号</span></div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:4px">输入当前值，自动判断是否触发。数据源：<a href="https://btc.x.fish/" target="_blank" style="color:var(--yellow)">btc.x.fish</a> · <a href="https://www.coinglass.com/" target="_blank" style="color:var(--yellow)">CoinGlass</a> · <a href="https://defillama.com/raises" target="_blank" style="color:var(--yellow)">DeFi Llama</a></div>
+
+    <div class="sep">抄底信号（BTC）</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border-left:3px solid var(--green)">
+      <strong>强信号组合</strong>：Ahr999 &lt; 0.45 + STH-NUPL &lt; -0.25 + Funding 连续负 + 多次试探支撑 = 高确信度买入
+    </div>
+
+    <div class="sig-table">
+      <div class="sig-row sig-header">
+        <div>指标</div><div>触发条件</div><div>当前值</div><div>状态</div><div class="sig-wr">180d胜率</div><div class="sig-tier">层级</div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>Ahr999</strong></div>
+        <div class="mono" style="font-size:11px">&lt; 0.45</div>
+        <div><input class="mi" id="sv-ahr999" type="number" value="" step="0.01" style="width:65px" placeholder="—" oninput="checkSignals()"></div>
+        <div><span class="sig-dot" id="sd-ahr999"></span></div>
+        <div class="sig-wr mono">100%</div>
+        <div class="sig-tier"><span class="b b-g" style="font-size:9px">一级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>STH-NUPL</strong></div>
+        <div class="mono" style="font-size:11px">&lt; -0.25</div>
+        <div><input class="mi" id="sv-sthnupl" type="number" value="" step="0.01" style="width:65px" placeholder="—" oninput="checkSignals()"></div>
+        <div><span class="sig-dot" id="sd-sthnupl"></span></div>
+        <div class="sig-wr mono">100%</div>
+        <div class="sig-tier"><span class="b b-g" style="font-size:9px">一级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>MVRV Z-Score</strong></div>
+        <div class="mono" style="font-size:11px">&lt; 0</div>
+        <div><input class="mi" id="sv-mvrvz" type="number" value="" step="0.1" style="width:65px" placeholder="—" oninput="checkSignals()"></div>
+        <div><span class="sig-dot" id="sd-mvrvz"></span></div>
+        <div class="sig-wr mono">80%</div>
+        <div class="sig-tier"><span class="b b-g" style="font-size:9px">一级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>Funding Rate</strong></div>
+        <div class="mono" style="font-size:11px">连续≥7次负</div>
+        <div><input class="mi" id="sv-funding" type="number" value="" step="1" style="width:50px" placeholder="—" oninput="checkSignals()"><span style="font-size:10px;color:var(--text3)">次</span></div>
+        <div><span class="sig-dot" id="sd-funding"></span></div>
+        <div class="sig-wr mono">93%</div>
+        <div class="sig-tier"><span class="b b-g" style="font-size:9px">一级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>稳定币增速</strong></div>
+        <div class="mono" style="font-size:11px">90d见底回升</div>
+        <div><select class="mi" id="sv-stablecoin" style="width:80px" onchange="checkSignals()"><option value="">—</option><option value="down">下降中</option><option value="bottom">见底</option><option value="up">回升中</option></select></div>
+        <div><span class="sig-dot" id="sd-stablecoin"></span></div>
+        <div class="sig-wr mono">75%</div>
+        <div class="sig-tier"><span class="b b-g" style="font-size:9px">一级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>Hash Ribbons</strong></div>
+        <div class="mono" style="font-size:11px">矿工投降结束</div>
+        <div><select class="mi" id="sv-hashribbons" style="width:80px" onchange="checkSignals()"><option value="">—</option><option value="normal">正常</option><option value="cap">投降中</option><option value="rec">恢复中</option><option value="buy">买入信号</option></select></div>
+        <div><span class="sig-dot" id="sd-hashribbons"></span></div>
+        <div class="sig-wr mono">78%</div>
+        <div class="sig-tier"><span class="b b-y" style="font-size:9px">二级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>Puell Multiple</strong></div>
+        <div class="mono" style="font-size:11px">&lt; 0.5</div>
+        <div><input class="mi" id="sv-puell" type="number" value="" step="0.1" style="width:65px" placeholder="—" oninput="checkSignals()"></div>
+        <div><span class="sig-dot" id="sd-puell"></span></div>
+        <div class="sig-wr mono">68%</div>
+        <div class="sig-tier"><span class="b b-y" style="font-size:9px">二级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>Fear &amp; Greed</strong></div>
+        <div class="mono" style="font-size:11px">&lt; 15</div>
+        <div><input class="mi" id="sv-fg" type="number" value="" step="1" style="width:65px" placeholder="—" oninput="checkSignals()"></div>
+        <div><span class="sig-dot" id="sd-fg"></span></div>
+        <div class="sig-wr mono">54%</div>
+        <div class="sig-tier"><span class="b b-r" style="font-size:9px">辅助</span></div>
+      </div>
+    </div>
+
+    <div class="sep" style="margin-top:20px">逃顶信号</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border-left:3px solid var(--red)">
+      <strong>过热链</strong>：VC 融资过热（上游）→ 项目方拿到钱 → ICO 供给增加 → 质量稀释 → 倍数压缩（下游）
+    </div>
+
+    <div class="sig-table">
+      <div class="sig-row sig-header">
+        <div>指标</div><div>触发条件</div><div>当前值</div><div>状态</div><div class="sig-wr">6M胜率</div><div class="sig-tier">层级</div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>VC 融资</strong></div>
+        <div class="mono" style="font-size:11px">3M均 &gt; $2.5B</div>
+        <div><input class="mi" id="sv-vc" type="number" value="" step="0.1" style="width:55px" placeholder="—" oninput="checkSignals()"><span style="font-size:10px;color:var(--text3)">B</span></div>
+        <div><span class="sig-dot" id="sd-vc"></span></div>
+        <div class="sig-wr mono">100%</div>
+        <div class="sig-tier"><span class="b b-g" style="font-size:9px">一级</span></div>
+      </div>
+
+      <div class="sig-row">
+        <div><strong>ICO 倍数</strong></div>
+        <div class="mono" style="font-size:11px">&lt; 1.5x + FDV膨胀</div>
+        <div><input class="mi" id="sv-ico" type="number" value="" step="0.1" style="width:55px" placeholder="—" oninput="checkSignals()"><span style="font-size:10px;color:var(--text3)">x</span></div>
+        <div><span class="sig-dot" id="sd-ico"></span></div>
+        <div class="sig-wr mono">TBD</div>
+        <div class="sig-tier"><span class="b b-y" style="font-size:9px">二级</span></div>
+      </div>
+    </div>
+
+    <!-- Signal flow -->
+    <div style="margin-top:20px;padding:14px;background:var(--bg3);border:2px solid var(--border);border-radius:var(--radius)">
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px">信号判断流程</div>
+      <div style="font-size:11px;color:var(--text2);line-height:2">
+        <div>信号触发 →</div>
+        <div style="padding-left:16px">├─ 过去 30 天已有信号？ → <span style="color:var(--yellow)">⚠️ 连续信号，放慢，仅建仓 15%</span></div>
+        <div style="padding-left:16px">├─ 政策救市信号？（降息/QE/财政）→ <span style="color:var(--green)">✅ 高确信 30%</span></div>
+        <div style="padding-left:16px">└─ VIX &gt; 50？→ <span style="color:var(--green)">✅ 极端恐慌，加大仓位</span></div>
+        <div style="padding-left:32px">VIX 40-50 → 正常建仓 · VIX &lt; 40（仅双跌）→ 谨慎 20%</div>
+      </div>
+    </div>
+
+    <div class="ins info" style="margin-top:12px">
+      <strong>使用说明</strong>：一级指标可单独使用，二级需配合其他指标，辅助仅用于验证。输入当前值后自动判断触发状态（绿点=买入信号，红点=卖出信号）。所有值自动保存 localStorage。
+    </div>
   </div>
 </div>
 
@@ -920,13 +1190,71 @@ function addLog(){
   save();
 }
 
+function calcAnchors(){
+  const s=(gi('a-supply')||19.8)*1e6,cur=(gi('a-current')||67)*1000;
+  const r={};
+  r.gold=(gi('a-gold-mcap')||18)*1e12*(gi('a-gold-ratio')||15)/100/s;
+  r.inst=(gi('a-aum')||250)*1e12*(gi('a-aum-pct')||1)/100/s;
+  r.m2=(gi('a-m2')||105)*1e12*(gi('a-m2-pct')||1)/100/s;
+  r.sov=(gi('a-fx')||12)*1e12*(gi('a-fx-pct')||5)/100/s;
+  r.mvrv=(gi('a-rcap')||650)*1e9*(gi('a-mvrv-r')||2)/s;
+  r.mine=(gi('a-mine')||45)*1000;
+  for(const k of Object.keys(r))so('ap-'+k,fmtK(r[k]/1000));
+  renderAnchorBar(r,cur);save();
+}
+
+function renderAnchorBar(r,cur){
+  const bar=document.getElementById('anchor-bar'),leg=document.getElementById('anchor-legend');
+  if(!bar||!leg)return;
+  const mx=300000;
+  const c={gold:'var(--yellow)',inst:'var(--green)',m2:'var(--blue)',sov:'var(--purple)',mvrv:'var(--orange)',mine:'var(--red)'};
+  const lb={gold:'黄金',inst:'机构',m2:'M2',sov:'主权',mvrv:'MVRV',mine:'矿工'};
+  bar.innerHTML='';leg.innerHTML='';
+  // Current price line
+  if(cur>0){const cp=Math.min(cur/mx*100,99);bar.innerHTML+=`<div style="position:absolute;left:${cp}%;top:-2px;bottom:-2px;width:2px;background:var(--white);z-index:2;opacity:.6" title="当前价 $${Math.round(cur/1000)}k"></div><div style="position:absolute;left:${cp}%;top:-16px;transform:translateX(-50%);font-size:9px;color:var(--white);font-family:var(--mono);white-space:nowrap">$${Math.round(cur/1000)}k</div>`}
+  for(const[k,v]of Object.entries(r).sort((a,b)=>a[1]-b[1])){
+    const p=Math.min(v/mx*100,99);
+    const pk=Math.round(v/1000);
+    const upside=cur>0?Math.round((v/cur-1)*100):0;
+    const upsideStr=cur>0?(upside>=0?'+'+upside+'%':upside+'%'):'';
+    bar.innerHTML+=`<div style="position:absolute;left:${p}%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:${c[k]};border:2px solid rgba(0,0,0,.4);z-index:1;cursor:default" title="${lb[k]}: $${pk}k (${upsideStr})"></div>`;
+    leg.innerHTML+=`<div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:8px;height:8px;border-radius:50%;background:${c[k]}"></div>${lb[k]} <span class="mono" style="color:var(--text2)">$${pk}k</span><span class="mono" style="font-size:9px;color:${upside>=0?'var(--green)':'var(--red)'}">${upsideStr}</span></div>`;
+  }
+}
+
+function checkSignals(){
+  const d={
+    ahr999:{t:'b',f:v=>v!==''&&v<0.45},sthnupl:{t:'b',f:v=>v!==''&&v<-0.25},
+    mvrvz:{t:'b',f:v=>v!==''&&v<0},funding:{t:'b',f:v=>v!==''&&v>=7},
+    stablecoin:{t:'b',f:v=>v==='up'},hashribbons:{t:'b',f:v=>v==='buy'},
+    puell:{t:'b',f:v=>v!==''&&v<0.5},fg:{t:'b',f:v=>v!==''&&v<15},
+    vc:{t:'t',f:v=>v!==''&&v>2.5},ico:{t:'t',f:v=>v!==''&&v<1.5&&v>0}
+  };
+  let bc=0,tc=0;
+  for(const[k,def]of Object.entries(d)){
+    const el=document.getElementById('sv-'+k);if(!el)continue;
+    const v=el.tagName==='SELECT'?el.value:(el.value===''?'':parseFloat(el.value));
+    const hit=def.f(v);
+    const dot=document.getElementById('sd-'+k);
+    if(dot)dot.className='sig-dot'+(v===''||v===null?'':hit?(def.t==='t'?' triggered-top':' triggered'):' safe');
+    if(hit){def.t==='b'?bc++:tc++}
+  }
+  const sc=document.getElementById('sig-count'),stc=document.getElementById('sig-top-count');
+  if(sc){sc.textContent=bc+'/8 底部信号';sc.className='b '+(bc>=3?'b-g':bc>=1?'b-y':'b-r')}
+  if(stc){stc.textContent=tc+'/2 逃顶信号';stc.className='b '+(tc>=1?'b-r':'b-g')}
+  save();
+}
+
 function save(){
   const st={
     probs:{bear:+document.getElementById('sl-bear').value,base:+document.getElementById('sl-base').value,bull:+document.getElementById('sl-bull').value},
     prices:{bear:gi('sp-bear'),base:gi('sp-base'),bull:gi('sp-bull')},
     discount:{rate:gi('m-discount'),years:gi('m-years')},
-    tp:[],checks:[]
+    tp:[],checks:[],
+    anchors:{goldMcap:gi('a-gold-mcap'),goldRatio:gi('a-gold-ratio'),supply:gi('a-supply'),current:gi('a-current'),aum:gi('a-aum'),aumPct:gi('a-aum-pct'),m2:gi('a-m2'),m2Pct:gi('a-m2-pct'),mine:gi('a-mine'),fx:gi('a-fx'),fxPct:gi('a-fx-pct'),rcap:gi('a-rcap'),mvrvR:gi('a-mvrv-r')},
+    signals:{}
   };
+  const sigs={};['ahr999','sthnupl','mvrvz','funding','stablecoin','hashribbons','puell','fg','vc','ico'].forEach(k=>{const el=document.getElementById('sv-'+k);if(el)sigs[k]=el.value});st.signals=sigs;
   document.querySelectorAll('.tp-dot').forEach(d=>{st.tp.push(['pending','approaching','triggered','negative'].find(s=>d.classList.contains(s))||'pending')});
   document.querySelectorAll('.check-item').forEach(el=>{st.checks.push(el.classList.contains('checked')?2:el.classList.contains('partial')?1:0)});
   localStorage.setItem('btc-v1',JSON.stringify(st));
@@ -941,10 +1269,12 @@ function load(){
     if(st.discount){const dr=document.getElementById('m-discount'),yr=document.getElementById('m-years');if(dr&&st.discount.rate!=null)dr.value=st.discount.rate;if(yr&&st.discount.years!=null)yr.value=st.discount.years}
     if(st.tp){const dots=document.querySelectorAll('.tp-dot');dots.forEach((d,i)=>{if(st.tp[i]){['pending','approaching','triggered','negative'].forEach(s=>d.classList.remove(s));d.classList.add(st.tp[i])}})}
     if(st.checks){document.querySelectorAll('.check-item').forEach((el,i)=>{if(st.checks[i]===2){el.classList.add('checked')}else if(st.checks[i]===1){el.classList.add('partial')}})}
+    if(st.anchors){const m={goldMcap:'a-gold-mcap',goldRatio:'a-gold-ratio',supply:'a-supply',current:'a-current',aum:'a-aum',aumPct:'a-aum-pct',m2:'a-m2',m2Pct:'a-m2-pct',mine:'a-mine',fx:'a-fx',fxPct:'a-fx-pct',rcap:'a-rcap',mvrvR:'a-mvrv-r'};for(const[k,id]of Object.entries(m)){const el=document.getElementById(id);if(el&&st.anchors[k]!=null)el.value=st.anchors[k]}}
+    if(st.signals){for(const[k,v]of Object.entries(st.signals)){const el=document.getElementById('sv-'+k);if(el)el.value=v}}
   }catch(e){console.warn(e)}
 }
 
-document.addEventListener('DOMContentLoaded',()=>{load();calcEV()});
+document.addEventListener('DOMContentLoaded',()=>{load();calcEV();calcAnchors();checkSignals()});
 </script>
 </body>
 </html>
