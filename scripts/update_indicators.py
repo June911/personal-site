@@ -274,24 +274,35 @@ def fetch_fear_greed():
 
 
 def fetch_funding_rate():
-    """BTC perpetual funding rate from Bybit (no US geo-block)."""
+    """BTC perpetual funding rate from dYdX (decentralized, no geo-block).
+
+    dYdX uses 1-hour funding intervals. We aggregate into 8-hour buckets
+    to match the original Binance/Bybit 8-hour funding rate logic.
+    """
     try:
+        # 21 x 8h intervals = 7 days → need 168 hourly records
         r = requests.get(
-            "https://api.bybit.com/v5/market/funding/history",
-            params={"category": "linear", "symbol": "BTCUSDT", "limit": 21},
-            timeout=10,
+            "https://indexer.dydx.trade/v4/historicalFunding/BTC-USD",
+            params={"limit": 168},
+            timeout=15,
         )
         data = r.json()
-        if data.get("retCode") != 0:
-            return None
-        items = data["result"]["list"]
+        items = data.get("historicalFunding", [])
         if not items:
             return None
-        # Bybit returns newest first
-        rates = [float(d["fundingRate"]) * 100 for d in reversed(items)]
-        current_rate = rates[-1]
+
+        # dYdX returns newest first; aggregate every 8 hours
+        hourly_rates = [float(d["rate"]) * 100 for d in reversed(items)]
+        bucket_rates = []
+        for i in range(0, len(hourly_rates) - 7, 8):
+            bucket = sum(hourly_rates[i : i + 8])
+            bucket_rates.append(bucket)
+        if not bucket_rates:
+            return None
+
+        current_rate = bucket_rates[-1]
         neg_streak = 0
-        for rate in reversed(rates):
+        for rate in reversed(bucket_rates):
             if rate < 0:
                 neg_streak += 1
             else:
@@ -307,7 +318,7 @@ def fetch_funding_rate():
         triggered = level in ("准备", "行动")
         return {
             "value": neg_streak,
-            "display": f"当前 {current_rate:.4f}%，连续负 {neg_streak} 次",
+            "display": f"当前 {current_rate:.4f}% (8h)，连续负 {neg_streak} 次",
             "triggered": triggered,
             "level": level,
             "current_rate": round(current_rate, 4),
@@ -341,9 +352,12 @@ def fetch_stablecoin_supply():
 
 
 def fetch_vc_funding():
-    """Crypto VC funding from DeFiLlama."""
+    """Crypto VC funding from DeFiLlama (NOTE: endpoint moved to paid plan 2026-02)."""
     try:
         r = requests.get("https://api.llama.fi/raises", timeout=15)
+        if "upgrade" in r.text.lower()[:100]:
+            print("  VC Funding: DeFiLlama /raises is now paid-only")
+            return None
         data = r.json()
         raises = data.get("raises", [])
         if not raises:

@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-02-24T13:13:27Z",
+  "updated_at": "2026-02-24T13:56:53Z",
   "indicators": {
     "ahr999": {
       "value": 0.28,
       "display": "0.28 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 63061.71
+      "btc_price": 62963.21
     },
     "nupl": {
       "value": 0.194,
@@ -39,10 +39,11 @@
       "level": "重仓"
     },
     "funding-rate": {
-      "value": null,
-      "display": "获取失败",
+      "value": 0,
+      "display": "当前 0.0004% (8h)，连续负 0 次",
       "triggered": false,
-      "level": null
+      "level": null,
+      "current_rate": 0.0004
     },
     "stablecoin-supply": {
       "value": 1.2,
