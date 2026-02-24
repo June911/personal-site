@@ -25,15 +25,13 @@ ROOT_DIR = SCRIPT_DIR.parent
 DATA_JSON = ROOT_DIR / "indicators" / "data.json"
 HISTORY_CSV = ROOT_DIR / "indicators" / "history.csv"
 
-GLASSNODE_API_KEY = os.environ.get("GLASSNODE_API_KEY", "")
-
 # ============ Parameters ============
 
 BTC_GENESIS = datetime(2009, 1, 3)
 AHR999_ACTION = 0.45
 FNG_LEVELS = {"重仓": 10, "行动": 15, "准备": 20, "关注": 25}
 FUNDING_CONSECUTIVE = {"关注": 3, "准备": 5, "行动": 7}
-STH_NUPL_LEVELS = {"关注": -0.15, "行动": -0.25}
+NUPL_LEVELS = {"关注": 0.1, "行动": 0}  # Total NUPL (via BGeometrics)
 MVRV_ZSCORE_LEVELS = {"关注": 0.5, "行动": 0}
 PUELL_LEVELS = {"关注": 0.7, "行动": 0.5, "重仓": 0.3}
 VIX_LEVELS = {"关注": 30, "准备": 35, "行动": 40, "重仓": 50}
@@ -51,20 +49,14 @@ RATIO_REVERSAL_DAYS = 3
 
 # ============ Helpers ============
 
-def glassnode_get(endpoint, asset="BTC", days=90):
-    if not GLASSNODE_API_KEY:
-        return None
-    since = int((datetime.now() - timedelta(days=days)).timestamp())
+def bgeometrics_get(endpoint):
+    """Fetch data from BGeometrics free API (no key required). Returns list of dicts."""
     try:
-        r = requests.get(
-            f"https://api.glassnode.com/v1/metrics/{endpoint}",
-            params={"a": asset, "api_key": GLASSNODE_API_KEY, "s": since, "i": "24h"},
-            timeout=15,
-        )
+        r = requests.get(f"https://bitcoin-data.com/api/v1/{endpoint}", timeout=30)
         if r.status_code == 200:
             return r.json()
     except Exception as e:
-        print(f"  Glassnode error ({endpoint}): {e}")
+        print(f"  BGeometrics error ({endpoint}): {e}")
     return None
 
 
@@ -130,33 +122,33 @@ def fetch_ahr999():
         return None
 
 
-def fetch_sth_nupl():
-    """STH-NUPL via Glassnode."""
+def fetch_nupl():
+    """Total NUPL via BGeometrics (replaces STH-NUPL)."""
     try:
-        data = glassnode_get("indicators/nupl_less_155")
+        data = bgeometrics_get("nupl")
         if not data:
             return None
-        value = data[-1]["v"]
-        triggered = value < STH_NUPL_LEVELS["行动"]
-        level = "行动" if triggered else ("关注" if value < STH_NUPL_LEVELS["关注"] else None)
+        value = float(data[-1]["nupl"])
+        triggered = value < NUPL_LEVELS["行动"]
+        level = "行动" if triggered else ("关注" if value < NUPL_LEVELS["关注"] else None)
         return {
             "value": round(value, 3),
-            "display": f"STH-NUPL {value:.3f}",
+            "display": f"NUPL {value:.3f}",
             "triggered": triggered,
             "level": level,
         }
     except Exception as e:
-        print(f"  STH-NUPL error: {e}")
+        print(f"  NUPL error: {e}")
         return None
 
 
 def fetch_mvrv_zscore():
-    """MVRV Z-Score via Glassnode."""
+    """MVRV Z-Score via BGeometrics."""
     try:
-        data = glassnode_get("market/mvrv_z_score")
+        data = bgeometrics_get("mvrv-zscore")
         if not data:
             return None
-        value = data[-1]["v"]
+        value = float(data[-1]["mvrvZscore"])
         triggered = value < MVRV_ZSCORE_LEVELS["行动"]
         level = "行动" if triggered else ("关注" if value < MVRV_ZSCORE_LEVELS["关注"] else None)
         return {
@@ -171,12 +163,12 @@ def fetch_mvrv_zscore():
 
 
 def fetch_puell_multiple():
-    """Puell Multiple via Glassnode."""
+    """Puell Multiple via BGeometrics."""
     try:
-        data = glassnode_get("indicators/puell_multiple")
+        data = bgeometrics_get("puell-multiple")
         if not data:
             return None
-        value = data[-1]["v"]
+        value = float(data[-1]["puellMultiple"])
         if value < PUELL_LEVELS["重仓"]:
             level = "重仓"
         elif value < PUELL_LEVELS["行动"]:
@@ -198,14 +190,16 @@ def fetch_puell_multiple():
 
 
 def fetch_hash_ribbons():
-    """Hash Ribbons via Glassnode hash rate."""
+    """Hash Ribbons via BGeometrics hash rate (MA30/MA60 crossover)."""
     try:
-        data = glassnode_get("mining/hash_rate_mean", days=90)
-        if not data or len(data) < 60:
+        data = bgeometrics_get("hashrate")
+        if not data or len(data) < 70:
             return None
-        values = [d["v"] for d in data]
-        dates = [datetime.utcfromtimestamp(d["t"]) for d in data]
-        df = pd.DataFrame({"hash_rate": values}, index=dates)
+        # Use last 90 entries
+        recent = data[-90:]
+        values = [float(d["hashrate"]) for d in recent]
+        dates = [d["d"] for d in recent]
+        df = pd.DataFrame({"hash_rate": values}, index=pd.to_datetime(dates))
         df["ma30"] = df["hash_rate"].rolling(30).mean()
         df["ma60"] = df["hash_rate"].rolling(60).mean()
         df = df.dropna()
@@ -230,7 +224,6 @@ def fetch_hash_ribbons():
             state = "正常"
             level = None
 
-        # hash_ribbons numeric: -1=capitulating, 0=normal, 1=crossover(buy)
         if crossover:
             numeric = 1
         elif capitulating:
@@ -281,17 +274,21 @@ def fetch_fear_greed():
 
 
 def fetch_funding_rate():
-    """BTC perpetual funding rate from Binance."""
+    """BTC perpetual funding rate from Bybit (no US geo-block)."""
     try:
         r = requests.get(
-            "https://fapi.binance.com/fapi/v1/fundingRate",
-            params={"symbol": "BTCUSDT", "limit": 21},
+            "https://api.bybit.com/v5/market/funding/history",
+            params={"category": "linear", "symbol": "BTCUSDT", "limit": 21},
             timeout=10,
         )
         data = r.json()
-        if not data:
+        if data.get("retCode") != 0:
             return None
-        rates = [float(d["fundingRate"]) * 100 for d in data]
+        items = data["result"]["list"]
+        if not items:
+            return None
+        # Bybit returns newest first
+        rates = [float(d["fundingRate"]) * 100 for d in reversed(items)]
         current_rate = rates[-1]
         neg_streak = 0
         for rate in reversed(rates):
@@ -540,7 +537,7 @@ def collect_all():
     print("Fetching Crypto indicators...")
     for name, func in [
         ("ahr999", fetch_ahr999),
-        ("sth-nupl", fetch_sth_nupl),
+        ("nupl", fetch_nupl),
         ("mvrv-zscore", fetch_mvrv_zscore),
         ("puell-multiple", fetch_puell_multiple),
         ("hash-ribbons", fetch_hash_ribbons),
@@ -613,7 +610,7 @@ def append_history_csv(indicators):
     row = {
         "date": today,
         "ahr999": get_val("ahr999"),
-        "sth_nupl": get_val("sth-nupl"),
+        "nupl": get_val("nupl"),
         "mvrv_zscore": get_val("mvrv-zscore"),
         "puell_multiple": get_val("puell-multiple"),
         "hash_ribbons": get_val("hash-ribbons"),

@@ -1,36 +1,36 @@
 {
-  "updated_at": "2026-02-24T02:27:17Z",
+  "updated_at": "2026-02-24T10:37:21Z",
   "indicators": {
     "ahr999": {
-      "value": 0.29,
-      "display": "0.29 (低于阈值)",
+      "value": 0.28,
+      "display": "0.28 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 64200.7
+      "btc_price": 63235.65
     },
-    "sth-nupl": {
-      "value": null,
-      "display": "获取失败",
+    "nupl": {
+      "value": 0.194,
+      "display": "NUPL 0.194",
       "triggered": false,
       "level": null
     },
     "mvrv-zscore": {
-      "value": null,
-      "display": "获取失败",
+      "value": 0.46,
+      "display": "Z-Score 0.46",
       "triggered": false,
-      "level": null
+      "level": "关注"
     },
     "puell-multiple": {
-      "value": null,
-      "display": "获取失败",
+      "value": 0.68,
+      "display": "Puell 0.68",
       "triggered": false,
-      "level": null
+      "level": "关注"
     },
     "hash-ribbons": {
-      "value": null,
-      "display": "获取失败",
+      "value": -1,
+      "display": "投降中 (MA30/MA60: -2.6%)",
       "triggered": false,
-      "level": null
+      "level": "投降"
     },
     "fear-greed-crypto": {
       "value": 8,
@@ -39,22 +39,24 @@
       "level": "重仓"
     },
     "funding-rate": {
-      "value": null,
-      "display": "获取失败",
+      "value": 2,
+      "display": "当前 -0.0084%，连续负 2 次",
       "triggered": false,
-      "level": null
+      "level": null,
+      "current_rate": -0.0084
     },
     "stablecoin-supply": {
-      "value": 1.3,
-      "display": "$307.3B, 90d +1.3%",
+      "value": 1.2,
+      "display": "$307.1B, 90d +1.2%",
       "triggered": false,
       "level": null
     },
     "crypto-vc-funding": {
-      "value": null,
-      "display": "获取失败",
+      "value": 971.0,
+      "display": "$971M/月 (3M均), 56 deals/月",
       "triggered": false,
-      "level": null
+      "level": null,
+      "deals_1m": 56
     },
     "vix-spike": {
       "value": 21.0,
@@ -75,8 +77,8 @@
       "level": null
     },
     "double-drop-spy-tlt": {
-      "value": "-1.38,nan",
-      "display": "SPY -1.38%, TLT nan%",
+      "value": "-1.38,1.91",
+      "display": "SPY -1.38%, TLT 1.91%",
       "triggered": false,
       "level": null
     },

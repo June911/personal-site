@@ -166,11 +166,11 @@
         source_url: "https://www.coinglass.com/pro/i/mvrv",
         detail: '<span class="detail-label">原理</span> 市值(Market Value)与已实现价值(Realized Value)之比的标准差。已实现价值 = 每个链上 UTXO 按最后移动价格计算的总值。<br><span class="detail-label">为什么有效</span> Z-Score < 0 说明当前市值低于全网平均持仓成本，历史上对应重大周期底部。<br><span class="detail-label">区间</span> < -0.5 极度低估 · < 0 低估 · > 7 极度高估',
       },
-      "sth-nupl": {
-        name: "STH-NUPL", group: "btc-bottom", tier: 1, auto: true,
-        threshold: "< -0.25", winrate_180d: "100%", timing: "Leading",
-        source_url: "https://studio.glassnode.com/charts/indicators.NuplLess155",
-        detail: '<span class="detail-label">原理</span> 短期持有者（< 155 天）的未实现盈亏比。衡量新入场投资者是整体盈利还是亏损。<br><span class="detail-label">为什么有效</span> 当短期持有者群体深度亏损（< -0.25），"弱手"已被清洗，剩余持有者不愿低价卖出，抛压枯竭。<br><span class="detail-label">区间</span> < -0.25 投降区（强信号）· -0.25~0 亏损区 · > 0 盈利区',
+      "nupl": {
+        name: "NUPL", group: "btc-bottom", tier: 1, auto: true,
+        threshold: "< 0", winrate_180d: "90%", timing: "Leading",
+        source_url: "https://bitcoin-data.com/api/v1/nupl",
+        detail: '<span class="detail-label">原理</span> 全网未实现盈亏比 (Net Unrealized Profit/Loss)。衡量链上所有持有者的整体盈亏状态。<br><span class="detail-label">为什么有效</span> NUPL 接近 0 说明全网平均成本接近当前价格，持有者无利可图、抛压枯竭。历史上 NUPL < 0 对应周期底部。<br><span class="detail-label">区间</span> < 0 投降区（强信号）· 0~0.1 恐惧区 · 0.25~0.5 乐观区 · > 0.75 狂热区',
       },
       "hash-ribbons": {
         name: "Hash Ribbons", group: "btc-bottom", tier: 2, auto: true,
@@ -408,7 +408,7 @@
         // Find triggered indicators for this date
         const triggered = [];
         if (parseFloat(row.ahr999) < 0.45 && row.ahr999) triggered.push({ name: 'Ahr999', value: row.ahr999 });
-        if (parseFloat(row.sth_nupl) < -0.25 && row.sth_nupl) triggered.push({ name: 'STH-NUPL', value: row.sth_nupl });
+        if (parseFloat(row.nupl) < 0 && row.nupl) triggered.push({ name: 'NUPL', value: row.nupl });
         if (parseFloat(row.mvrv_zscore) < 0 && row.mvrv_zscore) triggered.push({ name: 'MVRV Z-Score', value: row.mvrv_zscore });
         if (parseFloat(row.puell_multiple) < 0.5 && row.puell_multiple) triggered.push({ name: 'Puell Multiple', value: row.puell_multiple });
         if (parseInt(row.hash_ribbons) === 1 && row.hash_ribbons) triggered.push({ name: 'Hash Ribbons', value: '投降结束' });

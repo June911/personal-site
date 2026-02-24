@@ -23,8 +23,6 @@ jobs:
         run: pip install requests yfinance pandas numpy
 
       - name: Fetch indicators
-        env:
-          GLASSNODE_API_KEY: ${{ secrets.GLASSNODE_API_KEY }}
         run: python scripts/update_indicators.py
 
       - name: Commit and push
