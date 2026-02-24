@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 时代的 SaaS：谁会活下来？ — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F0F0;
+  --fg: #121212;
+  --red: #D02020;
+  --blue: #1040C0;
+  --yellow: #F0C020;
+  --accent: #0D7377;
+  --accent-light: #E8F4F4;
+  --accent-dark: #095457;
+  --muted: #E0E0E0;
+  --white: #FFFFFF;
+  --font: 'Outfit', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); font-size: 16px; line-height: 1.6; font-weight: 500; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+
+/* PROGRESS BAR */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s; }
+
+/* NAV */
+.nav { background: var(--white); border-bottom: 4px solid var(--fg); padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 64px; }
+.nav-logo { display: flex; align-items: center; gap: 12px; }
+.nav-shapes { display: flex; align-items: center; gap: 6px; }
+.shape-circle { width: 16px; height: 16px; background: var(--red); border-radius: 50%; border: 2px solid var(--fg); }
+.shape-square { width: 14px; height: 14px; background: var(--accent); border: 2px solid var(--fg); }
+.shape-triangle { width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid var(--yellow); }
+.nav-title { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+.nav-back { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 16px; border: 2px solid var(--fg); transition: all 0.2s; }
+.nav-back:hover { background: var(--yellow); }
+
+/* HERO */
+.article-hero { border-bottom: 4px solid var(--fg); overflow: hidden; }
+.article-hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; min-height: 380px; }
+.article-hero-left { padding: 64px 40px 64px 16px; display: flex; flex-direction: column; justify-content: center; }
+.article-hero-right { background: var(--accent); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.article-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.article-label::before { content: ''; width: 24px; height: 3px; background: var(--accent); }
+.article-h1 { font-size: 48px; font-weight: 900; line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 20px; }
+.article-subtitle { font-size: 18px; font-weight: 500; color: #555; max-width: 520px; line-height: 1.7; }
+
+/* Hero visual: grid of fading SaaS blocks */
+.hero-visual { position: relative; width: 280px; height: 280px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px; padding: 20px; }
+.hero-block { border: 2px solid rgba(255,255,255,0.2); border-radius: 4px; transition: all 0.3s; position: relative; }
+.hero-block.dead { opacity: 0.15; }
+.hero-block.dead::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 6px); }
+.hero-block.alive { background: rgba(255,255,255,0.25); border-color: var(--yellow); box-shadow: 0 0 12px rgba(240,192,32,0.3); }
+.hero-dot { position: absolute; inset: 0; background: radial-gradient(rgba(255,255,255,0.06) 2px, transparent 2px); background-size: 20px 20px; }
+
+@media (max-width: 768px) {
+  .article-hero-inner { grid-template-columns: 1fr; }
+  .article-hero-left { padding: 40px 16px; }
+  .article-h1 { font-size: 32px; }
+  .article-hero-right { min-height: 200px; }
+  .hero-visual { transform: scale(0.7); }
+}
+
+/* LAYOUT: sidebar TOC + article */
+.article-layout { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 220px 1fr; gap: 48px; padding: 48px 16px 80px; }
+@media (max-width: 960px) {
+  .article-layout { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* TOC */
+.toc { position: sticky; top: 88px; align-self: start; }
+.toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #999; margin-bottom: 16px; }
+.toc-list { list-style: none; }
+.toc-list li { margin-bottom: 2px; }
+.toc-list a {
+  display: block; padding: 6px 12px; font-size: 13px; font-weight: 600; color: #666;
+  border-left: 3px solid transparent; transition: all 0.2s; line-height: 1.4;
+}
+.toc-list a:hover { color: var(--fg); border-left-color: var(--muted); }
+.toc-list a.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-light); }
+@media (max-width: 960px) {
+  .toc { position: relative; top: 0; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 2px solid var(--muted); }
+  .toc-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .toc-list a { border-left: none; border-bottom: 2px solid transparent; padding: 4px 10px; font-size: 12px; }
+  .toc-list a.active { border-bottom-color: var(--accent); border-left: none; background: none; }
+}
+
+/* ARTICLE BODY */
+.article-body h2 {
+  font-size: 28px; font-weight: 900; letter-spacing: -0.01em;
+  margin: 56px 0 20px; padding-bottom: 10px; border-bottom: 4px solid var(--fg);
+  display: flex; align-items: baseline; gap: 12px;
+}
+.article-body h2:first-child { margin-top: 0; }
+.section-num {
+  font-size: 48px; font-weight: 900; color: var(--accent); opacity: 0.25;
+  line-height: 1; font-family: var(--mono); letter-spacing: -0.05em;
+  min-width: 48px; text-align: right;
+}
+.article-body h3 {
+  font-size: 20px; font-weight: 900;
+  margin: 36px 0 14px; color: var(--accent-dark);
+}
+.article-body h4 {
+  font-size: 16px; font-weight: 700; margin: 24px 0 10px;
+}
+.article-body p { margin-bottom: 16px; line-height: 1.85; color: #333; }
+.article-body ul, .article-body ol { margin: 0 0 16px 24px; line-height: 1.85; color: #333; }
+.article-body li { margin-bottom: 6px; }
+.article-body li strong { color: var(--fg); }
+.article-body strong { font-weight: 700; color: var(--fg); }
+
+/* Blockquote */
+.article-body blockquote {
+  background: var(--white); border-left: 6px solid var(--accent); padding: 20px 24px; margin: 24px 0;
+  font-weight: 600; font-size: 17px; line-height: 1.7; color: #333;
+  box-shadow: 4px 4px 0 0 var(--fg);
+}
+
+/* Flow diagram */
+.flow-diagram {
+  display: flex; align-items: center; gap: 0; margin: 24px 0; padding: 24px;
+  background: var(--white); border: 3px solid var(--fg); overflow-x: auto;
+  flex-wrap: nowrap;
+}
+.flow-node {
+  padding: 10px 16px; font-size: 13px; font-weight: 700; white-space: nowrap;
+  border: 2px solid var(--fg); background: var(--bg); text-align: center;
+  min-width: fit-content;
+}
+.flow-node.highlight { background: var(--accent); color: var(--white); border-color: var(--accent-dark); }
+.flow-node.dead { background: #ddd; color: #999; border-color: #bbb; text-decoration: line-through; }
+.flow-arrow { padding: 0 8px; font-size: 18px; color: #999; flex-shrink: 0; }
+.flow-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #999; margin-bottom: 8px; }
+
+/* Constraint bars */
+.constraint-bars { margin: 24px 0; }
+.constraint-row { display: grid; grid-template-columns: 100px 1fr 200px; align-items: center; gap: 16px; margin-bottom: 12px; padding: 12px 16px; background: var(--white); border: 2px solid var(--fg); }
+.constraint-label { font-size: 14px; font-weight: 900; }
+.constraint-bar-wrap { height: 24px; background: var(--muted); position: relative; border: 2px solid var(--fg); }
+.constraint-bar { height: 100%; transition: width 1s ease; }
+.constraint-bar.production { background: var(--accent); width: 95%; }
+.constraint-bar.functional { background: var(--accent); width: 70%; opacity: 0.8; }
+.constraint-bar.inertia { background: var(--accent); width: 30%; opacity: 0.45; }
+.constraint-note { font-size: 12px; color: #666; font-weight: 600; }
+@media (max-width: 640px) {
+  .constraint-row { grid-template-columns: 80px 1fr; }
+  .constraint-note { grid-column: 1 / -1; }
+}
+
+/* Tables */
+.article-body table {
+  width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;
+  border: 3px solid var(--fg);
+}
+.article-body th {
+  background: var(--fg); color: var(--white); text-align: left; padding: 12px 16px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.article-body td {
+  padding: 10px 16px; border-bottom: 2px solid var(--muted); background: var(--white);
+}
+.article-body tr:last-child td { border-bottom: none; }
+
+/* Callout cards */
+.callout {
+  background: var(--white); border: 3px solid var(--fg); box-shadow: 6px 6px 0 0 var(--fg);
+  padding: 24px; margin: 28px 0; position: relative;
+}
+.callout-accent { border-left: 8px solid var(--accent); }
+.callout-yellow { border-left: 8px solid var(--yellow); }
+.callout-red { border-left: 8px solid var(--red); }
+.callout h4 { margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; }
+.callout-yellow h4 { color: #A08000; }
+.callout-red h4 { color: var(--red); }
+.callout p { margin-bottom: 8px; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* Code block */
+.code-block {
+  background: var(--fg); color: #e0e0e0; padding: 24px; margin: 20px 0;
+  font-family: var(--mono); font-size: 13px; line-height: 1.9;
+  border: 3px solid var(--fg); overflow-x: auto; white-space: pre;
+}
+
+/* Section intro */
+.section-intro {
+  font-size: 18px; font-weight: 600; color: var(--fg); line-height: 1.8;
+  padding: 20px 0 8px; border-bottom: none;
+}
+
+/* Verdict block */
+.verdict {
+  background: var(--accent); color: var(--white); padding: 32px;
+  margin: 32px 0; border: 3px solid var(--fg); box-shadow: 6px 6px 0 0 var(--fg);
+}
+.verdict h3 { color: var(--white); margin-top: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; }
+.verdict p { color: rgba(255,255,255,0.9); margin-bottom: 12px; font-size: 17px; line-height: 1.8; }
+.verdict p:last-child { margin-bottom: 0; }
+.verdict strong { color: var(--white); }
+
+/* Path cards */
+.path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+.path-card {
+  background: var(--white); border: 3px solid var(--fg); padding: 24px; position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.path-card:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 0 var(--fg); }
+.path-num { font-family: var(--mono); font-size: 36px; font-weight: 900; color: var(--accent); opacity: 0.2; line-height: 1; margin-bottom: 8px; }
+.path-title { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
+.path-desc { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 8px; }
+.path-example { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+@media (max-width: 640px) {
+  .path-grid { grid-template-columns: 1fr; }
+}
+
+/* Path evaluation tags */
+.path-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.path-tag {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 3px;
+  border: 2px solid var(--fg); line-height: 1.4;
+}
+.path-tag.strong { background: #D4EDDA; color: #155724; }
+.path-tag.medium { background: #FFF3CD; color: #856404; }
+.path-tag.weak { background: #F8D7DA; color: #721C24; }
+.path-tag.neutral { background: var(--muted); color: #555; }
+
+/* Conclusion lines */
+.conclusion-lines { margin: 24px 0; }
+.conclusion-line {
+  display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: baseline;
+  padding: 12px 0; border-bottom: 2px solid var(--muted);
+}
+.conclusion-line:last-child { border-bottom: none; }
+.conclusion-if { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; white-space: nowrap; }
+.conclusion-then { font-size: 15px; color: #333; line-height: 1.6; }
+
+/* Footer */
+.footer { background: var(--fg); color: var(--white); padding: 48px 16px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.footer-text { font-size: 13px; font-weight: 500; color: #999; }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #999; transition: color 0.2s; }
+.footer-links a:hover { color: var(--yellow); }
+@media (max-width: 640px) {
+  .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+}
+
+/* Animations */
+.fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s, transform 0.5s; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">&larr; 返回文章</a>
+  </div>
+</nav>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <div class="article-hero-left">
+      <div class="article-label">投资框架</div>
+      <h1 class="article-h1">AI 时代的 SaaS：<br>谁会活下来？</h1>
+      <p class="article-subtitle">SOP 供给不再稀缺之后，真正决定 SaaS 生死的不是构建能力，而是约束的强度。</p>
+    </div>
+    <div class="article-hero-right">
+      <div class="hero-dot"></div>
+      <div class="hero-visual">
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block alive"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block alive"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block alive"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+        <div class="hero-block dead"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="article-layout">
+  <aside class="toc">
+    <div class="toc-title">目录</div>
+    <ul class="toc-list">
+      <li><a href="#verdict" data-section="verdict">核心判断</a></li>
+      <li><a href="#s1" data-section="s1">一、AI 对 SaaS 的冲击</a></li>
+      <li><a href="#s2" data-section="s2">二、架构范式转变</a></li>
+      <li><a href="#s3" data-section="s3">三、商业模式困境</a></li>
+      <li><a href="#s4" data-section="s4">四、独占性决定生死</a></li>
+      <li><a href="#s5" data-section="s5">五、护城河重估</a></li>
+      <li><a href="#s6" data-section="s6">六、评估框架</a></li>
+      <li><a href="#s7" data-section="s7">七、四种存活路径</a></li>
+      <li><a href="#s8" data-section="s8">八、总结</a></li>
+    </ul>
+  </aside>
+
+  <article class="article-body">
+
+    <!-- VERDICT -->
+    <div class="verdict fade-in" id="verdict">
+      <h3>核心判断</h3>
+      <p>绝大部分 SaaS 公司确实会很惨，但有一部分——因为受到<strong>强约束</strong>保护——会活得很好。</p>
+      <p>SaaS 的本质是<strong>组织能力的外化和标准化</strong>，即把企业内部的 SOP 变成可购买的软件服务，减少协调成本。AI 并没有消灭这个需求，但彻底改变了 SOP 的供给侧结构。</p>
+    </div>
+
+    <div class="callout callout-accent fade-in">
+      <h4>核心假设</h4>
+      <p><strong>SOP 仍然重要</strong>：Agent 需要约束（权责分配、偏好、决策授权）来保证执行准确性，SOP 不会消失，只是供给方式变了。</p>
+      <p><strong>构建能力在贬值，独占数据不会</strong>：当能力不再稀缺，护城河从「做得到」转向「拿得到」——许可稀缺取代能力稀缺。</p>
+    </div>
+
+    <!-- SECTION 1 -->
+    <h2 id="s1" class="fade-in"><span class="section-num">01</span>AI 对 SaaS 的冲击</h2>
+
+    <p class="section-intro fade-in">AI 正在从三个层面瓦解传统 SaaS 的构建壁垒。SOP 的供给，从稀缺走向充裕。</p>
+
+    <h3>构建速度剧变</h3>
+    <p>过去搭建一套行业工作流，需要一群懂行业的工程师干几年。现在，业内人士通过 AI + Skill，<strong>1～2 周</strong>就能把工作流搭好。</p>
+
+    <h3>能力门槛骤降</h3>
+    <p>构建能力的载体从「写代码」变成「写自然语言」。人才成本、技术成本都在极速降低。过去靠工程师堆起来的护城河正在被侵蚀。</p>
+
+    <h3>平台权力迁移</h3>
+    <p>过去 SaaS 之上可以构建一层 App Store（如 Salesforce AppExchange）。未来 Agent 直接对接底层 API / Skill，绕过 SaaS 平台层。权力从「平台」流向「Agent 本身」—— <strong>Agent 自己就是 App Store</strong>。</p>
+
+    <div class="callout callout-accent fade-in">
+      <h4>本质转变</h4>
+      <p><strong>AI 之前</strong>：护城河 = f(构建复杂度) — 能力稀缺，先做到的人赢</p>
+      <p><strong>AI 之后</strong>：护城河 = f(许可稀缺度) — 谁拥有不可替代的约束</p>
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2 id="s2" class="fade-in"><span class="section-num">02</span>架构范式的转变</h2>
+
+    <p>SaaS 的主要参与者正在从「人」过渡到「Agent」。这不仅改变了产品形态，更从根本上动摇了商业模式。</p>
+
+    <div class="flow-label">传统架构</div>
+    <div class="flow-diagram fade-in">
+      <div class="flow-node">人</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">SaaS（工作流）</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">结果</div>
+    </div>
+
+    <div class="flow-label">AI 时代架构</div>
+    <div class="flow-diagram fade-in">
+      <div class="flow-node">人</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">编排层</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">Agent</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">数据 / 执行接口</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">结果</div>
+    </div>
+
+    <p>Agent 绕过了 SaaS 的界面，直接对接 API。SaaS 曾经承担的「工作流编排」角色，被拆解成了编排层 + Agent + 数据接口三个独立层。</p>
+
+    <p>这就像 Google 时代的黄页——大量 SaaS 卖的不是数据本身，而是<strong>「把数据变成可用的」这个处理过程</strong>。当 LLM 让处理过程的成本趋零，这些 SaaS 就是智能时代的黄页。</p>
+
+    <!-- SECTION 3 -->
+    <h2 id="s3" class="fade-in"><span class="section-num">03</span>商业模式的困境</h2>
+
+    <h3>Per-seat 定价的瓦解</h3>
+    <p>SaaS 的 per-seat 定价建立在「人是使用单位」这个假设上。当 Agent 成为使用单位，定价模型需要根本重写——按调用次数、按结果、按节省的人力成本计价。</p>
+    <p>一个按席位收费的公司，客户扩张时收入自然增长；一个按调用收费的公司，<strong>效率提升反而可能让收入下降</strong>。</p>
+
+    <h3>边际成本结构变化</h3>
+    <p>传统 SaaS 的边际成本几乎为零。AI 时代，每次推理都需要电力和算力，<strong>边际成本变成线性扩张</strong>。这对利润率模型是根本性改变。</p>
+
+    <h3>自建门槛降低</h3>
+    <p>构建成本大幅降低后，企业面临更现实的「自建 vs. 采购」抉择。以前自建太贵，只能买 SaaS；现在用 Agent + Skill 可能自己就搞定了。竞争从 3 家变 300 家，定价权被碾碎。</p>
+
+    <div class="callout callout-red fade-in">
+      <h4>估值陷阱</h4>
+      <p>不需要收入下降就能让股价崩盘——只需<strong>估值倍数压缩</strong>。一家 15x 营收的公司，当市场认为定价权在消融，可能跌到 6x。收入不变，股价跌 60%。</p>
+    </div>
+
+    <!-- SECTION 4 -->
+    <h2 id="s4" class="fade-in"><span class="section-num">04</span>什么能活下来：独占性</h2>
+
+    <p class="section-intro">SOP 供给不再稀缺之后，真正决定 SaaS 生死的不是「构建能力」，而是<strong>数据的独占性</strong>。问一个问题：这份数据离开你，别人能不能拿到同样的东西？</p>
+
+    <div class="constraint-bars fade-in">
+      <div class="constraint-row">
+        <div class="constraint-label">生产独占</div>
+        <div class="constraint-bar-wrap"><div class="constraint-bar production"></div></div>
+        <div class="constraint-note">数据生产过程是我的，别人物理上拿不到 · 95%</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-label">功能独占</div>
+        <div class="constraint-bar-wrap"><div class="constraint-bar functional"></div></div>
+        <div class="constraint-note">数据离开我会降级（失去合规状态/整合上下文）· 70%</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-label">惯性锁定</div>
+        <div class="constraint-bar-wrap"><div class="constraint-bar inertia"></div></div>
+        <div class="constraint-note">数据在我这里只因为惯性，Agent 可穿透 · 30%</div>
+      </div>
+    </div>
+
+    <h3>生产独占 — 最硬</h3>
+    <p>不可计算的东西。Bloomberg 的实时交易数据不能爬取、不能合成、不能从第三方授权。在 LLM 世界里，这种数据成为每个 Agent 都需要的稀缺输入，定价权反而增强。</p>
+    <p>能源同理。AI 用量 ↑ = 耗电 ↑，而发电/输电扩容是年级别的物理工程。数据来源绑定物理过程，这是最硬的独占。</p>
+    <p>但要区分<strong>真独占</strong>和<strong>伪独占</strong>。「我们比别人整理得更好的公开数据」——这不是独占，AI 正在让这类优势快速贬值。真正的生产独占是：数据在你的物理过程中产生，别人连原始材料都拿不到。</p>
+
+    <h3>功能独占 — 数据离开就降级</h3>
+    <p>数据本身可能属于客户，但离开你的系统就失去了关键属性：合规状态、整合上下文、或认证标记。</p>
+    <p>HIPAA 不在乎 LLM。FDA 认证不会因为 GPT-5 变简单。Veeva 的 GxP 验证环境就是例子——产品本质上<strong>是合规认证本身</strong>，不是软件。监管机构认证的是系统，不是功能。数据迁出 = 丧失合规状态。</p>
+    <p>传统支付轨道也属于这一层——数据在特定制度框架内才有效力。但制度约束正在被穿透：区块链/稳定币用代码替代信任中介，Agent 天然偏好可编程的链上轨道。这是五年维度里变化最剧烈的子类。</p>
+
+    <div class="callout callout-yellow fade-in">
+      <h4>容错率决定功能独占的厚度</h4>
+      <p>准确性要求高 + 数据能持续优化 → 独占性最强。容错率越低的场景，功能独占越接近生产独占——因为重建合规状态的成本趋近于重新生产数据。</p>
+    </div>
+
+    <h3>惯性锁定 — Agent 可穿透</h3>
+    <p>「信任」听起来很硬，但拆开看，大部分是其他独占层级的伪装：</p>
+    <ul>
+      <li><strong>法律伪装</strong>：Basel III 要求银行用「认可的评级机构」。基金经理用 S&P 不是因为信任，是因为监管要求——这其实是功能独占</li>
+      <li><strong>协调惯性</strong>：所有人都用同一标准作为共同语言。Agent 重新收敛到新标准的速度远快于人类</li>
+      <li><strong>网络效应</strong>：如果每个交易对手都用 Bloomberg，你就必须用。这对人类很强。但 Agent <strong>可以同时在所有平台上</strong>——不存在「只能选一个」的约束，协调成本趋零</li>
+    </ul>
+    <p>纯惯性锁定只剩<strong>不可验证的人类主观判断</strong>（医生的临床直觉、投行的并购建议）和尚未被穿透的协调成本。范围在持续缩小。</p>
+
+    <div class="code-block fade-in">当前：    生产独占 > 功能独占（合规）> 功能独占（制度）> 惯性锁定
+5年后：   生产独占 > 功能独占（合规）>> 惯性锁定 > 功能独占（制度）
+
+变化最大：制度类功能独占（被 Crypto 穿透）
+唯一上升：能源类生产独占（物理刚性不变，其他在弱化）
+最虚：    惯性锁定（大部分是伪装，纯惯性范围持续缩小）</div>
+
+    <!-- SECTION 5 -->
+    <h2 id="s5" class="fade-in"><span class="section-num">05</span>护城河的重新评估</h2>
+
+    <h3>构建能力 vs. 行业知识积累</h3>
+    <p>这是 AI 时代最关键的区分：</p>
+    <ul>
+      <li><strong>构建能力</strong>正在大幅贬值：UI 改成自然语言，写代码变容易，SOP 搭建成本趋零</li>
+      <li><strong>行业知识积累</strong>仍然稀缺：数据整合后效果更好、需要准确度保证的领域，积累本身就是壁垒</li>
+    </ul>
+
+    <h3>数据护城河的重新审视</h3>
+    <ul>
+      <li>数据大概率在用户手上，但公司可以利用脱敏数据优化产品（数据越多、效果越好的飞轮）</li>
+      <li>需要评估用户数据的<strong>可迁移程度</strong>——迁移成本越高，锁定越强</li>
+      <li>关键问题：数据更多到底带来了多少额外价值？如果边际价值递减，护城河就没那么深</li>
+    </ul>
+
+    <h3>AI 本身尚未解决的问题</h3>
+    <ul>
+      <li><strong>幻觉/准确性</strong>：容错率高的场景 Agent 能做，容错率低的仍需人在回路中。越需要准确度的行业，SaaS 越安全</li>
+      <li><strong>行业数据积累</strong>：有些知识积累本身有价值（如病例数据、驾驶数据），数据越多效果越好的领域，整合者有天然优势</li>
+    </ul>
+
+    <h3>组织惯性（不太重要）</h3>
+    <p>团队习惯了某套 SOP，换系统要求整个组织重学——这是真实的迁移成本，但在 AI 时代重要性下降。Agent 的学习和适应能力远强于人。</p>
+
+    <!-- SECTION 6 -->
+    <h2 id="s6" class="fade-in"><span class="section-num">06</span>评估框架</h2>
+
+    <p class="section-intro">评估一个 SaaS 公司，核心问题：<strong>它的护城河是靠「做得到」还是「拿得到」？</strong></p>
+
+    <p>如果是前者（构建能力），LLM 正在摧毁它。如果是后者（许可壁垒），看具体是哪种约束，以及那种约束自身在强化还是弱化。</p>
+
+    <div class="callout callout-accent fade-in">
+      <h4>AI 时代 SaaS 评估清单</h4>
+      <ol style="margin:10px 0 0 20px;line-height:2">
+        <li><strong>独占性</strong> — 生产独占 > 功能独占 > 惯性锁定</li>
+        <li><strong>不可替代性</strong> — 合规 > 增收 > 降本（注意：不可替代 ≠ 高价值）</li>
+        <li><strong>数据必要性</strong> — 构建能力 vs 行业知识积累（后者更持久）</li>
+        <li><strong>价值捕获</strong> — 按流量/结果计价 > per-seat 定价</li>
+        <li><strong>容错率</strong> — 容错率低 + 数据可优化 = 垄断性最强</li>
+      </ol>
+      <p style="margin-top:12px;font-size:13px;color:#555;line-height:1.7">合规是刚需但定价天花板低，增收类（如 Bloomberg）客户支付意愿最强。不可替代性描述的是「能不能被 AI 替掉」，不是「客户愿意付多少钱」。</p>
+    </div>
+
+    <h3>SOP 特征评估</h3>
+    <table>
+      <thead><tr><th>维度</th><th>特征</th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td><strong>复杂度</strong></td><td>SOP 越复杂</td><td>护城河越深，但市场越窄</td></tr>
+        <tr><td><strong>标准化</strong></td><td>越标准</td><td>越容易规模化；越定制越滑向外包</td></tr>
+        <tr><td><strong>变化速度</strong></td><td>监管驱动 vs 市场驱动</td><td>监管：慢但刚需强；市场：快但弹性大</td></tr>
+      </tbody>
+    </table>
+
+    <!-- SECTION 7 -->
+    <h2 id="s7" class="fade-in"><span class="section-num">07</span>四种存活路径</h2>
+
+    <div class="path-grid fade-in">
+      <div class="path-card">
+        <div class="path-num">01</div>
+        <div class="path-title">深度定制化</div>
+        <div class="path-desc">将客户所有数据装进来，深度本体化处理。壁垒在于系统整合深度和客户切换成本。</div>
+        <div class="path-example">代表：Palantir</div>
+        <div class="path-tags">
+          <span class="path-tag strong">数据飞轮：有</span>
+          <span class="path-tag medium">独占性：中</span>
+          <span class="path-tag neutral">Agent 收费：不确定</span>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">02</div>
+        <div class="path-title">本地 + Agent 系统</div>
+        <div class="path-desc">本地数据存储配合 Agent 运行，完全绕过传统 SaaS。这是对 SaaS 最大的威胁。</div>
+        <div class="path-example">代表：企业自建</div>
+        <div class="path-tags">
+          <span class="path-tag weak">数据飞轮：无</span>
+          <span class="path-tag weak">独占性：无</span>
+          <span class="path-tag neutral">Agent 收费：N/A</span>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">03</div>
+        <div class="path-title">数据整合驱动</div>
+        <div class="path-desc">数据越多效果越好。跨机构整合产生网络效应，护城河随时间增强。</div>
+        <div class="path-example">代表：医疗数据平台</div>
+        <div class="path-tags">
+          <span class="path-tag strong">数据飞轮：强</span>
+          <span class="path-tag strong">独占性：强</span>
+          <span class="path-tag strong">Agent 收费：能</span>
+        </div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">04</div>
+        <div class="path-title">监管基础设施</div>
+        <div class="path-desc">产品 = 合规认证本身。监管机构认证的是系统，不是功能。Agent 无法自建被认证的系统。</div>
+        <div class="path-example">代表：Veeva Vault · 最强护城河</div>
+        <div class="path-tags">
+          <span class="path-tag medium">数据飞轮：中</span>
+          <span class="path-tag strong">独占性：极强</span>
+          <span class="path-tag strong">Agent 收费：能</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 8 -->
+    <h2 id="s8" class="fade-in"><span class="section-num">08</span>总结</h2>
+
+    <p>AI 时代对 SaaS 的冲击是结构性的：SOP 构建成本趋零，per-seat 模式瓦解，边际成本从零变为线性，平台层被 Agent 绕过。</p>
+
+    <p>但 SaaS 不会消亡——<strong>约束不会消亡</strong>。那些嵌入物理世界、法律框架和监管体系的 SaaS，反而可能因为 AI 时代对合规和准确性的更高要求而变得更加不可替代。</p>
+
+    <blockquote>投资逻辑从「找好的软件产品」变成了「找强约束下的不可替代系统」。</blockquote>
+
+    <p>SaaS 真正需要回答的问题不是「AI 会不会替代我」，而是：<strong>当智能免费之后，你卖的到底是什么？</strong></p>
+
+    <div class="conclusion-lines fade-in">
+      <div class="conclusion-line">
+        <span class="conclusion-if">如果答案是</span>
+        <span class="conclusion-then">「把数据变得可用」——你是黄页。</span>
+      </div>
+      <div class="conclusion-line">
+        <span class="conclusion-if">如果答案是</span>
+        <span class="conclusion-then">「拥有别人拿不到的数据」——你比以前更值钱。</span>
+      </div>
+      <div class="conclusion-line">
+        <span class="conclusion-if">如果答案是</span>
+        <span class="conclusion-then">「监管要求必须经过我」——你很安全，但要警惕临界点。</span>
+      </div>
+      <div class="conclusion-line">
+        <span class="conclusion-if">如果答案是</span>
+        <span class="conclusion-then">「大家都用我」——要看「大家」是人还是 Agent。</span>
+      </div>
+    </div>
+
+    <p style="margin-top:48px;font-size:13px;color:#999"><em>2026-02-23 · 基于 Nicolas Bustamante 原文、a16z 反论及个人分析整理</em></p>
+
+    <div style="margin-top:64px;padding-top:48px;border-top:4px solid var(--fg)">
+      <h2 style="font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:24px;border-bottom:none">留言</h2>
+      <div class="giscus"></div>
+      <script src="https://giscus.app/client.js"
+        data-repo="June911/personal-site"
+        data-repo-id="R_kgDORNjR9Q"
+        data-category="General"
+        data-category-id="DIC_kwDORNjR9c4C2TU2"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="light"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </div>
+
+  </article>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-text">june &copy; 2026</span>
+    <ul class="footer-links">
+      <li><a href="../index.html">首页</a></li>
+      <li><a href="../index.html#articles">文章</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progressBar').style.width = (window.scrollY / h * 100) + '%';
+});
+
+// TOC active state
+const sections = document.querySelectorAll('[id^="s"], #verdict');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[data-section="${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// Fade-in on scroll
+const fadeEls = document.querySelectorAll('.fade-in');
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+}, { threshold: 0.15 });
+fadeEls.forEach(el => fadeObs.observe(el));
+</script>
+
+</body>
+</html>
