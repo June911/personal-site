@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-02-25T13:12:35Z",
+  "updated_at": "2026-02-26T02:24:33Z",
   "indicators": {
     "ahr999": {
-      "value": 0.31,
-      "display": "0.31 (低于阈值)",
+      "value": 0.32,
+      "display": "0.32 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 66100.96
+      "btc_price": 68001.36
     },
     "nupl": {
       "value": 0.159,
@@ -28,7 +28,7 @@
     },
     "hash-ribbons": {
       "value": -1,
-      "display": "投降中 (MA30/MA60: -1.2%)",
+      "display": "投降中 (MA30/MA60: -0.6%)",
       "triggered": false,
       "level": "投降"
     },
@@ -39,52 +39,52 @@
       "level": "行动"
     },
     "funding-rate": {
-      "value": 3,
-      "display": "当前 -0.0267% (8h)，连续负 3 次",
-      "triggered": false,
-      "level": "关注",
-      "current_rate": -0.0267
+      "value": 21,
+      "display": "当前 -0.0223% (8h)，连续负 21 次",
+      "triggered": true,
+      "level": "行动",
+      "current_rate": -0.0223
     },
     "stablecoin-supply": {
-      "value": 1.0,
-      "display": "$307.3B, 90d +1.0%",
+      "value": 1.1,
+      "display": "$308.1B, 90d +1.1%",
       "triggered": false,
       "level": null
     },
     "crypto-vc-funding": {
-      "value": 968.0,
-      "display": "$968M/月 (3M均), 54 deals/月",
+      "value": 1037.0,
+      "display": "$1,037M/月 (3M均), 55 deals/月",
       "triggered": false,
       "level": null,
-      "deals_1m": 54
+      "deals_1m": 55
     },
     "vix-spike": {
-      "value": 19.5,
-      "display": "VIX 19.5",
+      "value": 17.9,
+      "display": "VIX 17.9",
       "triggered": false,
       "level": null
     },
     "ma200-deviation": {
-      "value": 5.8,
-      "display": "偏离 +5.8%",
+      "value": 6.5,
+      "display": "偏离 +6.5%",
       "triggered": false,
       "level": null
     },
     "double-drop-spy-gld": {
-      "value": "0.89,5.14",
-      "display": "SPY 0.89%, GLD 5.14%",
+      "value": "nan,2.33",
+      "display": "SPY nan%, GLD 2.33%",
       "triggered": false,
       "level": null
     },
     "double-drop-spy-tlt": {
-      "value": "0.89,0.75",
-      "display": "SPY 0.89%, TLT 0.75%",
+      "value": "nan,0.21",
+      "display": "SPY nan%, TLT 0.21%",
       "triggered": false,
       "level": null
     },
     "schd-qqq-ratio": {
-      "value": 108.19,
-      "display": "比率 108.19 (↑ SCHD 走强 (risk-off))",
+      "value": 105.62,
+      "display": "比率 105.62 (↑ SCHD 走强 (risk-off))",
       "triggered": false,
       "level": "防御"
     },
