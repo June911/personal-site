@@ -1,22 +1,22 @@
 {
-  "updated_at": "2026-02-26T02:24:33Z",
+  "updated_at": "2026-02-26T13:13:36Z",
   "indicators": {
     "ahr999": {
-      "value": 0.32,
-      "display": "0.32 (低于阈值)",
+      "value": 0.33,
+      "display": "0.33 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 68001.36
+      "btc_price": 68081.67
     },
     "nupl": {
-      "value": 0.159,
-      "display": "NUPL 0.159",
+      "value": 0.151,
+      "display": "NUPL 0.151",
       "triggered": false,
       "level": null
     },
     "mvrv-zscore": {
-      "value": 0.35,
-      "display": "Z-Score 0.35",
+      "value": 0.34,
+      "display": "Z-Score 0.34",
       "triggered": false,
       "level": "关注"
     },
@@ -39,11 +39,11 @@
       "level": "行动"
     },
     "funding-rate": {
-      "value": 21,
-      "display": "当前 -0.0223% (8h)，连续负 21 次",
+      "value": 6,
+      "display": "当前 -0.0228% (8h)，连续负 6 次",
       "triggered": true,
-      "level": "行动",
-      "current_rate": -0.0223
+      "level": "准备",
+      "current_rate": -0.0228
     },
     "stablecoin-supply": {
       "value": 1.1,
@@ -71,14 +71,14 @@
       "level": null
     },
     "double-drop-spy-gld": {
-      "value": "nan,2.33",
-      "display": "SPY nan%, GLD 2.33%",
+      "value": "1.67,2.33",
+      "display": "SPY 1.67%, GLD 2.33%",
       "triggered": false,
       "level": null
     },
     "double-drop-spy-tlt": {
-      "value": "nan,0.21",
-      "display": "SPY nan%, TLT 0.21%",
+      "value": "1.67,0.21",
+      "display": "SPY 1.67%, TLT 0.21%",
       "triggered": false,
       "level": null
     },
