@@ -1,22 +1,22 @@
 {
-  "updated_at": "2026-02-28T02:06:28Z",
+  "updated_at": "2026-02-28T12:52:47Z",
   "indicators": {
     "ahr999": {
-      "value": 0.3,
-      "display": "0.30 (低于阈值)",
+      "value": 0.29,
+      "display": "0.29 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 65816.8
+      "btc_price": 63924.66
     },
     "nupl": {
-      "value": 0.206,
-      "display": "NUPL 0.206",
+      "value": 0.194,
+      "display": "NUPL 0.194",
       "triggered": false,
       "level": null
     },
     "mvrv-zscore": {
-      "value": 0.47,
-      "display": "Z-Score 0.47",
+      "value": 0.45,
+      "display": "Z-Score 0.45",
       "triggered": false,
       "level": "关注"
     },
@@ -40,23 +40,23 @@
     },
     "funding-rate": {
       "value": 0,
-      "display": "当前 0.0052% (8h)，连续负 0 次",
+      "display": "当前 0.0019% (8h)，连续负 0 次",
       "triggered": false,
       "level": null,
-      "current_rate": 0.0052
+      "current_rate": 0.0019
     },
     "stablecoin-supply": {
       "value": 0.8,
-      "display": "$307.8B, 90d +0.8%",
+      "display": "$307.9B, 90d +0.8%",
       "triggered": false,
       "level": null
     },
     "crypto-vc-funding": {
-      "value": 1048.0,
-      "display": "$1,048M/月 (3M均), 51 deals/月",
+      "value": 1052.0,
+      "display": "$1,052M/月 (3M均), 53 deals/月",
       "triggered": false,
       "level": null,
-      "deals_1m": 51
+      "deals_1m": 53
     },
     "vix-spike": {
       "value": 19.9,
