@@ -1,22 +1,22 @@
 {
-  "updated_at": "2026-03-02T02:26:25Z",
+  "updated_at": "2026-03-02T13:05:47Z",
   "indicators": {
     "ahr999": {
       "value": 0.31,
       "display": "0.31 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 66218.83
+      "btc_price": 65900.19
     },
     "nupl": {
-      "value": 0.17,
-      "display": "NUPL 0.170",
+      "value": 0.19,
+      "display": "NUPL 0.190",
       "triggered": false,
       "level": null
     },
     "mvrv-zscore": {
-      "value": 0.4,
-      "display": "Z-Score 0.40",
+      "value": 0.43,
+      "display": "Z-Score 0.43",
       "triggered": false,
       "level": "关注"
     },
@@ -40,14 +40,14 @@
     },
     "funding-rate": {
       "value": 3,
-      "display": "当前 -0.0129% (8h)，连续负 3 次",
+      "display": "当前 -0.0071% (8h)，连续负 3 次",
       "triggered": false,
       "level": "关注",
-      "current_rate": -0.0129
+      "current_rate": -0.0071
     },
     "stablecoin-supply": {
-      "value": 0.6,
-      "display": "$307.9B, 90d +0.6%",
+      "value": 0.5,
+      "display": "$307.6B, 90d +0.5%",
       "triggered": false,
       "level": null
     },
