@@ -46,6 +46,7 @@
     .col-threshold { max-width: 180px; }
     .col-winrate { min-width: 120px; }
     .col-timing { white-space: nowrap; }
+    .col-updated { white-space: nowrap; font-size: 11px; color: var(--text3); }
 
     /* Status badges */
     .status-triggered { display: inline-block; padding: 2px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 700; background: rgba(208,32,32,.15); color: #e54545; border: 1px solid rgba(208,32,32,.3); }
@@ -94,7 +95,7 @@
 
     @media (max-width: 768px) {
       .indicator-table { font-size: 12px; }
-      .col-threshold, .col-timing { display: none; }
+      .col-threshold, .col-timing, .col-updated { display: none; }
       .wr-bar { width: 30px; }
       .summary { justify-content: center; }
     }
@@ -257,6 +258,17 @@
 
     // ============ Render Functions ============
 
+    function timeAgo(isoStr) {
+      if (!isoStr) return '';
+      const diff = Date.now() - new Date(isoStr).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}分钟前`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}小时前`;
+      const days = Math.floor(hrs / 24);
+      return `${days}天前`;
+    }
+
     function winrateBar(wrStr) {
       const pct = parseInt(wrStr);
       if (isNaN(pct)) return '';
@@ -301,6 +313,8 @@
       const rowCls = (triggered ? 'row-triggered ' : '') + 'data-row';
       const wr = meta.winrate_180d || '-';
 
+      const updatedHtml = d.updated_at ? timeAgo(d.updated_at) : '';
+
       let html = `<tr class="${rowCls}" onclick="toggleDetail(this)">
   <td class="col-name">${meta.name}</td>
   <td class="col-status">${statusHtml}</td>
@@ -308,10 +322,11 @@
   <td class="col-threshold"><span class="dim">${meta.threshold || '—'}</span></td>
   <td class="col-winrate">${winrateBar(wr)}<span class="wr-text">${wr}</span></td>
   <td class="col-timing">${timingBadge(meta.timing)}</td>
+  <td class="col-updated">${updatedHtml}</td>
 </tr>`;
 
       if (meta.detail) {
-        html += `<tr class="detail-row"><td colspan="6"><div class="detail-content">${meta.detail}</div></td></tr>`;
+        html += `<tr class="detail-row"><td colspan="7"><div class="detail-content">${meta.detail}</div></td></tr>`;
       }
       return html;
     }
@@ -346,6 +361,7 @@
     <th class="col-threshold">阈值</th>
     <th class="col-winrate">胜率 180d</th>
     <th class="col-timing">领先性</th>
+    <th class="col-updated">更新</th>
   </tr></thead>
   <tbody>`;
           currentTier = tier;
@@ -477,7 +493,7 @@
         if (updatedAt) {
           const d = new Date(updatedAt);
           document.getElementById('timestamp').textContent =
-            d.toLocaleDateString('zh-CN') + ' ' + d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            '更新时间：' + d.toLocaleDateString('zh-CN') + ' ' + d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
         }
 
       } catch (e) {

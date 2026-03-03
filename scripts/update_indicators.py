@@ -539,6 +539,10 @@ def fetch_tradfi_indicators():
     except Exception as e:
         print(f"  SCHD/QQQ error: {e}")
 
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    for v in results.values():
+        v["updated_at"] = now
+
     return results
 
 
@@ -562,19 +566,28 @@ def collect_all():
     ]:
         print(f"  {name}...")
         result = func()
+        now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         if result:
+            result["updated_at"] = now
             indicators[name] = result
         else:
-            indicators[name] = {"value": None, "display": "获取失败", "triggered": False, "level": None}
+            indicators[name] = {"value": None, "display": "获取失败", "triggered": False, "level": None, "updated_at": now}
 
     print("Fetching TradFi indicators...")
     tradfi = fetch_tradfi_indicators()
     indicators.update(tradfi)
 
-    # Manual indicators (no auto data)
+    # Manual indicators: preserve existing data from data.json (including updated_at)
+    existing = {}
+    if DATA_JSON.exists():
+        try:
+            with open(DATA_JSON) as f:
+                existing = json.load(f).get("indicators", {})
+        except Exception:
+            pass
     for key in ("miner-shutdown-price", "etf-net-directional-flow", "ico-market-heat"):
         if key not in indicators:
-            indicators[key] = {"value": None, "display": None, "triggered": False, "level": None}
+            indicators[key] = existing.get(key, {"value": None, "display": None, "triggered": False, "level": None})
 
     return indicators
 
