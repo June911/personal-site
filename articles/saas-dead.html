@@ -281,7 +281,7 @@ a { color: inherit; text-decoration: none; }
     <div class="article-hero-left">
       <div class="article-label">投资框架</div>
       <h1 class="article-h1">AI 时代的 SaaS：<br>谁会活下来？</h1>
-      <p class="article-subtitle">SOP 供给不再稀缺之后，真正决定 SaaS 生死的不是构建能力，而是约束的强度。</p>
+      <p class="article-subtitle">更根本的问题——当智能变成基础设施，订阅制交付标准化软件的模式还成立吗？</p>
     </div>
     <div class="article-hero-right">
       <div class="hero-dot"></div>
@@ -311,35 +311,68 @@ a { color: inherit; text-decoration: none; }
   <aside class="toc">
     <div class="toc-title">目录</div>
     <ul class="toc-list">
+      <li><a href="#s1" data-section="s1">一、定义与边界</a></li>
+      <li><a href="#s2" data-section="s2">二、AI 对 SaaS 的冲击</a></li>
+      <li><a href="#s3" data-section="s3">三、架构范式转变</a></li>
+      <li><a href="#s4" data-section="s4">四、商业模式困境</a></li>
       <li><a href="#verdict" data-section="verdict">核心判断</a></li>
-      <li><a href="#s1" data-section="s1">一、AI 对 SaaS 的冲击</a></li>
-      <li><a href="#s2" data-section="s2">二、架构范式转变</a></li>
-      <li><a href="#s3" data-section="s3">三、商业模式困境</a></li>
-      <li><a href="#s4" data-section="s4">四、独占性决定生死</a></li>
-      <li><a href="#s5" data-section="s5">五、护城河重估</a></li>
+      <li><a href="#s5" data-section="s5">五、数据的独占性</a></li>
       <li><a href="#s6" data-section="s6">六、评估框架</a></li>
-      <li><a href="#s7" data-section="s7">七、四种存活路径</a></li>
-      <li><a href="#s8" data-section="s8">八、总结</a></li>
+      <li><a href="#s7" data-section="s7">七、案例验证</a></li>
+      <li><a href="#s8" data-section="s8">八、四种存活路径</a></li>
+      <li><a href="#s9" data-section="s9">九、总结</a></li>
     </ul>
   </aside>
 
   <article class="article-body">
 
-    <!-- VERDICT -->
-    <div class="verdict fade-in" id="verdict">
-      <h3>核心判断</h3>
-      <p>绝大部分 SaaS 公司确实会很惨，但有一部分——因为受到<strong>强约束</strong>保护——会活得很好。</p>
-      <p>SaaS 的本质是<strong>组织能力的外化和标准化</strong>，即把企业内部的 SOP 变成可购买的软件服务，减少协调成本。AI 并没有消灭这个需求，但彻底改变了 SOP 的供给侧结构。</p>
-    </div>
-
-    <div class="callout callout-accent fade-in">
-      <h4>核心假设</h4>
-      <p><strong>SOP 仍然重要</strong>：Agent 需要约束（权责分配、偏好、决策授权）来保证执行准确性，SOP 不会消失，只是供给方式变了。</p>
-      <p><strong>构建能力在贬值，独占数据不会</strong>：当能力不再稀缺，护城河从「做得到」转向「拿得到」——许可稀缺取代能力稀缺。</p>
+    <div class="flow-label">第一性原理推导</div>
+    <div class="flow-diagram fade-in">
+      <div class="flow-node highlight">智能成本趋零</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">构建能力不再稀缺</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">SOP 供给充裕</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">护城河 = 独占数据</div>
     </div>
 
     <!-- SECTION 1 -->
-    <h2 id="s1" class="fade-in"><span class="section-num">01</span>AI 对 SaaS 的冲击</h2>
+    <h2 id="s1" class="fade-in"><span class="section-num">01</span>定义与边界</h2>
+
+    <p class="section-intro fade-in"><strong>SaaS = 订阅制 + 持续交付 + 标准化软件</strong>。在讨论"SaaS 是否已死"之前，先要精确定义这三个词圈出的边界——越界的不是 SaaS 在进化，而是变成了另一种东西。</p>
+
+    <h3>经济边界：边际成本趋零</h3>
+    <p>SaaS 的经济基础是：<strong>每多服务一个客户，成本几乎不增加</strong>。这使订阅制定价成为可能——固定费用分摊在无限用户上，供应商和客户都受益。</p>
+    <p><em style="color:#888">线外反例：Spotify 每增加一个用户就要多付版税，利润结构更像内容分发；AI-native SaaS 每次推理都消耗算力，边际成本回到线性增长。</em></p>
+
+    <h3>技术边界：同一份代码服务所有人</h3>
+    <p>标准化的核心是<strong>多租户</strong>——用同一套系统服务不同客户。一旦为每个客户维护独立分支，就不再是 SaaS，而是外包。</p>
+    <p><em style="color:#888">线外反例：定制化外包（Private Branch）、Palantir 早期的驻场部署模式。</em></p>
+
+    <h3>功能边界：嵌入客户决策链</h3>
+    <p>订阅制要求客户持续付费，这意味着软件必须<strong>成为工作流中不可跳过的节点</strong>——不是用完一次就走，而是每天都要经过。</p>
+    <p><em style="color:#888">线外反例：格式转换工具、一次性迁移脚本——有用，但不值得订阅。</em></p>
+
+    <h3>价值边界：价值锚在软件本身</h3>
+    <p>SaaS 的客户为<strong>软件功能</strong>付费。如果价值锚不在软件而在其他东西上（社交关系、内容、数据本身），那就是另一种生意披了 SaaS 的外衣。</p>
+    <p><em style="color:#888">线外反例：微信（价值锚在社交关系）、Bloomberg Terminal（价值锚在独占数据）。</em></p>
+
+    <div class="flow-label">四条边界的逻辑链</div>
+    <div class="flow-diagram fade-in">
+      <div class="flow-node highlight">边际成本低</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">才能标准化</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">才能嵌入流程</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">才能形成价值沉淀</div>
+    </div>
+
+    <p>这四条边界是层层递进的：没有经济基础就无法标准化，无法标准化就进不了工作流，进不了工作流就没有持续价值。<strong>AI 正在从第一条——经济边界——开始动摇整个链条</strong>。</p>
+
+    <!-- SECTION 2 -->
+    <h2 id="s2" class="fade-in"><span class="section-num">02</span>AI 对 SaaS 的冲击</h2>
 
     <p class="section-intro fade-in">AI 正在从三个层面瓦解传统 SaaS 的构建壁垒。SOP 的供给，从稀缺走向充裕。</p>
 
@@ -358,8 +391,8 @@ a { color: inherit; text-decoration: none; }
       <p><strong>AI 之后</strong>：护城河 = f(许可稀缺度) — 谁拥有不可替代的约束</p>
     </div>
 
-    <!-- SECTION 2 -->
-    <h2 id="s2" class="fade-in"><span class="section-num">02</span>架构范式的转变</h2>
+    <!-- SECTION 3 -->
+    <h2 id="s3" class="fade-in"><span class="section-num">03</span>架构范式的转变</h2>
 
     <p>SaaS 的主要参与者正在从「人」过渡到「Agent」。这不仅改变了产品形态，更从根本上动摇了商业模式。</p>
 
@@ -389,8 +422,8 @@ a { color: inherit; text-decoration: none; }
 
     <p>这就像 Google 时代的黄页——大量 SaaS 卖的不是数据本身，而是<strong>「把数据变成可用的」这个处理过程</strong>。当 LLM 让处理过程的成本趋零，这些 SaaS 就是智能时代的黄页。</p>
 
-    <!-- SECTION 3 -->
-    <h2 id="s3" class="fade-in"><span class="section-num">03</span>商业模式的困境</h2>
+    <!-- SECTION 4 -->
+    <h2 id="s4" class="fade-in"><span class="section-num">04</span>商业模式的困境</h2>
 
     <h3>Per-seat 定价的瓦解</h3>
     <p>SaaS 的 per-seat 定价建立在「人是使用单位」这个假设上。当 Agent 成为使用单位，定价模型需要根本重写——按调用次数、按结果、按节省的人力成本计价。</p>
@@ -398,17 +431,36 @@ a { color: inherit; text-decoration: none; }
 
     <h3>边际成本结构变化</h3>
     <p>传统 SaaS 的边际成本几乎为零。AI 时代，每次推理都需要电力和算力，<strong>边际成本变成线性扩张</strong>。这对利润率模型是根本性改变。</p>
+    <p>回到第一节的定义边界——AI-native SaaS 正在逼近经济边界的外侧。当推理成本随用量线性增长，利润结构不再像软件公司，更像内容平台。它们不是 SaaS 在进化，<strong>是在变成另一种东西</strong>。</p>
 
     <h3>自建门槛降低</h3>
     <p>构建成本大幅降低后，企业面临更现实的「自建 vs. 采购」抉择。以前自建太贵，只能买 SaaS；现在用 Agent + Skill 可能自己就搞定了。竞争从 3 家变 300 家，定价权被碾碎。</p>
+
+    <div class="callout callout-accent fade-in">
+      <h4>核心机制</h4>
+      <p>AI 不是替代软件，是<strong>减少使用软件的人</strong>。软件还在，但付费的「人头」在消失——per-seat 模型在结构性萎缩，整个 SaaS 行业的估值倍数可能永久性下了一个台阶。</p>
+    </div>
 
     <div class="callout callout-red fade-in">
       <h4>估值陷阱</h4>
       <p>不需要收入下降就能让股价崩盘——只需<strong>估值倍数压缩</strong>。一家 15x 营收的公司，当市场认为定价权在消融，可能跌到 6x。收入不变，股价跌 60%。</p>
     </div>
 
-    <!-- SECTION 4 -->
-    <h2 id="s4" class="fade-in"><span class="section-num">04</span>什么能活下来：独占性</h2>
+    <!-- VERDICT -->
+    <div class="verdict fade-in" id="verdict">
+      <h3>核心判断</h3>
+      <p>绝大部分 SaaS 公司确实会很惨，但有一部分——因为受到<strong>强约束</strong>保护——会活得很好。</p>
+      <p>AI 没有消灭对标准化软件的需求，但彻底改变了供给侧——<strong>构建成本趋零后，"标准化"的稀缺性在瓦解</strong>。问题不再是谁能做出好软件，而是谁拥有不可替代的约束。</p>
+    </div>
+
+    <div class="callout callout-accent fade-in">
+      <h4>核心假设</h4>
+      <p><strong>SOP 仍然重要</strong>：Agent 需要约束（权责分配、偏好、决策授权）来保证执行准确性，SOP 不会消失，只是供给方式变了。</p>
+      <p><strong>构建能力在贬值，独占数据不会</strong>：当能力不再稀缺，护城河从「做得到」转向「拿得到」——许可稀缺取代能力稀缺。</p>
+    </div>
+
+    <!-- SECTION 5 -->
+    <h2 id="s5" class="fade-in"><span class="section-num">05</span>什么能活下来：数据的独占性</h2>
 
     <p class="section-intro">SOP 供给不再稀缺之后，真正决定 SaaS 生死的不是「构建能力」，而是<strong>数据的独占性</strong>。问一个问题：这份数据离开你，别人能不能拿到同样的东西？</p>
 
@@ -437,8 +489,16 @@ a { color: inherit; text-decoration: none; }
 
     <h3>功能独占 — 数据离开就降级</h3>
     <p>数据本身可能属于客户，但离开你的系统就失去了关键属性：合规状态、整合上下文、或认证标记。</p>
-    <p>HIPAA 不在乎 LLM。FDA 认证不会因为 GPT-5 变简单。Veeva 的 GxP 验证环境就是例子——产品本质上<strong>是合规认证本身</strong>，不是软件。监管机构认证的是系统，不是功能。数据迁出 = 丧失合规状态。</p>
-    <p>传统支付轨道也属于这一层——数据在特定制度框架内才有效力。但制度约束正在被穿透：区块链/稳定币用代码替代信任中介，Agent 天然偏好可编程的链上轨道。这是五年维度里变化最剧烈的子类。</p>
+    <p>Veeva 的 GxP 验证环境就是例子——产品本质上<strong>是合规认证本身</strong>，不是软件。监管机构认证的是系统，不是功能。数据迁出 = 丧失合规状态。这是目前最坚实的功能独占之一。</p>
+
+    <p>但存在一个<strong>临界点</strong>。AI 输出本身不可完全复现——即使温度设为 0，底层 GPU 的浮点数差异也会导致同一输入产出不同结果。法律如何认定这种不确定性，决定了合规壁垒的命运：</p>
+    <ul>
+      <li><strong>法律不接受幻觉</strong> → 合规壁垒更深更固化，传统 SaaS 反而更安全</li>
+      <li><strong>法律接受一定容错</strong> → 任何公司的 Agent 都能走合规流程，壁垒消失</li>
+    </ul>
+    <p>关键推论：如果法律能接受判决中的幻觉，为什么不能接受别家 Agent 的合规流程？法律壁垒本质是标准化门槛——<strong>一旦 AI 学会这个标准，壁垒就消失</strong>。趋势看，法律会慢慢接受 AI 产出，合规壁垒长期可能不可靠。</p>
+
+    <p>传统支付轨道也属于功能独占——数据在特定制度框架内才有效力。但制度约束正在被穿透：区块链/稳定币用代码替代信任中介，Agent 天然偏好可编程的链上轨道。这是五年维度里变化最剧烈的子类。</p>
 
     <div class="callout callout-yellow fade-in">
       <h4>容错率决定功能独占的厚度</h4>
@@ -461,31 +521,13 @@ a { color: inherit; text-decoration: none; }
 唯一上升：能源类生产独占（物理刚性不变，其他在弱化）
 最虚：    惯性锁定（大部分是伪装，纯惯性范围持续缩小）</div>
 
-    <!-- SECTION 5 -->
-    <h2 id="s5" class="fade-in"><span class="section-num">05</span>护城河的重新评估</h2>
-
-    <h3>构建能力 vs. 行业知识积累</h3>
-    <p>这是 AI 时代最关键的区分：</p>
-    <ul>
-      <li><strong>构建能力</strong>正在大幅贬值：UI 改成自然语言，写代码变容易，SOP 搭建成本趋零</li>
-      <li><strong>行业知识积累</strong>仍然稀缺：数据整合后效果更好、需要准确度保证的领域，积累本身就是壁垒</li>
-    </ul>
-
-    <h3>数据护城河的重新审视</h3>
-    <ul>
-      <li>数据大概率在用户手上，但公司可以利用脱敏数据优化产品（数据越多、效果越好的飞轮）</li>
-      <li>需要评估用户数据的<strong>可迁移程度</strong>——迁移成本越高，锁定越强</li>
-      <li>关键问题：数据更多到底带来了多少额外价值？如果边际价值递减，护城河就没那么深</li>
-    </ul>
-
-    <h3>AI 本身尚未解决的问题</h3>
-    <ul>
-      <li><strong>幻觉/准确性</strong>：容错率高的场景 Agent 能做，容错率低的仍需人在回路中。越需要准确度的行业，SaaS 越安全</li>
-      <li><strong>行业数据积累</strong>：有些知识积累本身有价值（如病例数据、驾驶数据），数据越多效果越好的领域，整合者有天然优势</li>
-    </ul>
-
-    <h3>组织惯性（不太重要）</h3>
-    <p>团队习惯了某套 SOP，换系统要求整个组织重学——这是真实的迁移成本，但在 AI 时代重要性下降。Agent 的学习和适应能力远强于人。</p>
+    <div class="callout callout-red fade-in">
+      <h4>警惕假壁垒</h4>
+      <p><strong>「数据存在我这里」≠ 壁垒</strong> — 是迁移惯性，AI 在降低迁移成本。Klarna 已证明大客户说走就走。</p>
+      <p><strong>「迁移很痛苦」≠ 独占</strong> — 竞争对手愿意花时间攻破，壁垒终将被瓦解。</p>
+      <p><strong>「合规是刚需」≠ 高价值</strong> — 客户当成本买不当投资买，定价天花板有限。</p>
+      <p><strong>「UI 护城河」在自然语言时代崩塌</strong> — 当界面变成对话，训练用户使用你界面的壁垒就没了。</p>
+    </div>
 
     <!-- SECTION 6 -->
     <h2 id="s6" class="fade-in"><span class="section-num">06</span>评估框架</h2>
@@ -506,18 +548,52 @@ a { color: inherit; text-decoration: none; }
       <p style="margin-top:12px;font-size:13px;color:#555;line-height:1.7">合规是刚需但定价天花板低，增收类（如 Bloomberg）客户支付意愿最强。不可替代性描述的是「能不能被 AI 替掉」，不是「客户愿意付多少钱」。</p>
     </div>
 
-    <h3>SOP 特征评估</h3>
+    <div class="callout callout-accent fade-in">
+      <h4>数据真正有价值的三个条件</h4>
+      <ol style="margin:10px 0 0 20px;line-height:2">
+        <li><strong>汇聚型数据</strong> — 单个客户的数据不够，必须跨客户聚合才产生额外价值</li>
+        <li><strong>边际收益递增</strong> — 数据越多效果越好，且边际收益不能递减太快</li>
+        <li><strong>不可替代数据源</strong> — 数据生产过程依赖我的基础设施，上游不对竞争对手平等开放</li>
+      </ol>
+    </div>
+
+    <!-- SECTION 7 -->
+    <h2 id="s7" class="fade-in"><span class="section-num">07</span>案例验证</h2>
+
+    <p class="section-intro fade-in">用上述框架扫描 9 家公司，从 Tesla FSD 到 Salesforce，验证三个核心问题：<strong>数据飞轮有没有？独占不独占？Agent 来了还能收到钱吗？</strong></p>
+
     <table>
-      <thead><tr><th>维度</th><th>特征</th><th>含义</th></tr></thead>
+      <thead><tr><th>公司</th><th>数据飞轮</th><th>独占性</th><th>Agent 时代价值捕获</th><th>评分</th></tr></thead>
       <tbody>
-        <tr><td><strong>复杂度</strong></td><td>SOP 越复杂</td><td>护城河越深，但市场越窄</td></tr>
-        <tr><td><strong>标准化</strong></td><td>越标准</td><td>越容易规模化；越定制越滑向外包</td></tr>
-        <tr><td><strong>变化速度</strong></td><td>监管驱动 vs 市场驱动</td><td>监管：慢但刚需强；市场：快但弹性大</td></tr>
+        <tr><td><strong>Tesla FSD</strong></td><td>✅✅ 教科书级</td><td>✅✅ 物理独占</td><td>✅ 订阅制，车辆不被替代</td><td>⭐⭐⭐⭐½</td></tr>
+        <tr><td><strong>Axon</strong></td><td>✅ 执法视频训练</td><td>✅ 硬件+法律</td><td>✅ 警察不被替代，纯增量</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>Tempus AI</strong></td><td>✅ 多模态临床</td><td>✅ 10年管道</td><td>✅ 按检测/数据集计价</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>Duolingo</strong></td><td>✅ 有但递减</td><td>△ 行为/品牌</td><td>✅ Consumer sub</td><td>⭐⭐⭐½</td></tr>
+        <tr><td><strong>Shopify</strong></td><td>△ 弱飞轮</td><td>❌ 位置可争夺</td><td>✅ GMV 抽成</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>Veeva</strong></td><td>❌ 存档型</td><td>✅ 合规独占（有临界点）</td><td>△ 刚需但 per-seat</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>Adobe</strong></td><td>△ 弱</td><td>❌ 内容属于用户</td><td>❌ seat compression</td><td>⭐⭐</td></tr>
+        <tr><td><strong>ServiceNow</strong></td><td>❌</td><td>❌ 零降级迁移</td><td>❌ 三重负循环</td><td>⭐⭐</td></tr>
+        <tr><td><strong>Salesforce</strong></td><td>❌</td><td>❌ 最容易迁走</td><td>❌ 正在自我毁灭</td><td>⭐</td></tr>
       </tbody>
     </table>
 
-    <!-- SECTION 7 -->
-    <h2 id="s7" class="fade-in"><span class="section-num">07</span>四种存活路径</h2>
+    <h3>Tesla FSD — 物理独占的教科书</h3>
+    <p>传感器在 Tesla 的车上，数据从出生就是 Tesla 的。截至 2026 年 2 月，FSD 累计超 80 亿英里，2026 前 50 天跑了 10 亿英里。完美飞轮：更多车 → 更多数据 → 模型更好 → 更多订阅 → 更多数据。没有人能买到、复制或替代这个数据采集过程——除非你也有几百万辆车在路上跑。</p>
+    <p>FSD 已转纯订阅（$99/月），约 110 万活跃用户 ≈ $13 亿+ ARR。「用户」是车辆不是人——车辆不会被 AI 替代，Robotaxi 场景下每辆无人车都订阅 FSD = 更多收入。</p>
+    <p><em style="color:#888">风险：执行风险巨大——Musk 反复推迟无人驾驶时间线。安全数据方法论被质疑。监管不确定性高。估值已定价完美执行。</em></p>
+
+    <h3>Tempus AI — 十年数据管道的壁垒</h3>
+    <p>4,000 万+ 研究记录、150 万+ 临床-基因组匹配、700 万张病理切片、70 亿+ 临床笔记。与 4,500+ 家美国医院建立数据管道，花了 10 年、数十亿美元。关键：数据不属于单个医院，是<strong>跨机构聚合后才有价值</strong>；上游数据源不对竞争对手开放同等管道。</p>
+    <p>不是 per-seat 模型。Insights 按数据集付费，Genomics 按检测量计价，算法诊断按使用计价。AI 让药企做更多研究 → 需要更多数据 → 收入增加。Q4 2025 收入 $3.67 亿（+83% YoY）。</p>
+    <p><em style="color:#888">风险：盈利能力未证明（2025 年刚转正 EBITDA $500 万），负债 $5.18 亿。隐私法规风险——如果数据共享限制收紧，管道可能受损。</em></p>
+
+    <h3>Salesforce — 反面教材</h3>
+    <p>CRM 数据是最标准化、最容易迁移的数据。多存十万条客户记录，产品体验零提升。Klarna 已证明大客户可以说走就走——数据离开 Salesforce 不但零降级，可能更轻便。</p>
+    <p>自己把客服从 9,000 裁到 5,000。90 个企业账户已观察到 10% 席位减少。Agentforce 越好 → 客户需要越少人 → 席位越少 → 收入越低。三种定价模型并行（$2/对话、$0.10/动作、$125-550/用户/月）= 不知道怎么收钱。</p>
+    <p>HubSpot 逆势 20% 增长说明 CRM 赛道还在，但 Salesforce 的定位最脆弱——<strong>它卖的是「把数据变得可用」，正是智能时代的黄页</strong>。</p>
+
+    <!-- SECTION 8 -->
+    <h2 id="s8" class="fade-in"><span class="section-num">08</span>四种存活路径</h2>
 
     <div class="path-grid fade-in">
       <div class="path-card">
@@ -531,11 +607,11 @@ a { color: inherit; text-decoration: none; }
           <span class="path-tag neutral">Agent 收费：不确定</span>
         </div>
       </div>
-      <div class="path-card">
+      <div class="path-card" style="border-color:var(--red)">
         <div class="path-num">02</div>
         <div class="path-title">本地 + Agent 系统</div>
-        <div class="path-desc">本地数据存储配合 Agent 运行，完全绕过传统 SaaS。这是对 SaaS 最大的威胁。</div>
-        <div class="path-example">代表：企业自建</div>
+        <div class="path-desc">本地数据存储配合 Agent 运行，完全绕过传统 SaaS。<strong>绝大部分 SaaS 的默认结局</strong>——除非能证明自己属于其他三条路径。</div>
+        <div class="path-example">代表：企业自建 · 主流趋势</div>
         <div class="path-tags">
           <span class="path-tag weak">数据飞轮：无</span>
           <span class="path-tag weak">独占性：无</span>
@@ -556,26 +632,30 @@ a { color: inherit; text-decoration: none; }
       <div class="path-card">
         <div class="path-num">04</div>
         <div class="path-title">监管基础设施</div>
-        <div class="path-desc">产品 = 合规认证本身。监管机构认证的是系统，不是功能。Agent 无法自建被认证的系统。</div>
-        <div class="path-example">代表：Veeva Vault · 最强护城河</div>
+        <div class="path-desc">产品 = 合规认证本身。监管机构认证的是系统，不是功能。短期最安全，但存在临界点——当 AI 系统的合规能力超过传统软件+人类时，壁垒可能反转。</div>
+        <div class="path-example">代表：Veeva Vault</div>
         <div class="path-tags">
-          <span class="path-tag medium">数据飞轮：中</span>
-          <span class="path-tag strong">独占性：极强</span>
-          <span class="path-tag strong">Agent 收费：能</span>
+          <span class="path-tag weak">数据飞轮：无</span>
+          <span class="path-tag strong">独占性：强（合规）</span>
+          <span class="path-tag medium">Agent 收费：刚需但天花板低</span>
         </div>
       </div>
     </div>
 
-    <!-- SECTION 8 -->
-    <h2 id="s8" class="fade-in"><span class="section-num">08</span>总结</h2>
+    <!-- SECTION 9 -->
+    <h2 id="s9" class="fade-in"><span class="section-num">09</span>总结</h2>
 
     <p>AI 时代对 SaaS 的冲击是结构性的：SOP 构建成本趋零，per-seat 模式瓦解，边际成本从零变为线性，平台层被 Agent 绕过。</p>
 
-    <p>但 SaaS 不会消亡——<strong>约束不会消亡</strong>。那些嵌入物理世界、法律框架和监管体系的 SaaS，反而可能因为 AI 时代对合规和准确性的更高要求而变得更加不可替代。</p>
+    <p>但 SaaS 不会消亡——<strong>约束不会消亡</strong>。嵌入物理世界的 SaaS（传感器、基础设施）壁垒最硬；嵌入法律和监管体系的，短期安全，但存在临界点——当 AI 系统的合规能力被法律接受，这层壁垒可能反转。</p>
 
-    <blockquote>投资逻辑从「找好的软件产品」变成了「找强约束下的不可替代系统」。</blockquote>
+    <p>案例验证表明，真正的壁垒来自物理世界而非软件——Tesla 的传感器、Axon 的摄像头、Tempus 的医院管道。数据从物理世界产生，经由自有基础设施采集，在自有平台上聚合训练——<strong>这才是真正的独占</strong>。纯 SaaS 的数据几乎都属于客户。</p>
 
-    <p>SaaS 真正需要回答的问题不是「AI 会不会替代我」，而是：<strong>当智能免费之后，你卖的到底是什么？</strong></p>
+    <blockquote>投资逻辑从「找最好的 SaaS 产品」变成了「找成功转型为数据基础设施的公司」。</blockquote>
+
+    <p>这里有一个悖论：按第一节的定义，价值锚在数据而非软件的公司，本就不算纯 SaaS。所以这篇文章真正的结论是——<strong>活下来的，已经不是纯 SaaS 了</strong>。它们以订阅制交付，但核心资产是不可替代的数据，不是标准化的软件功能。</p>
+
+    <p>对每家公司问三个问题：<strong>数据越多产品越好吗？数据只能从你这里出吗？Agent 来了还能收到钱吗？</strong>能同时回答「是」的公司屈指可数——但它们是 AI 时代真正的赢家。</p>
 
     <div class="conclusion-lines fade-in">
       <div class="conclusion-line">
