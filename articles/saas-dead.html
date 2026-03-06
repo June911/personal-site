@@ -369,7 +369,24 @@ a { color: inherit; text-decoration: none; }
       <div class="flow-node highlight">才能形成价值沉淀</div>
     </div>
 
-    <p>这四条边界是层层递进的：没有经济基础就无法标准化，无法标准化就进不了工作流，进不了工作流就没有持续价值。<strong>AI 正在从第一条——经济边界——开始动摇整个链条</strong>。</p>
+    <p>这四条边界是层层递进的：没有经济基础就无法标准化，无法标准化就进不了工作流，进不了工作流就没有持续价值。<strong>AI 的冲击不在这条链本身，而在供给侧——当构建 SaaS 的成本趋零，竞争从 3 家变成 300 家，整条链的稀缺性在瓦解</strong>。</p>
+
+    <div class="callout callout-yellow fade-in">
+      <h4>但先停一下——"SaaS"这个词本身有问题</h4>
+      <p>市场上被叫做"SaaS"的公司，其实在做四种完全不同的生意：</p>
+      <table style="margin:12px 0 8px">
+        <thead><tr><th>类型</th><th>卖的是什么</th><th>例子</th></tr></thead>
+        <tbody>
+          <tr><td><strong>经典 SaaS</strong></td><td>压缩后的 SOP（把行业工作流固化为代码）</td><td>Salesforce, ServiceNow</td></tr>
+          <tr><td><strong>Infra SaaS</strong></td><td>算力/存储/网络的弹性接口</td><td>Snowflake, Twilio</td></tr>
+          <tr><td><strong>Data SaaS</strong></td><td>独占数据的访问权</td><td>Bloomberg, Pitchbook</td></tr>
+          <tr><td><strong>Platform</strong></td><td>双边网络的连接权</td><td>Shopify, GitHub</td></tr>
+        </tbody>
+      </table>
+      <p>它们共享一个计费形式（订阅制）和一个交付形式（云端），但商业逻辑完全不同。<strong>SaaS 这个词把"交付方式"当成了"商业模式"</strong>——就像把所有装在瓶子里的液体都叫"饮料"。本文聚焦经典 SaaS（SOP 压缩器），但 Infra/Data/Platform 的命运在评估框架中也会涉及——它们天然不依赖 SOP 供给，所以受冲击的方式不同。</p>
+      <p>上面四条边界定义的是第一种：<strong>经典 SaaS = SOP 压缩器</strong>。本文的核心判断是：这种真正的 SaaS 在 AI 时代几乎全死。后文案例中拿高分的公司——Tesla FSD 的物理传感器数据、Tempus 的跨机构临床管道——本质上不是在卖 SOP，而是在卖数据或基础设施，只是披了 SaaS 的计费外衣。而 Salesforce、ServiceNow 这些纯粹的 SOP 压缩器，恰恰是最危险的。</p>
+      <p style="margin-bottom:0"><strong>更准确的说法是：SaaS 作为"SOP 订阅分发"的商业模式正在死亡。SaaS 作为"云端订阅"的计费形式会继续存在，但支撑定价权的东西必须换成别的。</strong>下面的分析就是在回答：换成了什么的能活，没换的会死。</p>
+    </div>
 
     <!-- SECTION 2 -->
     <h2 id="s2" class="fade-in"><span class="section-num">02</span>AI 对 SaaS 的冲击</h2>
@@ -653,7 +670,7 @@ a { color: inherit; text-decoration: none; }
 
     <blockquote>投资逻辑从「找最好的 SaaS 产品」变成了「找成功转型为数据基础设施的公司」。</blockquote>
 
-    <p>这里有一个悖论：按第一节的定义，价值锚在数据而非软件的公司，本就不算纯 SaaS。所以这篇文章真正的结论是——<strong>活下来的，已经不是纯 SaaS 了</strong>。它们以订阅制交付，但核心资产是不可替代的数据，不是标准化的软件功能。</p>
+    <p>回到第一节的判断：按四条边界的定义，价值锚在数据而非软件的公司，本就不算纯 SaaS。所以这篇文章真正的结论是——<strong>活下来的，已经不是纯 SaaS 了</strong>。它们以订阅制交付，但核心资产是不可替代的数据，不是标准化的软件功能。SaaS 作为 SOP 订阅分发的商业模式正在死亡；SaaS 作为云端订阅的计费形式会继续存在，但支撑定价权的东西必须换成别的。</p>
 
     <p>对每家公司问三个问题：<strong>数据越多产品越好吗？数据只能从你这里出吗？Agent 来了还能收到钱吗？</strong>能同时回答「是」的公司屈指可数——但它们是 AI 时代真正的赢家。</p>
 
