@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-03-12T21:30:11Z",
+  "updated_at": "2026-03-13T21:30:41Z",
   "BTC": {
-    "price": 70295,
-    "change_24h": -0.39
+    "price": 71201,
+    "change_24h": 1.31
   },
   "ETH": {
-    "price": 2061.13,
-    "change_24h": -0.26
+    "price": 2105.87,
+    "change_24h": 2.19
   },
   "CRCL": {
-    "price": 114.18,
-    "change_24h": 1.21
+    "price": 115.38,
+    "change_24h": 1.05
   }
 }
