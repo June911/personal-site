@@ -1,106 +1,105 @@
 {
-  "updated_at": "2026-03-30T02:46:18Z",
+  "updated_at": "2026-03-30T13:27:27Z",
   "indicators": {
     "ahr999": {
-      "value": 0.33,
-      "display": "0.33 (低于阈值)",
+      "value": 0.34,
+      "display": "0.34 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 66864.19,
-      "updated_at": "2026-03-30T02:46:09Z"
+      "btc_price": 67931.61,
+      "updated_at": "2026-03-30T13:27:22Z"
     },
     "nupl": {
       "value": 0.182,
       "display": "NUPL 0.182",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-03-30T02:46:10Z"
+      "updated_at": "2026-03-30T13:27:23Z"
     },
     "mvrv-zscore": {
       "value": 0.51,
       "display": "Z-Score 0.51",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-03-30T02:46:11Z"
+      "updated_at": "2026-03-30T13:27:24Z"
     },
     "puell-multiple": {
       "value": 0.68,
       "display": "Puell 0.68",
       "triggered": false,
       "level": "关注",
-      "updated_at": "2026-03-30T02:46:12Z"
+      "updated_at": "2026-03-30T13:27:25Z"
     },
     "hash-ribbons": {
       "value": -1,
       "display": "投降中 (MA30/MA60: -1.2%)",
       "triggered": false,
       "level": "投降",
-      "updated_at": "2026-03-30T02:46:13Z"
+      "updated_at": "2026-03-30T13:27:25Z"
     },
     "fear-greed-crypto": {
       "value": 8,
       "display": "8 (Extreme Fear)",
       "triggered": true,
       "level": "重仓",
-      "updated_at": "2026-03-30T02:46:13Z"
+      "updated_at": "2026-03-30T13:27:26Z"
     },
     "funding-rate": {
-      "value": 15,
-      "display": "当前 -0.0021% (8h)，连续负 15 次",
+      "value": 8,
+      "display": "当前 -0.0437% (8h)，连续负 8 次",
       "triggered": true,
       "level": "行动",
-      "current_rate": -0.0021,
-      "updated_at": "2026-03-30T02:46:14Z"
+      "current_rate": -0.0437,
+      "updated_at": "2026-03-30T13:27:26Z"
     },
     "stablecoin-supply": {
       "value": 2.1,
-      "display": "$313.8B, 90d +2.1%",
+      "display": "$313.7B, 90d +2.1%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-03-30T02:46:15Z"
+      "updated_at": "2026-03-30T13:27:26Z"
     },
     "crypto-vc-funding": {
-      "value": 1574.0,
-      "display": "$1,574M/月 (3M均), 57 deals/月",
+      "value": null,
+      "display": "获取失败",
       "triggered": false,
       "level": null,
-      "deals_1m": 57,
-      "updated_at": "2026-03-30T02:46:17Z"
+      "updated_at": "2026-03-30T13:27:26Z"
     },
     "vix-spike": {
       "value": 31.0,
       "display": "VIX 31.0",
       "triggered": false,
       "level": "关注",
-      "updated_at": "2026-03-30T02:46:18Z"
+      "updated_at": "2026-03-30T13:27:27Z"
     },
     "ma200-deviation": {
       "value": -3.6,
       "display": "偏离 -3.6%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-03-30T02:46:18Z"
+      "updated_at": "2026-03-30T13:27:27Z"
     },
     "double-drop-spy-gld": {
       "value": "-3.87,-6.75",
       "display": "SPY -3.87%, GLD -6.75%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-03-30T02:46:18Z"
+      "updated_at": "2026-03-30T13:27:27Z"
     },
     "double-drop-spy-tlt": {
       "value": "-3.87,-1.52",
       "display": "SPY -3.87%, TLT -1.52%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-03-30T02:46:18Z"
+      "updated_at": "2026-03-30T13:27:27Z"
     },
     "schd-qqq-ratio": {
       "value": 120.48,
       "display": "比率 120.48 (↑ SCHD 走强 (risk-off))",
       "triggered": false,
       "level": "防御",
-      "updated_at": "2026-03-30T02:46:18Z"
+      "updated_at": "2026-03-30T13:27:27Z"
     },
     "miner-shutdown-price": {
       "value": null,
