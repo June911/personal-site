@@ -1,105 +1,105 @@
 {
-  "updated_at": "2026-04-22T13:48:19Z",
+  "updated_at": "2026-04-23T02:52:39Z",
   "indicators": {
     "ahr999": {
-      "value": 0.47,
-      "display": "0.47 (定投区)",
+      "value": 0.46,
+      "display": "0.46 (定投区)",
       "triggered": false,
       "level": "定投",
-      "btc_price": 78665.35,
-      "updated_at": "2026-04-22T13:48:13Z"
+      "btc_price": 77953.31,
+      "updated_at": "2026-04-23T02:52:34Z"
     },
     "nupl": {
       "value": 0.289,
       "display": "NUPL 0.289",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:13Z"
+      "updated_at": "2026-04-23T02:52:35Z"
     },
     "mvrv-zscore": {
-      "value": 0.75,
-      "display": "Z-Score 0.75",
+      "value": 0.76,
+      "display": "Z-Score 0.76",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:14Z"
+      "updated_at": "2026-04-23T02:52:35Z"
     },
     "puell-multiple": {
       "value": 0.73,
       "display": "Puell 0.73",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:15Z"
+      "updated_at": "2026-04-23T02:52:36Z"
     },
     "hash-ribbons": {
-      "value": 0,
-      "display": "正常 (MA30/MA60: +0.5%)",
+      "value": -1,
+      "display": "投降中 (MA30/MA60: -0.0%)",
       "triggered": false,
-      "level": null,
-      "updated_at": "2026-04-22T13:48:16Z"
+      "level": "投降",
+      "updated_at": "2026-04-23T02:52:37Z"
     },
     "fear-greed-crypto": {
-      "value": 32,
-      "display": "32 (Fear)",
+      "value": 46,
+      "display": "46 (Fear)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:16Z"
+      "updated_at": "2026-04-23T02:52:37Z"
     },
     "funding-rate": {
       "value": 0,
-      "display": "当前 0.0052% (8h)，连续负 0 次",
+      "display": "当前 0.0004% (8h)，连续负 0 次",
       "triggered": false,
       "level": null,
-      "current_rate": 0.0052,
-      "updated_at": "2026-04-22T13:48:17Z"
+      "current_rate": 0.0004,
+      "updated_at": "2026-04-23T02:52:38Z"
     },
     "stablecoin-supply": {
-      "value": 3.6,
-      "display": "$318.8B, 90d +3.6%",
+      "value": 3.8,
+      "display": "$319.1B, 90d +3.8%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:17Z"
+      "updated_at": "2026-04-23T02:52:38Z"
     },
     "crypto-vc-funding": {
       "value": null,
       "display": "获取失败",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:17Z"
+      "updated_at": "2026-04-23T02:52:39Z"
     },
     "vix-spike": {
-      "value": 19.5,
-      "display": "VIX 19.5",
+      "value": 18.9,
+      "display": "VIX 18.9",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:19Z"
+      "updated_at": "2026-04-23T02:52:39Z"
     },
     "ma200-deviation": {
-      "value": 6.7,
-      "display": "偏离 +6.7%",
+      "value": 7.0,
+      "display": "偏离 +7.0%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:19Z"
+      "updated_at": "2026-04-23T02:52:39Z"
     },
     "double-drop-spy-gld": {
-      "value": "3.62,-1.73",
-      "display": "SPY 3.62%, GLD -1.73%",
+      "value": "3.66,-0.02",
+      "display": "SPY 3.66%, GLD -0.02%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:19Z"
+      "updated_at": "2026-04-23T02:52:39Z"
     },
     "double-drop-spy-tlt": {
-      "value": "3.62,0.09",
-      "display": "SPY 3.62%, TLT 0.09%",
+      "value": "3.66,-0.01",
+      "display": "SPY 3.66%, TLT -0.01%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-04-22T13:48:19Z"
+      "updated_at": "2026-04-23T02:52:39Z"
     },
     "schd-qqq-ratio": {
-      "value": 111.55,
-      "display": "比率 111.55 (↓ QQQ 走强 (risk-on))",
+      "value": 111.4,
+      "display": "比率 111.40 (↓ QQQ 走强 (risk-on))",
       "triggered": true,
       "level": "抄底",
-      "updated_at": "2026-04-22T13:48:19Z"
+      "updated_at": "2026-04-23T02:52:39Z"
     },
     "miner-shutdown-price": {
       "value": null,
