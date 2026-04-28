@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Babylon TBV — 机制 · 角色 · 流程</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #09090B;
+    --bg-2: #111114;
+    --fg: #FAFAFA;
+    --muted: #A1A1AA;
+    --border: #27272A;
+    --indigo: #6366F1;
+    --indigo-soft: rgba(99,102,241,0.12);
+    --emerald: #10B981;
+    --amber: #F59E0B;
+    --rose: #F43F5E;
+    --violet: #A855F7;
+    --cyan: #22D3EE;
+  }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 30%, rgba(168,85,247,0.10), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 10% 80%, rgba(34,211,238,0.08), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 60px 32px 100px; }
+
+  /* Hero */
+  .hero { padding: 40px 0 60px; border-bottom: 1px solid var(--border); margin-bottom: 60px; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--indigo); padding: 6px 14px;
+    background: var(--indigo-soft); border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 9999px; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-weight: 700; letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #FFFFFF 0%, #A5B4FC 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .hero p.lead { color: var(--muted); font-size: 1.1rem; max-width: 720px; }
+  .hero .meta {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    margin-top: 24px; font-size: 0.85rem; color: var(--muted);
+  }
+  .hero .meta span strong { color: var(--fg); margin-right: 6px; }
+
+  /* Section */
+  section { margin-bottom: 80px; }
+  h2 {
+    font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  h2 .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: var(--indigo-soft);
+    border: 1px solid rgba(99,102,241,0.4);
+    border-radius: 10px;
+    font-size: 0.95rem; color: var(--indigo); font-weight: 600;
+  }
+  h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 28px 0 14px;
+    color: var(--fg);
+  }
+  .section-sub { color: var(--muted); margin-bottom: 28px; max-width: 760px; }
+
+  /* Card */
+  .card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+  }
+  .card:hover { border-color: rgba(99,102,241,0.5); transform: translateY(-2px); }
+  .grid { display: grid; gap: 16px; }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+
+  .card .tag {
+    display: inline-block; font-size: 11px; letter-spacing: 0.05em;
+    padding: 3px 8px; border-radius: 4px;
+    font-weight: 500; margin-bottom: 10px;
+  }
+  .tag.indigo { background: rgba(99,102,241,0.15); color: #A5B4FC; }
+  .tag.emerald { background: rgba(16,185,129,0.15); color: #6EE7B7; }
+  .tag.amber  { background: rgba(245,158,11,0.15); color: #FCD34D; }
+  .tag.rose   { background: rgba(244,63,94,0.15); color: #FDA4AF; }
+  .tag.violet { background: rgba(168,85,247,0.15); color: #D8B4FE; }
+  .tag.cyan   { background: rgba(34,211,238,0.15); color: #67E8F9; }
+
+  .card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 0.9rem; }
+  .card .role-line {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem; color: var(--muted);
+  }
+  .card .role-line strong { color: var(--fg); }
+
+  /* Step list */
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+  .step {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px 18px 60px;
+    position: relative;
+  }
+  .step::before {
+    content: attr(data-n);
+    position: absolute; left: 18px; top: 18px;
+    width: 28px; height: 28px;
+    background: var(--indigo);
+    color: #fff; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 600;
+  }
+  .step.happy::before { background: var(--emerald); }
+  .step.challenge::before { background: var(--rose); }
+  .step h5 { font-size: 0.98rem; font-weight: 600; margin-bottom: 4px; }
+  .step p { color: var(--muted); font-size: 0.88rem; }
+  .step .meta-line {
+    margin-top: 8px; font-size: 0.78rem; color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Branch box */
+  .branch {
+    margin: 14px 0 0 0;
+    padding: 14px 18px;
+    border-left: 3px solid var(--rose);
+    background: rgba(244,63,94,0.05);
+    border-radius: 0 8px 8px 0;
+  }
+  .branch.ok { border-left-color: var(--emerald); background: rgba(16,185,129,0.05); }
+  .branch h6 { font-size: 0.88rem; margin-bottom: 6px; font-weight: 600; }
+  .branch p  { font-size: 0.85rem; color: var(--muted); }
+
+  /* Diagram (binary label) */
+  .gc-diagram {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+  }
+  .gc-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    max-width: 800px; margin: 0 auto;
+  }
+  .gc-node {
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 10px;
+    padding: 14px 12px;
+    font-size: 0.85rem;
+  }
+  .gc-node strong { display: block; color: var(--fg); margin-bottom: 4px; }
+  .gc-node small { color: var(--muted); }
+  .gc-arrow { color: var(--indigo); font-size: 1.4rem; }
+  .gc-out-ok { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.4); }
+  .gc-out-bad { background: rgba(244,63,94,0.08); border-color: rgba(244,63,94,0.4); }
+  .gc-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+
+  /* Tables */
+  table {
+    width: 100%; border-collapse: collapse;
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td {
+    padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  th { background: rgba(255,255,255,0.03); font-weight: 600; color: var(--fg); font-size: 0.8rem; letter-spacing: 0.03em; text-transform: uppercase; }
+  td { color: var(--muted); }
+  td strong { color: var(--fg); }
+  tr:last-child td { border-bottom: 0; }
+  td .pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+  .pill.t { background: rgba(16,185,129,0.15); color: #6EE7B7; }
+  .pill.f { background: rgba(244,63,94,0.15); color: #FDA4AF; }
+  .pill.m { background: rgba(245,158,11,0.15); color: #FCD34D; }
+
+  /* Two-col with label */
+  .kv { display: grid; grid-template-columns: 200px 1fr; gap: 8px 24px; font-size: 0.9rem; }
+  .kv dt { color: var(--muted); font-weight: 500; }
+  .kv dd { color: var(--fg); }
+
+  /* Footnote */
+  footer {
+    margin-top: 80px; padding-top: 30px;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 0.82rem;
+  }
+  footer a { color: var(--indigo); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer ul { list-style: none; padding: 0; }
+  footer li { margin: 6px 0; }
+
+  /* Misc */
+  code, .mono {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    background: rgba(99,102,241,0.12);
+    padding: 1px 6px; border-radius: 4px;
+    font-size: 0.85em; color: #A5B4FC;
+  }
+  .callout {
+    margin-top: 18px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: rgba(245,158,11,0.06);
+    border: 1px solid rgba(245,158,11,0.25);
+    font-size: 0.88rem; color: #FDE68A;
+  }
+  .callout strong { color: #FCD34D; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Hero -->
+<header class="hero">
+  <span class="eyebrow">Babylon Trustless Bitcoin Vault</span>
+  <h1>BTC 不离主链，让 DeFi 合约决定它的去向</h1>
+  <p class="lead">
+    TBV = Bitcoin UTXO + 联合预签 + BitVM3 验证。把外链智能合约状态的 ZK 证明，通过 garbled circuit 翻译成 BTC 主链可验证的 hash 揭示，不需要托管方、不需要永久签名委员会。本文聚焦：<strong>参与角色 · 密码学机制 · 完整流程</strong>。
+  </p>
+  <div class="meta">
+    <span><strong>来源</strong>Whitepaper 2025-08 + Blog + 官方 Vault Keeper Doc</span>
+    <span><strong>状态</strong>Alpha Testnet 2026-02（Aave on ETH testnet）· Mainnet 目标 Q2 2026</span>
+    <span><strong>合作</strong>Aave V4（2025-12 公告）</span>
+  </div>
+</header>
+
+<!-- 1. 四个密码学构件 -->
+<section>
+  <h2><span class="num">1</span>四个密码学构件</h2>
+  <p class="section-sub">TBV 不是单一原语，是 4 个构件的精密组合。Bitcoin 主链只验最简单的"hash 原像"，复杂逻辑被推到链下电路。</p>
+
+  <div class="grid grid-4">
+    <div class="card">
+      <span class="tag indigo">SNARK</span>
+      <h4>Groth16 证明</h4>
+      <p>给 DeFi 链上智能合约状态转移生成简洁可验证证明。包含 MPT 状态根、BLS pairing、合约约束。</p>
+      <div class="role-line"><strong>位置</strong>链下生成，链下验证</div>
+    </div>
+    <div class="card">
+      <span class="tag violet">Garbled Circuit</span>
+      <h4>电路混淆</h4>
+      <p>把"验证 SNARK 证明"这件事编码成"输入触发 binary label"的电路。<code>~43GB</code>/对手方，存放在云。</p>
+      <div class="role-line"><strong>位置</strong>链下存储，挑战时链下执行</div>
+    </div>
+    <div class="card">
+      <span class="tag amber">Lamport Signature</span>
+      <h4>一次性签名</h4>
+      <p>可被 Bitcoin Script 验证，用于把 GC 输入"提交"到 BTC 链。<strong>仅在挑战路径上链</strong>，约 100KB/笔。</p>
+      <div class="role-line"><strong>位置</strong>挑战时上链</div>
+    </div>
+    <div class="card">
+      <span class="tag emerald">Bitcoin Script</span>
+      <h4>主链验证</h4>
+      <p>Hash lock + Time lock + Taproot 多花费路径。Bitcoin 只看 secret 是否被揭示，不验任何复杂逻辑。</p>
+      <div class="role-line"><strong>位置</strong>BTC 主链</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. 参与角色 -->
+<section>
+  <h2><span class="num">2</span>参与角色</h2>
+  <p class="section-sub">每个 vault 创建时就固定了"谁可以索取"和"谁可以挑战"。角色集合的设计直接决定该 vault 的 trust 边界。</p>
+
+  <h3>P2P 借贷场景（最简模型）</h3>
+  <div class="grid grid-2">
+    <div class="card">
+      <span class="tag amber">Borrower</span>
+      <h4>Bob — 借款人 / BTC 持有者</h4>
+      <p>把 BTC 锁进 vault，去 DeFi 链借 stablecoin。设置自己的 garbled circuit 防止 Larry 恶意清算；可以亲自做自己的 challenger。</p>
+      <div class="role-line"><strong>持有</strong>自己的 secret + Larry 的 GC</div>
+    </div>
+    <div class="card">
+      <span class="tag violet">Lender / Liquidator</span>
+      <h4>Larry — 出借方</h4>
+      <p>提供 stablecoin 流动性。设置自己的 GC 防止 Bob 假还款；当 Bob 违约时凭 ZK proof 取走 BTC。</p>
+      <div class="role-line"><strong>持有</strong>自己的 secret + Bob 的 GC</div>
+    </div>
+  </div>
+
+  <h3>三类 Vault Keeper 对比</h3>
+  <p class="section-sub" style="margin-bottom: 16px;">官方 Vault Keeper Definition：每个 vault 创建时指定一组 Vault Keepers。三类的核心差异是<strong>代表谁</strong>和<strong>范围多大</strong>，不是"是否能挑战"——前两类都既能 claim 也能 challenge。</p>
+  <table style="margin-bottom: 28px;">
+    <thead>
+      <tr><th>类型</th><th>代表</th><th>Claim 权限</th><th>Challenge 权限</th><th>典型实例</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Vault Provider</strong></td>
+        <td>单个用户</td>
+        <td><span class="pill t">该 vault</span></td>
+        <td><span class="pill t">该 vault</span></td>
+        <td>BTC 持有者本人 / 付费第三方运营商</td>
+      </tr>
+      <tr>
+        <td><strong>Application-elected</strong></td>
+        <td>整个应用</td>
+        <td><span class="pill t">该应用所有 vault</span></td>
+        <td><span class="pill t">该应用所有 vault</span></td>
+        <td>Aave 治理选定的 liquidator 集合</td>
+      </tr>
+      <tr>
+        <td><strong>Universal Challenger</strong></td>
+        <td>全局</td>
+        <td><span class="pill f">无</span></td>
+        <td><span class="pill t">所有 vault / 所有应用</span></td>
+        <td>独立运营的全局监督池</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>真实协议集成（如 Aave）的其他角色</h3>
+  <div class="grid grid-3">
+    <div class="card">
+      <span class="tag indigo">Vault Provider</span>
+      <h4>代表单个用户的 Vault Keeper</h4>
+      <p>用户亲选的<strong>单一</strong> Vault Keeper，<strong>双重职责</strong>：① 代表用户发起 redemption claim + 提交 ZK proof；② 监督针对该 vault 的恶意 claim 并挑战。可由 BTC holder 自己担任，也可付费委托给第三方运营商。</p>
+      <div class="role-line">
+        <strong>权限</strong>claim + challenge（仅限自己服务的 vault）<br>
+        <strong>收入</strong>BTC Vault Redemption Fee 分成（链上声明）<br>
+        <strong>运营</strong><code>vaultd</code> 软件 · 4 CPU/16GB/100GB · 双链 keys · permissionless 注册
+      </div>
+    </div>
+    <div class="card">
+      <span class="tag rose">Application-elected Keepers</span>
+      <h4>代表整个应用的 Keeper 集合</h4>
+      <p>由集成应用（如 Aave）治理选定，可对<strong>该应用相关的所有 vault</strong>提交 claim（清算时）或挑战其他 keeper 的恶意 claim。对应白皮书 §5.1 的 <code>k-of-n liquidators</code>。</p>
+      <div class="role-line"><strong>权限</strong>claim + challenge · 应用范围</div>
+    </div>
+    <div class="card">
+      <span class="tag cyan">Universal Challenger</span>
+      <h4>全局监督池</h4>
+      <p>跨应用、跨 vault，<strong>只能 challenge 不能主动 claim</strong>。三类 keeper 中唯一的"纯监督"角色，激励来自挑战成功的罚没分成。</p>
+      <div class="role-line"><strong>权限</strong>仅 challenge · 全局范围</div>
+    </div>
+    <div class="card">
+      <span class="tag emerald">Arbitrageur</span>
+      <h4>无许可清算套利者</h4>
+      <p>wBTC pool 集成场景下，任何人在一区块内原子借 wBTC → 还债 → 取 vault 控制权 → 再质押。承担 wBTC↔BTC 基差风险（≈0）。</p>
+      <div class="role-line"><strong>权限</strong>无需许可 · permissionless</div>
+    </div>
+    <div class="card">
+      <span class="tag amber">Large Lender</span>
+      <h4>j-of-m 大额出借人</h4>
+      <p>vault 创建时联合签名。有动机不让 BTC 被恶意提走。小额 lender 的安全性回退到至少一个 large lender 集合诚实。</p>
+      <div class="role-line"><strong>权限</strong>setup 联签</div>
+    </div>
+    <div class="card">
+      <span class="tag indigo">Light Client / Smart Contract</span>
+      <h4>EVM 端代理层</h4>
+      <p>Deposit smart contract 通过 Bitcoin light client 验证 vault → 铸造内部记账 ERC20 (<code>collBTC</code>) 喂给借贷协议。</p>
+      <div class="role-line"><strong>位置</strong>EVM 链上</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. P2P 流程 -->
+<section>
+  <h2><span class="num">3</span>P2P 借贷流程（教学模型）</h2>
+  <p class="section-sub">以 Bob 借款人 + Larry 出借方为例。Setup 一次性，运行期分 Happy Path 和 Challenge Path 两条。</p>
+
+  <h3>Setup — vault 创建（双方/多方协议）</h3>
+  <div class="callout" style="margin-bottom: 16px;">
+    <strong>关键</strong>：Setup 不是各自独立完成，是参与方之间的<strong>交互协议</strong>——<em>creation and exchange</em> 都要发生。每方 garble 一个"防自己作弊"的电路，<strong>交给对手方</strong>持有；对手方做 cut-and-choose 互验后才接受。
+  </div>
+  <div class="steps">
+    <div class="step" data-n="1">
+      <h5>各方 garble 一个"防自己作弊"的电路 + transaction graph</h5>
+      <p>Bob garble "验证 Bob 还款 proof"的电路（输出 = Bob 的 secret label）；Larry 对称做"防 Larry 恶意清算"的电路。每方同时构造所有可能花费交易的图（Withdraw / Slashing / Liquidation / ...）。</p>
+    </div>
+    <div class="step" data-n="2">
+      <h5>交换 GC + transaction graph</h5>
+      <p>Bob 把自己的 GC 交给 Larry（Larry 将来用它监督 Bob）；Larry 把自己的 GC 交给 Bob（Bob 将来用它监督 Larry）。每份 ~43GB，链下存储。</p>
+    </div>
+    <div class="step" data-n="3">
+      <h5>Cut-and-choose 互验</h5>
+      <p>Bob 验证 Larry 给的电路确实"在 Larry 作弊时才解出 secret"，反之亦然。概率失败率 2⁻⁴⁰（~10⁻¹²，极小但非零）。</p>
+    </div>
+    <div class="step" data-n="4">
+      <h5>互相预签所有花费交易 + 锁定 BTC</h5>
+      <p>双方对 transaction graph 中的每条路径预签。BTC 存入 vault UTXO。整个 setup 一次性完成，运行期不再交互。</p>
+    </div>
+    <div class="step" data-n="5">
+      <h5>Vault Provider 提交 confirmation 到 EVM 端</h5>
+      <p>setup 成功后，Vault Provider 向 ETH 端 deposit smart contract 提交"can service this vault"的确认；该合约负责跟踪 vault 状态（来自官方 §2.2）。</p>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>多 keeper 场景（真实集成）</strong>：当 vault keeper 不止两人（Vault Provider + Application-elected + Universal Challengers），所有指定 keeper 之间跑 <strong>n-by-n 配对 setup</strong>——每对之间都要 garble + 交换 + 互验。这是 setup 重的核心原因，也是 vault 创建后参与方集合<strong>不能再变</strong>的根因。
+  </div>
+
+  <h3>Happy Path — Bob 还款 + Larry 不挑战</h3>
+  <div class="steps">
+    <div class="step happy" data-n="1">
+      <h5>Bob 链下生成"已还款"ZK proof</h5>
+      <p>EVM 借贷合约关仓 + 销毁 collBTC，Bob 拿到状态变更证明。</p>
+    </div>
+    <div class="step happy" data-n="2">
+      <h5>Bob 在 BTC 链发 Claim tx</h5>
+      <p>不上传 SNARK proof，不上传 Lamport sig，只发交易声明意图。</p>
+    </div>
+    <div class="step happy" data-n="3">
+      <h5>Larry 不挑战 → timelock 通过</h5>
+      <p>Bob 取回 BTC。<strong>整个过程没有 GC 介入，没有 Lamport 上链，成本仅 ~$2.66</strong>（3 笔 BTC tx）。</p>
+      <div class="meta-line">cost: ~$2.66 · BTC tx: 3 · GC: 不触发</div>
+    </div>
+  </div>
+
+  <h3>Challenge Path — Larry 怀疑欺诈</h3>
+  <div class="steps">
+    <div class="step challenge" data-n="1">
+      <h5>Larry 在 BTC 链发 Challenge tx</h5>
+      <p>触发挑战机制，Bob 必须证明自己还款是真的。</p>
+    </div>
+    <div class="step challenge" data-n="2">
+      <h5>Bob 用 Lamport 签名上传 ZK proof + 公共输入</h5>
+      <p>~100KB 数据上链，Bitcoin Script 收到 proof 输入。这是 BitVM3 vs BitVM2 的核心节省点（$93 vs $15K）。</p>
+      <div class="meta-line">cost: ~$93 · BTC tx: ~100KB · 节省 170× vs BitVM2</div>
+    </div>
+    <div class="step challenge" data-n="3">
+      <h5>Larry 链下用 Bob 的 GC 计算 binary label</h5>
+      <p>Larry 拿 Bob 的 Lamport 签名 + 自己存的 GC，<strong>链下</strong>跑一遍电路。电路输出二选一标签。</p>
+
+      <div class="branch ok">
+        <h6>分支 A：proof 有效（Bob 诚实）</h6>
+        <p>GC 输出"合法" label → 解锁 <strong>Withdraw tx</strong> → Bob 等 timelock 后取回 BTC。Larry 的 challenge 失败，他不能再挑战这个 vault。</p>
+      </div>
+      <div class="branch">
+        <h6>分支 B：proof 无效（Bob 作弊）</h6>
+        <p>GC 的 "invalid" output wire label 在 setup 时就被 garble 为 <strong>secret_B 本身</strong>（即 Slashing tx 所需的 hash preimage）。Larry 拿到 secret 后<strong>只做一个动作</strong>：广播预签的 Slashing tx（witness 包含 secret_B + 已预签的 Larry 签名）。</p>
+        <p style="margin-top:8px">这一个 tx 一旦 confirm，自动产生两个不可分割的后果：</p>
+        <p style="margin-top:6px">
+          <strong>(b) 惩罚</strong>：Slashing tx 把 vault BTC 转到 Larry 地址。<br>
+          <strong>(a) 拦截</strong>：vault UTXO 已被花掉 → Bob 的 Withdraw tx 引用同一 UTXO，因双花互斥永远无法上链。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.5 Slashing 的具体实现 -->
+<section>
+  <h2><span class="num">3.5</span>Slashing 的具体实现 — UTXO + Hash Lock</h2>
+  <p class="section-sub">Larry 拿到 secret 之后"如何让 BTC 进自己钱包 + 同时阻止 Bob 提款"——这不靠两步动作，靠 Bitcoin UTXO 模型的双花互斥 + Taproot 多 spend path。</p>
+
+  <h3>Vault UTXO 的 Taproot 结构</h3>
+  <table>
+    <thead><tr><th>Spend Path</th><th>解锁条件</th><th>谁可以花</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Withdraw</strong></td>
+        <td>Bob 签名 + challenge timelock 已过 + UTXO 未被先花</td>
+        <td>Bob</td>
+      </tr>
+      <tr>
+        <td><strong>Slashing</strong>（罚 Bob）</td>
+        <td>Larry 签名（setup 已预签）+ 提供 x 使得 <code>hash(x) == H_secret_B</code></td>
+        <td>Larry，但需要 secret_B</td>
+      </tr>
+      <tr>
+        <td><strong>Symmetric Slashing</strong>（罚 Larry）</td>
+        <td>Bob 签名 + 提供 secret_L 作为 hash preimage</td>
+        <td>Bob，但需要 secret_L</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>两个关键机制</h3>
+  <div class="grid grid-2">
+    <div class="card">
+      <span class="tag amber">机制 1</span>
+      <h4>Slashing tx 在 setup 时已预签</h4>
+      <p>Larry 不需要在挑战时找 Bob 重签。Setup 阶段双方对所有 spend path 都互签了。Slashing tx 的所有 ECDSA/Schnorr 签名齐了——<strong>唯一缺的 witness 就是 secret_B 作为 hash preimage</strong>。</p>
+    </div>
+    <div class="card">
+      <span class="tag violet">机制 2</span>
+      <h4>GC output label 直接 = secret</h4>
+      <p>Garbled circuit 的输出线有两个 label。Setup 阶段 garble 时：<code>L_1</code>（valid）= 随机串；<strong><code>L_0</code>（invalid）= secret_B 本身</strong>。Larry 跑 GC 拿到的字节串<strong>就是</strong> BTC Script 需要的 hash 原像，无需查表。</p>
+    </div>
+  </div>
+
+  <h3>完整动作序列（挑战成功）</h3>
+  <div class="steps">
+    <div class="step challenge" data-n="1">
+      <h5>Larry 链下：用 Bob's GC + Lamport-signed proof 跑电路</h5>
+      <p>得到 32+ 字节输出标签。如果 proof 无效 → 标签 = secret_B。</p>
+    </div>
+    <div class="step challenge" data-n="2">
+      <h5>Larry 立即广播预签的 Slashing tx</h5>
+      <p>tx witness = <code>{ secret_B, Larry 签名 }</code>。BTC 主网验证 <code>hash(secret_B) == H_secret_B</code> ✓ → tx 有效 → 等 confirm。</p>
+    </div>
+    <div class="step challenge" data-n="3">
+      <h5>Slashing tx confirm — 一个动作，两个后果</h5>
+      <div class="branch">
+        <h6>后果 (b)：惩罚</h6>
+        <p>Slashing tx 的 output 把 vault BTC 转到 Larry 地址。</p>
+      </div>
+      <div class="branch">
+        <h6>后果 (a)：拦截</h6>
+        <p>vault UTXO 已被花掉 → Bob 的 Withdraw tx 引用同一 UTXO，<strong>因双花互斥永远无法上链</strong>。Bob 即使等到 timelock 也取不到。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>为什么这个设计精妙</strong>：Bitcoin Script 没有"NOT 揭示"运算符，无法直接表达"如果对手揭示了 secret 就废掉我的 Withdraw"。但 UTXO 模型天然提供——Slashing tx 一旦消费了 vault UTXO，引用同一 UTXO 的 Withdraw tx 自动作废。所以"拦截"不是单独编程出来的，是 Bitcoin 状态机内禀属性。
+  </div>
+</section>
+
+<!-- 4. GC binary label diagram -->
+<section>
+  <h2><span class="num">4</span>Garbled Circuit 输出方向</h2>
+  <p class="section-sub">Whitepaper 与 Blog 两份文档对"GC 何时输出 secret"的描述看似相反——其实是同一 binary label 机制的两个视角。</p>
+
+  <div class="gc-diagram">
+    <div class="gc-flow">
+      <div class="gc-node">
+        <strong>ZK Proof</strong>
+        <small>Bob 上传的"已还款"证明</small>
+      </div>
+      <div class="gc-arrow">→</div>
+      <div class="gc-node">
+        <strong>Garbled Circuit</strong>
+        <small>计算"proof 是否合法"</small>
+      </div>
+      <div class="gc-arrow">→</div>
+      <div class="gc-node">
+        <strong>Binary Label</strong>
+        <small>L₀ 或 L₁</small>
+      </div>
+    </div>
+
+    <div class="gc-row-2">
+      <div class="gc-node gc-out-ok">
+        <strong>L₁（合法）</strong>
+        <small>Blog 视角：proof 有效 → 解锁 Withdraw → Bob 取 BTC（"reveals secret label if proof is valid"）</small>
+      </div>
+      <div class="gc-node gc-out-bad">
+        <strong>L₀（非法）</strong>
+        <small>Whitepaper 视角：proof 无效 → 解锁 Slashing → Larry 拿 BTC（"extraction only possible if proof is invalid"）</small>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>关键点</strong>：每对参与方各持有<strong>两个</strong>对称的 GC（Bob 的 GC 防 Bob 作弊，Larry 的 GC 防 Larry 作弊）。同一 secret 同时承担"否决欺诈提款"与"启动惩罚清算"两个角色。
+    </div>
+  </div>
+</section>
+
+<!-- 5. 真实协议集成 -->
+<section>
+  <h2><span class="num">5</span>真实协议集成（Aave 等）</h2>
+  <p class="section-sub">P2P 是教学例子。集成到 pool-based 借贷协议时，参与方扩展为 borrower + 多 liquidator + 多 lender。同时存在两条清算路径。</p>
+
+  <h3>5.1 抵押 + 借款</h3>
+  <div class="steps">
+    <div class="step" data-n="1"><h5>借款人在 BTC 创建 vault，存入 BTC</h5></div>
+    <div class="step" data-n="2"><h5>把 vault 元数据（TXID / vault ID / 目标合约 / 借款金额）发给 EVM Deposit Contract</h5></div>
+    <div class="step" data-n="3"><h5>Deposit Contract 通过 Bitcoin light client 验证 → 铸造 <code>collBTC</code></h5></div>
+    <div class="step" data-n="4"><h5>collBTC 存入借贷协议作为抵押 → 开仓借出 stablecoin</h5></div>
+  </div>
+
+  <h3>5.2 通用清算路径（白皮书 §5）</h3>
+  <div class="steps">
+    <div class="step" data-n="1"><h5>BTC 价格跌破阈值 → 头寸进入清算</h5></div>
+    <div class="step" data-n="2"><h5>白名单 liquidator 监控价格 + vault 状态</h5></div>
+    <div class="step" data-n="3"><h5>Liquidator 替借款人偿还债务 → 拿到 collBTC → 销毁</h5></div>
+    <div class="step" data-n="4"><h5>生成销毁 ZK proof，提交到 liquidator 自己的 BTC vault</h5></div>
+    <div class="step" data-n="5"><h5>过 timeout（几小时-2 天） → liquidator 取走 BTC 作为补偿</h5></div>
+  </div>
+  <div class="callout">
+    <strong>三大缺陷</strong>：① 无法部分清算（vault 是整体的） ② 清算人池受限（必须预设白名单） ③ 资金前置 + 价格风险（Liquidator 付了 USDC 还要等几小时-2 天才拿到 BTC）
+  </div>
+
+  <h3>5.3 wBTC pool 双池 + Arbitrageur 设计（Blog 优化版）</h3>
+  <p class="section-sub" style="margin-bottom: 18px;">解决前两项缺陷；资金占用问题转化为 wBTC↔BTC 基差风险（≈ 0）。</p>
+  <div class="steps">
+    <div class="step happy" data-n="1">
+      <h5>Arbitrageur 从 wBTC 池借 wBTC（闪贷式）</h5>
+      <p>无需许可，任何人都可执行。</p>
+    </div>
+    <div class="step happy" data-n="2">
+      <h5>卖出 wBTC 换 USDC（即时）</h5>
+    </div>
+    <div class="step happy" data-n="3">
+      <h5>用 USDC 还原贷款，<strong>获得对应 vault 的 controllership</strong></h5>
+      <p>这一步把 vault 的 claim 权从原借款人手中转出。</p>
+    </div>
+    <div class="step happy" data-n="4">
+      <h5>把 vault 抵押给 wBTC 池</h5>
+      <p>4 步在<strong>同一区块内原子完成</strong>。之后 wBTC 池的 keeper（在 vault claimer 集合内）才慢慢从 vault 提 native BTC、卖成 wBTC 还回池子。</p>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>结构性观察</strong>：该设计并不消灭 wBTC 池——反而<strong>短期依赖 wBTC 池作为清算缓冲层</strong>。前提是目标链已有大量低利用率闲置 wBTC（Aave 上长期符合）。长期看 wBTC 与 TBV 是共生而非纯替代。
+  </div>
+</section>
+
+<!-- 6. 信任模型 -->
+<section>
+  <h2><span class="num">6</span>信任模型</h2>
+  <p class="section-sub">"Trustless"是营销词。实际是把信任从"实体诚实"迁移到"挑战者活性 + 密码学假设"，方向上是改进，但不是 BTC L1 级保证。</p>
+
+  <h3>P2P 双方场景对比</h3>
+  <table>
+    <thead>
+      <tr><th>操作</th><th>DLC (Lendasat)</th><th>BitVM Bridge</th><th>Trustless Vault</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>创建借贷合约</strong></td><td><span class="pill t">Trustless</span></td><td><span class="pill m">n-of-n + m-of-m</span></td><td><span class="pill t">Trustless</span></td></tr>
+      <tr><td><strong>借款人取回抵押</strong></td><td><span class="pill f">trusts Larry</span></td><td><span class="pill m">1-of-n + 1-of-m + 1 challenger</span></td><td><span class="pill t">Trustless</span></td></tr>
+      <tr><td><strong>Larry 清算抵押</strong></td><td><span class="pill t">Trustless</span></td><td><span class="pill m">1-of-n + 1-of-m + 1 challenger</span></td><td><span class="pill t">Trustless</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Pool-based 集成（k-of-n liquidators + j-of-m large lenders）</h3>
+  <table>
+    <thead><tr><th>操作</th><th>Trustless 与否</th></tr></thead>
+    <tbody>
+      <tr><td>借款人存抵押（vault 创建签名）</td><td>trusts k-of-n liquidators + j-of-m large lenders</td></tr>
+      <tr><td><strong>借款人取回抵押</strong></td><td><span class="pill t">Trustless</span></td></tr>
+      <tr><td><strong>Liquidator 清算</strong></td><td><span class="pill t">Trustless</span></td></tr>
+      <tr><td><strong>大额 lender 取回 lending pool</strong></td><td><span class="pill t">Trustless</span></td></tr>
+      <tr><td>小额 lender 取回 lending pool</td><td>trusts (n-k+1)-of-n liquidators OR (m-j+1)-of-m large lenders 中至少一个集合诚实</td></tr>
+      <tr><td>价格预言机（所有方案共有）</td><td><span class="pill f">外部 oracle 信任</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 7. 成本 -->
+<section>
+  <h2><span class="num">7</span>成本与摊销</h2>
+  <p class="section-sub">BitVM3 vs BitVM2 的核心节省点：把链上 SNARK 验证压缩成"hash 揭示"。</p>
+  <table>
+    <thead><tr><th>场景</th><th>数量</th><th>成本</th><th>vs BitVM2</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Happy Path</strong>（无挑战）</td><td>3 笔 BTC tx (Deposit/Claim/Withdraw)</td><td>~$2.66</td><td>—</td></tr>
+      <tr><td><strong>Challenge case</strong></td><td>~100KB Lamport 签名 + 公共输入</td><td>~$93</td><td><span class="pill t">170× 节省</span></td></tr>
+      <tr><td>BitVM2 challenge（前代）</td><td>ZK proof 直接在 BTC 验证</td><td>~$15K</td><td>—</td></tr>
+      <tr><td>链下：每个 GC 生成（一次性）</td><td>~43GB / 对手方 / 单核 20 分钟</td><td>$1/月 云存储</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <strong>摊销机制</strong>：每方为每个对手方生成一份 GC（不是每次存款）。挑战失败者退出系统（borrower → 不能再提款；challenger → 不能再挑战）→ 每对参与方电路只用一次。
+  </div>
+</section>
+
+<footer>
+  <p style="margin-bottom: 14px;"><strong>来源（已交叉验证）</strong></p>
+  <ul>
+    <li>· Babylon Team (2025-08), <em>A Bitcoin-Charged Crypto Economy with Trustless Vaults</em> — <a href="https://docs.babylonlabs.io/papers/trustless-bitcoin-vaults.pdf">whitepaper PDF</a></li>
+    <li>· <a href="https://babylonlabs.io/blog/trustless-btcvault-101">Trustless BTCVault 101 (Babylon Labs blog)</a> — wBTC pool 4 步原子清算 + vault keepers</li>
+    <li>· Babylon 官方文档 "2.1 Vault Keeper Definition" — 三类 keeper 角色定义</li>
+    <li>· <a href="https://onchainbitcoin.substack.com/p/how-trustless-are-babylons-bitcoin">How "Trustless" are Babylon's Bitcoin Vaults, Really? — On-Chain Bitcoin</a></li>
+    <li>· <a href="https://blockworks.co/news/bitvm3-promises-cheaper-bitcoin-bridges">BitVM3 promises cheaper Bitcoin bridges (Blockworks)</a></li>
+  </ul>
+  <p style="margin-top: 20px; font-size: 0.78rem; color: #52525B;">本文档为机制讲解，不构成投资建议。</p>
+</footer>
+
+<div style="margin-top:64px;padding-top:48px;border-top:1px solid var(--border)">
+  <h2 style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-bottom:24px;color:var(--fg)">留言</h2>
+  <div class="giscus"></div>
+  <script src="https://giscus.app/client.js"
+    data-repo="June911/personal-site"
+    data-repo-id="R_kgDORNjR9Q"
+    data-category="General"
+    data-category-id="DIC_kwDORNjR9c4C2TU2"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme="dark"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+  </script>
+</div>
+
+</div>
+</body>
+</html>
