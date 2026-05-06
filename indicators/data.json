@@ -1,105 +1,105 @@
 {
-  "updated_at": "2026-05-05T02:57:19Z",
+  "updated_at": "2026-05-06T03:27:24Z",
   "indicators": {
     "ahr999": {
-      "value": 0.5,
-      "display": "0.50 (定投区)",
+      "value": 0.52,
+      "display": "0.52 (定投区)",
       "triggered": false,
       "level": "定投",
-      "btc_price": 80537.51,
-      "updated_at": "2026-05-05T02:57:14Z"
+      "btc_price": 81649.01,
+      "updated_at": "2026-05-06T03:27:19Z"
     },
     "nupl": {
-      "value": 0.327,
-      "display": "NUPL 0.327",
+      "value": 0.336,
+      "display": "NUPL 0.336",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:14Z"
+      "updated_at": "2026-05-06T03:27:20Z"
     },
     "mvrv-zscore": {
-      "value": 0.84,
-      "display": "Z-Score 0.84",
+      "value": 0.88,
+      "display": "Z-Score 0.88",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:15Z"
+      "updated_at": "2026-05-06T03:27:21Z"
     },
     "puell-multiple": {
-      "value": 0.85,
-      "display": "Puell 0.85",
+      "value": 0.87,
+      "display": "Puell 0.87",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:16Z"
+      "updated_at": "2026-05-06T03:27:21Z"
     },
     "hash-ribbons": {
-      "value": 1,
-      "display": "投降结束 (MA30/MA60: +0.7%)",
-      "triggered": true,
-      "level": "行动",
-      "updated_at": "2026-05-05T02:57:17Z"
-    },
-    "fear-greed-crypto": {
-      "value": 50,
-      "display": "50 (Neutral)",
+      "value": 0,
+      "display": "正常 (MA30/MA60: +0.4%)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:17Z"
+      "updated_at": "2026-05-06T03:27:22Z"
+    },
+    "fear-greed-crypto": {
+      "value": 46,
+      "display": "46 (Fear)",
+      "triggered": false,
+      "level": null,
+      "updated_at": "2026-05-06T03:27:22Z"
     },
     "funding-rate": {
       "value": 21,
-      "display": "当前 -0.0652% (8h)，连续负 21 次",
+      "display": "当前 -0.0162% (8h)，连续负 21 次",
       "triggered": true,
       "level": "行动",
-      "current_rate": -0.0652,
-      "updated_at": "2026-05-05T02:57:18Z"
+      "current_rate": -0.0162,
+      "updated_at": "2026-05-06T03:27:23Z"
     },
     "stablecoin-supply": {
-      "value": 5.2,
-      "display": "$320.6B, 90d +5.2%",
+      "value": 5.4,
+      "display": "$321.5B, 90d +5.4%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:18Z"
+      "updated_at": "2026-05-06T03:27:23Z"
     },
     "crypto-vc-funding": {
       "value": null,
       "display": "获取失败",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:18Z"
+      "updated_at": "2026-05-06T03:27:24Z"
     },
     "vix-spike": {
-      "value": 18.3,
-      "display": "VIX 18.3",
+      "value": 17.4,
+      "display": "VIX 17.4",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:19Z"
+      "updated_at": "2026-05-06T03:27:24Z"
     },
     "ma200-deviation": {
-      "value": 7.4,
-      "display": "偏离 +7.4%",
+      "value": 8.2,
+      "display": "偏离 +8.2%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:19Z"
+      "updated_at": "2026-05-06T03:27:24Z"
     },
     "double-drop-spy-gld": {
-      "value": "1.35,-3.79",
-      "display": "SPY 1.35%, GLD -3.79%",
+      "value": "1.38,-3.46",
+      "display": "SPY 1.38%, GLD -3.46%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:19Z"
+      "updated_at": "2026-05-06T03:27:24Z"
     },
     "double-drop-spy-tlt": {
-      "value": "1.35,-1.47",
-      "display": "SPY 1.35%, TLT -1.47%",
+      "value": "1.38,-1.11",
+      "display": "SPY 1.38%, TLT -1.11%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-05-05T02:57:19Z"
+      "updated_at": "2026-05-06T03:27:24Z"
     },
     "schd-qqq-ratio": {
-      "value": 109.79,
-      "display": "比率 109.79 (↓ QQQ 走强 (risk-on))",
+      "value": 107.81,
+      "display": "比率 107.81 (↓ QQQ 走强 (risk-on))",
       "triggered": true,
       "level": "抄底",
-      "updated_at": "2026-05-05T02:57:19Z"
+      "updated_at": "2026-05-06T03:27:24Z"
     },
     "miner-shutdown-price": {
       "value": null,
