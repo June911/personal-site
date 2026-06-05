@@ -1,0 +1,1545 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Capex 拐点跟踪 · 2026-05-14</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#FFFFFF;color:#000000;font-family:Inter,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding:40px 32px 80px}
+header{border-bottom:1px solid #000;padding-bottom:24px;margin-bottom:24px}
+header .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+h1{font-size:42px;font-weight:700;letter-spacing:-0.02em;line-height:1.05}
+h1 .accent{color:#FF3000}
+.subtitle{font-size:13px;color:#000;opacity:.7;margin-top:8px;max-width:640px}
+.date{font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;line-height:1.4}
+.date .label{opacity:.5}
+nav.tabs{display:flex;border-bottom:1px solid #000;margin-bottom:32px;flex-wrap:wrap}
+nav.tabs button{background:none;border:0;border-right:1px solid #000;padding:14px 18px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;color:#000;opacity:.5;letter-spacing:.02em;text-transform:uppercase}
+nav.tabs button:hover{opacity:1;background:#F2F2F2}
+nav.tabs button.active{opacity:1;background:#000;color:#FFFFFF;font-weight:600}
+nav.tabs button .num{font-family:'JetBrains Mono',monospace;font-size:10px;margin-right:6px;opacity:.6}
+section.tab{display:none}
+section.tab.active{display:block}
+h2{font-size:22px;font-weight:600;letter-spacing:-0.01em;border-bottom:1px solid #000;padding-bottom:10px;margin-bottom:20px}
+h3{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:24px 0 10px}
+h3 .tag{display:inline-block;background:#000;color:#fff;font-size:10px;padding:2px 6px;margin-left:8px;font-weight:500;letter-spacing:.05em;font-family:'JetBrains Mono',monospace}
+h3 .tag.red{background:#FF3000}
+h3 .tag.amber{background:#000;color:#fff}
+p{margin-bottom:12px;max-width:860px}
+ul{margin:0 0 16px 18px}
+li{margin-bottom:6px;max-width:860px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:24px}
+.card{border:1px solid #000;padding:18px;grid-column:span 4}
+.card.full{grid-column:span 12}
+.card.half{grid-column:span 6}
+.card.third{grid-column:span 4}
+.card .label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;opacity:.6;margin-bottom:8px}
+.card .value{font-size:32px;font-weight:700;letter-spacing:-0.02em;line-height:1;font-family:'JetBrains Mono',monospace}
+.card .value.red{color:#FF3000}
+.card .delta{font-size:12px;margin-top:8px;opacity:.7;font-family:'JetBrains Mono',monospace}
+.card .note{font-size:11px;margin-top:10px;border-top:1px dashed #000;padding-top:8px;opacity:.7}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}
+th,td{padding:10px 12px;border-bottom:1px solid #000;text-align:left;vertical-align:top}
+th{background:#F2F2F2;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.04em;border-bottom:2px solid #000}
+td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap}
+td.num.red{color:#FF3000;font-weight:600}
+td.num.flag{color:#FF3000;font-weight:700}
+tr:hover td{background:#F2F2F2}
+.row-divider td{border-top:2px solid #000}
+.lead{font-size:16px;line-height:1.55;border-left:3px solid #FF3000;padding:4px 0 4px 18px;margin-bottom:24px;max-width:860px}
+.callout{border:2px solid #000;padding:16px 20px;margin:20px 0;background:#F2F2F2}
+.callout.red{border-color:#FF3000;background:#FFF;border-left-width:6px}
+.callout h4{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.callout p:last-child{margin-bottom:0}
+.indicator-list{counter-reset:item;list-style:none;margin-left:0}
+.indicator-list li{counter-increment:item;padding:14px 0 14px 56px;border-bottom:1px solid #000;position:relative;max-width:none}
+.indicator-list li::before{content:counter(item,decimal-leading-zero);position:absolute;left:0;top:14px;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#FF3000}
+.indicator-list li .heading{font-weight:600;font-size:14px;margin-bottom:4px}
+.indicator-list li .desc{font-size:13px;opacity:.8;margin-bottom:6px}
+.indicator-list li .watch{font-family:'JetBrains Mono',monospace;font-size:11px;background:#000;color:#FFF;padding:2px 6px;display:inline-block;margin-right:8px}
+.legend{display:flex;gap:24px;font-size:11px;font-family:'JetBrains Mono',monospace;margin:12px 0 24px;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend .dot{width:10px;height:10px;display:inline-block}
+.legend .dot.g{background:#000}
+.legend .dot.a{background:#666}
+.legend .dot.r{background:#FF3000}
+.stage{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:20px 0}
+.stage .step{padding:14px 12px;border:1px solid #000;text-align:center;font-size:11px;font-family:'JetBrains Mono',monospace}
+.stage .step.done{background:#000;color:#FFF}
+.stage .step.now{background:#FF3000;color:#FFF;border-color:#FF3000}
+.stage .step.pending{opacity:.5}
+.stage .step .n{font-size:10px;opacity:.7;display:block}
+.stage .step .t{font-size:12px;font-weight:600;text-transform:uppercase;margin-top:4px;display:block;letter-spacing:.04em}
+.footer{margin-top:60px;padding-top:20px;border-top:1px solid #000;font-size:11px;opacity:.6;font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.flex-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.flex-row > div{flex:1;min-width:240px;border:1px solid #000;padding:14px 16px}
+.flex-row > div .k{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.flex-row > div .v{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.flex-row > div .s{font-size:11px;margin-top:4px;opacity:.7}
+
+/* ===== Timeline ===== */
+.tl-progress{display:grid;grid-template-columns:30% 25% 15% 15% 15%;border:1px solid #000;margin:24px 0 16px;font-family:'JetBrains Mono',monospace}
+.tl-progress .seg{padding:10px 12px;font-size:10px;letter-spacing:.05em;border-right:1px solid #000;text-transform:uppercase;position:relative;min-height:64px}
+.tl-progress .seg:last-child{border-right:none}
+.tl-progress .seg.done{background:#000;color:#fff}
+.tl-progress .seg.current{background:#FF3000;color:#fff;font-weight:600}
+.tl-progress .seg .label{font-size:9px;opacity:.7;display:block;margin-bottom:3px}
+.tl-progress .seg .name{font-size:11px;font-weight:600;display:block;line-height:1.3}
+.tl-progress .seg .marker{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:9px;background:#FF3000;color:#fff;padding:1px 6px;letter-spacing:.05em;white-space:nowrap}
+.tl-axis-mini{display:grid;grid-template-columns:30% 25% 15% 15% 15%;font-family:'JetBrains Mono',monospace;font-size:10px;opacity:.6;margin-bottom:28px;border-top:2px solid #000;padding-top:6px}
+.tl-axis-mini > span{padding:0 12px;border-right:1px dashed #ccc;text-align:left}
+.tl-axis-mini > span:last-child{border-right:none}
+
+.tl-vertical{position:relative;padding-left:170px;margin:12px 0 32px}
+.tl-vertical::before{content:'';position:absolute;left:160px;top:0;bottom:0;width:2px;background:#000}
+.tl-row{position:relative;padding:14px 0 14px 28px;border-bottom:1px dashed #ccc}
+.tl-row:last-child{border-bottom:none}
+.tl-row::before{content:'';position:absolute;left:-8px;top:20px;width:14px;height:14px;background:#000;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px #000;z-index:2}
+.tl-row.now::before{background:#FF3000;box-shadow:0 0 0 2px #FF3000;width:18px;height:18px;left:-10px}
+.tl-row.future::before{background:#fff;border-style:dashed}
+.tl-row.major::before{background:#FF3000;box-shadow:0 0 0 2px #000}
+.tl-row .date{position:absolute;left:-170px;top:16px;width:140px;font-family:'JetBrains Mono',monospace;font-size:11px;text-align:right;font-weight:600;letter-spacing:.02em}
+.tl-row .date .sub{display:block;font-size:9px;opacity:.5;font-weight:400;margin-top:2px;text-transform:uppercase}
+.tl-row .stage-tag{display:inline-block;font-size:9px;font-family:'JetBrains Mono',monospace;background:#000;color:#fff;padding:2px 7px;margin-right:8px;letter-spacing:.05em;text-transform:uppercase;vertical-align:1px}
+.tl-row .stage-tag.s15{background:#FF3000}
+.tl-row .stage-tag.s2,.tl-row .stage-tag.s3,.tl-row .stage-tag.s4{background:#fff;color:#000;border:1px dashed #000;padding:1px 6px}
+.tl-row .heading{font-weight:600;font-size:14px;margin-bottom:5px;line-height:1.35;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px}
+.tl-row .body{font-size:12.5px;opacity:.82;max-width:720px;line-height:1.5}
+.tl-row.now .heading{font-size:16px;color:#FF3000}
+.tl-row.future .heading{opacity:.7}
+.tl-row.future .body{opacity:.65}
+.tl-row.major .heading{font-size:15px}
+@media (max-width:768px){
+  .tl-vertical{padding-left:90px}
+  .tl-vertical::before{left:80px}
+  .tl-row .date{left:-90px;width:70px;font-size:10px}
+  .tl-progress,.tl-axis-mini{grid-template-columns:1fr 1fr;font-size:9px}
+  .tl-progress .seg:nth-child(n+3){display:none}
+}
+/* ===== Bar Chart ===== */
+.bar-chart{margin:16px 0 32px;font-family:'JetBrains Mono',monospace}
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:12px}
+.bar-label{width:80px;text-align:right;font-weight:600;flex-shrink:0}
+.bar-bg{flex:1;height:24px;background:#F2F2F2;border:1px solid #000;position:relative;overflow:hidden}
+.bar-fill{height:100%;background:#000;color:#fff;padding:0 10px;display:flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap;min-width:60px}
+.bar-fill.red{background:#FF3000}
+@media (max-width:768px){.bar-label{width:60px;font-size:10px}.bar-fill{font-size:9px;padding:0 6px}}
+
+@media (max-width:768px){
+  .wrap{padding:24px 16px 60px}
+  h1{font-size:30px}
+  .card{grid-column:span 12!important}
+  .stage{grid-template-columns:1fr 1fr}
+  nav.tabs button{padding:10px 12px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:16px;right:24px;z-index:100;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em">
+  <a href="../index.html" style="color:#000;text-decoration:none;border:1px solid #000;padding:6px 12px;background:#FFF;text-transform:uppercase;font-weight:600">← Home</a>
+</div>
+<div class="wrap">
+
+<header>
+  <div class="meta">
+    <div>
+      <h1>AI Capex 拐点跟踪<span class="accent">.</span></h1>
+      <div class="subtitle">钱从哪儿来 · 离拐点多远 · 最领先的指标是什么</div>
+    </div>
+    <div class="date">
+      <div><span class="label">CREATED</span> 2026-05-14</div>
+      <div><span class="label">UPDATED</span> 2026-06-04 · IPO 大潮校准</div>
+      <div><span class="label">SCOPE</span> MSFT · GOOG · META · AMZN · ORCL · NEOCLOUDS · AI LABS · 主权基金</div>
+      <div><span class="label">STAGE</span> 1.5 / 4 · IPO 峰值</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="active" data-tab="t0"><span class="num">00</span>TLDR · 图</button>
+  <button data-tab="t1"><span class="num">01</span>时间线</button>
+  <button data-tab="t2"><span class="num">02</span>资金链</button>
+  <button data-tab="t3"><span class="num">03</span>信用价差</button>
+  <button data-tab="t4"><span class="num">04</span>Neocloud</button>
+  <button data-tab="t5"><span class="num">05</span>GPU 经济学</button>
+  <button data-tab="t6"><span class="num">06</span>表外结构</button>
+  <button data-tab="t7"><span class="num">07</span>观察清单</button>
+  <button data-tab="t8"><span class="num">08</span>融资范式 · 双顶</button>
+  <button data-tab="t9"><span class="num">09</span>推演逻辑 · 世界线</button>
+  <button data-tab="t10"><span class="num">10</span>下修后传导 · Path X/Y/Z</button>
+</nav>
+
+<!-- ============ TAB 0: TLDR + 图 ============ -->
+<section class="tab active" id="t0">
+  <p class="lead" style="border-left-color:#FF3000">
+    <strong>当前位置</strong>：Stage 1.5 / IPO 峰值 / L5 (ATM) + L6 (主权) 同时跑。
+    <strong>5 个月密集 5 个 mega-event</strong>：GOOG ATM ✅ → SpaceX IPO 6/12 → OAI 9月 → Anthropic 10月 → Stargate UAE Q3。
+    <strong>当前不是 macro risk-off，是 crypto → AI IPO 套利的内部 rotation</strong>。
+  </p>
+
+  <h3>5 点结论<span class="tag red">2026-06-05 定稿</span></h3>
+  <ol class="indicator-list">
+    <li>
+      <div class="heading">L6 主权 / 战略基金不是兜底，是杠杆放大器</div>
+      <div class="desc">软银 -11% 6/4 案例：有息债务 $104B + OAI 占组合 30%。Jay Ritter "买入软银 = 杠杆押注 OpenAI" 进入主流叙事。WeWork 类比首次主流化。L6 自己会先反向传导。</div>
+    </li>
+    <li>
+      <div class="heading">融资顶领先 spending 顶 6-12 月（2000 镜像）</div>
+      <div class="desc">Capex spending 顶（量级 / Stage 3 信号枪）vs Capex 融资顶（capacity / 已启动）。融资顶通常先于 spending 顶 6-12 月。**操作上要盯融资顶，不是 spending 顶**。</div>
+    </li>
+    <li>
+      <div class="heading">Hyperscaler 自己 ≠ AI 主题崩</div>
+      <div class="desc">Capex 下修反而可能利好 hyperscaler 自身（思科 03-05 模式 FCF 恢复）。真正输家是 capex 上游（NVDA / OAI / Anthropic / neocloud）。Path X 概率 30% 是最反直觉认知差。</div>
+    </li>
+    <li>
+      <div class="heading">真 risk-off trigger 是 SpaceX 6/12 IPO，不是软银</div>
+      <div class="desc">三指标实时：HY OAS 272bp 紧 / SPY 仍跑赢 RSP / BTC ETF outflow 11 天但 funding +10%。Leading triplet 2/4 触发，不到 confirmation 阈值。6/12 SpaceX IPO 表现是真信号 trigger。</div>
+    </li>
+    <li>
+      <div class="heading">关键修正：基本面没变化时结构性资产不应减仓</div>
+      <div class="desc">复盘的事后归因 ≠ 前瞻动作。结构性资产（如 BTC 类长期持仓）基本面未变化时不应仅因事后归因减仓。尾部风险用 hedge / 等信号触发再动，不必直接减。</div>
+    </li>
+  </ol>
+
+  <h3>Anthropic ARR 火箭 (3.5 月 +236%)<span class="tag red">dot-com 没见过的增速</span></h3>
+  <p style="font-size:12px;opacity:.7">数据：ai-labs-arr.csv</p>
+  <div class="bar-chart">
+    <div class="bar-row"><span class="bar-label">2024-01</span><div class="bar-bg"><div class="bar-fill" style="width:0.2%">$87M</div></div></div>
+    <div class="bar-row"><span class="bar-label">2024-12</span><div class="bar-bg"><div class="bar-fill" style="width:2.1%">$1B</div></div></div>
+    <div class="bar-row"><span class="bar-label">2025-12</span><div class="bar-bg"><div class="bar-fill" style="width:19%">$9B</div></div></div>
+    <div class="bar-row"><span class="bar-label">2026-02</span><div class="bar-bg"><div class="bar-fill" style="width:29.7%">$14B</div></div></div>
+    <div class="bar-row"><span class="bar-label">2026-03</span><div class="bar-bg"><div class="bar-fill" style="width:40.4%">$19B</div></div></div>
+    <div class="bar-row"><span class="bar-label">2026-05</span><div class="bar-bg"><div class="bar-fill red" style="width:100%">$47B · Series H</div></div></div>
+  </div>
+
+  <h3>Hyperscaler Capex / FCF Ratio (2024-2026)<span class="tag red">0.7× → 4.8×</span></h3>
+  <p style="font-size:12px;opacity:.7">数据：hyperscaler-capex.csv</p>
+  <table>
+    <thead><tr><th>公司</th><th class="num">2024 ratio</th><th class="num">2025 ratio</th><th class="num">2026 指引</th><th>趋势</th></tr></thead>
+    <tbody>
+      <tr><td>MSFT</td><td class="num">0.73×</td><td class="num">1.11×</td><td class="num red">2.55×</td><td>每赚 1 借 1.5</td></tr>
+      <tr><td>GOOG</td><td class="num">0.75×</td><td class="num">1.15×</td><td class="num red">2.87×</td><td>+ 6/2 ATM $80B</td></tr>
+      <tr><td>META</td><td class="num">0.73×</td><td class="num">1.44×</td><td class="num red">3.00×</td><td>+ Hyperion JV</td></tr>
+      <tr><td>AMZN</td><td class="num">1.97×</td><td class="num">4.62×</td><td class="num flag">166×</td><td>FCF 已脱钩</td></tr>
+      <tr><td>ORCL</td><td class="num">0.58×</td><td class="num">1.75×</td><td class="num flag">4.55×</td><td>Baa2 + 客户集中度</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2026 融资形态分布<span class="tag">L1-L6 同时跑</span></h3>
+  <p style="font-size:12px;opacity:.7">数据：events.csv + sovereign-deployment.csv</p>
+  <div class="bar-chart">
+    <div class="bar-row"><span class="bar-label">IG 债</span><div class="bar-bg"><div class="bar-fill" style="width:70%">$120B+ (META/GOOG/ORCL)</div></div></div>
+    <div class="bar-row"><span class="bar-label">JV/SPV</span><div class="bar-bg"><div class="bar-fill" style="width:24%">$40B (Hyperion + TX SPV)</div></div></div>
+    <div class="bar-row"><span class="bar-label">HY/Vendor</span><div class="bar-bg"><div class="bar-fill" style="width:6%">$11B (CoreWeave + NVDA)</div></div></div>
+    <div class="bar-row"><span class="bar-label">公开股权 ATM</span><div class="bar-bg"><div class="bar-fill red" style="width:47%">$80B (GOOG 6/2 首例)</div></div></div>
+    <div class="bar-row"><span class="bar-label">AI labs 私募</span><div class="bar-bg"><div class="bar-fill" style="width:100%">$187B (OAI $122B + Anth $65B)</div></div></div>
+    <div class="bar-row"><span class="bar-label">主权基金 (L6)</span><div class="bar-bg"><div class="bar-fill red" style="width:70%">$120B (GCC + Stargate UAE)</div></div></div>
+  </div>
+
+  <h3>SpaceX 估值阶梯（决策框架示例）<span class="tag">6/12 IPO 后建仓</span></h3>
+  <p style="font-size:12px;opacity:.7">凯利公式式仓位阶梯：估值偏离越大，仓位档位越大。示意框架，非个人持仓建议。</p>
+  <table>
+    <thead><tr><th>估值档</th><th class="num">仓位档</th><th>触发逻辑</th></tr></thead>
+    <tbody>
+      <tr><td>$1.5T</td><td class="num">小</td><td>溢价压缩到中位 · 起步建仓</td></tr>
+      <tr><td>$1.2T</td><td class="num">中</td><td>估值锚附近 · 主力建仓</td></tr>
+      <tr><td>&lt; $1T</td><td class="num red">大</td><td>显著低于估值 · 加倍击球</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4 件事 · 操作清单<span class="tag red">框架级动作</span></h3>
+  <ol class="indicator-list">
+    <li>
+      <div class="heading">风险敞口管理：基本面未变不动手</div>
+      <div class="desc">主流方向性资产（科技 / crypto / 高 β）若基本面未变化，不因事后归因叙事减仓。当前 rotation 而非 macro risk-off。尾部风险用 OTM put spread hedge，不直接减核心仓位。</div>
+      <span class="watch">HOLD</span>
+    </li>
+    <li>
+      <div class="heading">Pre-IPO proxy 标的提前 trim</div>
+      <div class="desc">含 SpaceX / OAI / Anthropic exposure 的封闭式基金、投资信托类标的（BG/Tiger Global/T. Rowe Price 持仓壳）IPO 后 holdco 折价透明化 → 溢价大概率压缩 8-12pp。两段退出：IPO Day trim + 季度 NAV re-mark 看溢价处理剩余。</div>
+      <span class="watch">PROXY EXIT</span>
+    </li>
+    <li>
+      <div class="heading">IPO 后估值阶梯式建仓预案</div>
+      <div class="desc">凯利公式式：估值偏离越大档位越大。高估值小档（路演定价区间高位） / 中等估值主力（估值锚附近） / 低估值加倍击球（显著低于估值）。</div>
+      <span class="watch">READY</span>
+    </li>
+    <li>
+      <div class="heading">Power/energy chain 研究 readiness</div>
+      <div class="desc">受益于 AI capex 下行的链条：核电 SMR / 电力 IPP / 容错电源管理 / 半导体替代制程 / 关键材料。研究 readiness 做完（估值锚 + 触发买入价 + 仓位计划），等 Stage 3 信号枪触发立刻能下单。**不要现在建仓**（已部分 priced in）。</div>
+      <span class="watch">RESEARCH</span>
+    </li>
+  </ol>
+
+  <div class="callout red">
+    <h4>真 trigger 不是软银，是 6/12 SpaceX IPO</h4>
+    <p>
+      软银 -11% 是孤立 L6 事件，未触发 macro risk-off（三指标仍 healthy）。
+      <strong>SpaceX 6/12 IPO 是融资顶第一个真正市场测试</strong>：破发 / 60 天溢价 &lt;5% → Path Y 启动 / 溢价 &gt;15% 维持 60+ 天 → Path C 延长。
+      Anthropic / OpenAI Q3-Q4 IPO 是 follow-on confirmation。
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 1: 时间线 ============ -->
+<section class="tab" id="t1">
+  <p class="lead">
+    AI capex 2026 跑到 <strong>$725B+</strong>，但 hyperscaler 合计 FCF 只剩 <strong>~$150B</strong>。
+    十年净回购的公司开始反向发债，ORCL 5Y CDS 拍到金融危机以来最高。
+    <strong style="color:#FF3000">5 个月密集 5 个 mega-event</strong>：
+    GOOG ATM $80B (6/2) → SpaceX IPO @$1.75T (6/12) → OAI IPO 9月 → Anthropic IPO 10月。
+    融资形态 L5 (ATM) + L6 (主权基金 $120B 部署) <strong>同时在跑</strong>，不是先后。
+    <strong>SpaceX 6/12 IPO Day 是融资顶的第一个真正市场测试</strong>。
+  </p>
+
+  <h3>阶段进度<span class="tag red">CURRENT · STAGE 1.5</span></h3>
+  <div class="tl-progress">
+    <div class="seg done">
+      <span class="label">STAGE 01 · 已完成</span>
+      <span class="name">FCF 见顶 / Capex 接管</span>
+    </div>
+    <div class="seg current">
+      <span class="marker">2026-06-04</span>
+      <span class="label">STAGE 1.5 · IPO 峰值</span>
+      <span class="name">发债 + ATM + 主权 + 三 Mega IPO 并发</span>
+    </div>
+    <div class="seg">
+      <span class="label">STAGE 02 · 触发待定</span>
+      <span class="name">Neocloud 重组</span>
+    </div>
+    <div class="seg">
+      <span class="label">STAGE 03</span>
+      <span class="name">Capex 指引下修</span>
+    </div>
+    <div class="seg">
+      <span class="label">STAGE 04</span>
+      <span class="name">股价反映</span>
+    </div>
+  </div>
+  <div class="tl-axis-mini">
+    <span>2024-Q1 起</span>
+    <span>2025-Q3 起</span>
+    <span>2026-Q4?</span>
+    <span>2027-Q1?</span>
+    <span>2027-Q3+?</span>
+  </div>
+
+  <h3>事件时间线<span class="tag">PAST + FUTURE TRIGGERS</span></h3>
+  <div class="tl-vertical">
+
+    <div class="tl-row future">
+      <div class="date">2027-Q3+<span class="sub">future</span></div>
+      <div class="heading"><span class="stage-tag s4">STAGE 4</span>Hyperscaler 股价被动反映</div>
+      <div class="body">MAG7 forward P/E 显著压缩 / AI 主题指数跑输 SPX。等股价动 = 阶段 4，减仓代价已经很高，应该在前面就操作。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">2027-Q1<span class="sub">future</span></div>
+      <div class="heading"><span class="stage-tag s3">STAGE 3</span>任一家 Capex 指引首次下修</div>
+      <div class="body">市场已认定 ROI 不达预期。MSFT / GOOG / META / AMZN / ORCL 任一首次下调全年 capex 指引即触发——这是阶段 3 的信号枪。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">2026-10<span class="sub">future</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>⚡ Anthropic IPO Day</div>
+      <div class="body">目标 ~$1T+ 估值 (Series H 已 $965B post-money)。S-1 已 confidential file (6/1)，路演 15 天前公开。**第三个 mega IPO，最后市场承接力测试**。Anthropic 估值如果 IPO 后 60 天 -20% → AI labs ROI 兜底叙事松动 → Path Y 启动器。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">2026-09<span class="sub">future</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>⚡ OpenAI IPO Day</div>
+      <div class="body">目标估值 &gt;$1T (Series ? 已 $852B post-money)。S-1 已 confidential file (5/22)。**第二个 mega IPO**。SoftBank $30B + AMZN $50B + NVDA $30B 三方 strategic 锁仓。Anthropic 已超越 OAI 估值 ($965B vs $852B) 创造价格 anchor 压力。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">2026-Q3-Q4<span class="sub">future</span></div>
+      <div class="heading"><span class="stage-tag s2">STAGE 2</span>首个中型 Neocloud 重组 / ORCL CDS &gt;200bp 4 周</div>
+      <div class="body">$7.5B 2026 到期墙到期 + H100 二手租金 -60% from peak + 12% 浮息债成本——某家 Tier-2 neocloud 重组将是阶段 2 的信号枪，NVDA 包销条款被市场重新定价。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">2026-06-12<span class="sub">~8 天后</span></div>
+      <div class="heading" style="color:#FF3000">⚡⚡ SpaceX IPO Day · 融资顶第一个市场测试</div>
+      <div class="body" style="font-size:13.5px"><strong>发行价 $135 (确认)，目标 $1.75-1.8T 估值</strong>（含 xAI 合并 $1.25T base + AI infra premium）。NASDAQ 上市。S-1 公开 5/20。**这是融资顶的第一个真正测试**——破发 / 60 天溢价&lt;5% → 后续 OAI/Anthropic IPO 估值下行 (Path Y 启动)；溢价&gt;15% 维持 60+ 天 → 周期延长 (Path C)。SpaceX proxy 标的（如 SMT.L，BG SpaceX 19.3%）IPO 前可提前 trim 应对溢价压缩。马斯克距"万亿富翁"一步之遥。</div>
+    </div>
+
+    <div class="tl-row now">
+      <div class="date">2026-06-04<span class="sub">NOW</span></div>
+      <div class="heading" style="color:#FF3000">⚡ 软银暴跌 -11% · L6 内部分裂首信号</div>
+      <div class="body" style="font-size:13.5px"><strong>软银单日 -11%，孙正义个人财富蒸发 $13.8B</strong>，亚洲首富宝座保留仅 3 天。<strong>软银有息债务 $104B (16.3 万亿日元)</strong>。对 OAI 累计投资 &gt;$60B（占投资组合 30%，与 Arm 权重相当）。3 月获 $40B 过渡贷款追加 OAI。S&P 3 月已下调信用展望负面。日本市值第一被铠侠超越。**Jay Ritter (Warrington)** "买入软银 = 杠杆押注 OpenAI" — 学术界开始 mainstream 这个叙事。**WeWork 类比首次出现在主流媒体**（软银曾因 WeWork 损失 $14B+）。<strong>含义：L6 不是"主权基金兜底"那么简单 — 主权 / 战略基金自己 leverage 模型在崩裂</strong>。孙正义自辩"AI 革命规模是互联网泡沫 50 倍" = **2000-03 NASDAQ 顶前的"new economy" 措辞镜像**。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-06-02<span class="sub">GOOG ATM</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5 升级</span>GOOG 增发 ~2% 股权募 $80B（含 $40B Q3 起 ATM）</div>
+      <div class="body">三段：$10B BRK 私募 @~$350/股 + $30B 机构承销 + <strong>$40B Q3 起 ATM 公开市场逐步出售</strong>。十年回购的现金流机器首次大规模股权稀释扩 AI infra。融资路径从「FCF → 债券」再下一台阶到「公开市场股权」。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-06-01<span class="sub">Anthropic S-1</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>Anthropic confidential S-1 提交 SEC</div>
+      <div class="body">距离 5/28 Series H close 仅 4 天 — 资本部署节奏前所未有。目标 2026-10 公开上市，路演 15 天前披露财务。**三 Mega IPO 倒计时启动**。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-05-28<span class="sub">Anthropic 超 OAI</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>Anthropic Series H · $65B @ $965B (超 OAI)</div>
+      <div class="body"><strong>ARR $14B (2月) → $47B (5月) = 3.5 月 +236%</strong>。Altimeter/Dragoneer/Greenoaks/Sequoia 共领。Samsung/SK Hynix/Micron 战略入股 (绑定 HBM 产能)。AMZN $5B 注入。**估值首次超 OpenAI** ($965B vs $852B)。Run-rate 兑现增速是 dot-com 没见过的，要么真兑现 = Path C 加权，要么过度承诺 = IPO 后兑现压力是 Path Y 触发器。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-05-22<span class="sub">OAI S-1</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>OpenAI confidential S-1 提交</div>
+      <div class="body">目标 9 月 IPO @ &gt;$1T。SoftBank/AMZN/NVDA 三方 strategic 锁仓中。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-05-20<span class="sub">SpaceX 公开 S-1</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>SpaceX 公开 S-1 (NASDAQ 6/12 目标)</div>
+      <div class="body">含 xAI 合并 ($1.25T base) + AI infra 估值套利路径披露。开始 21 天路演。SMT.L (BG SpaceX 19.3%) IPO 后透明化 = 30-40% holdco 折价回归预期。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-05-04<span class="sub">PE 选边</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>Anthropic + OAI 同日 PE-funded JV (FDE 模式)</div>
+      <div class="body">Anthropic $1.5B (BX/H&F/GS/Apollo/GIC/GA/Sequoia) + OpenAI $10B Dev Co ($4B 募 TPG/Brookfield/Bain/Advent)。<strong>零交叉投资人</strong>。头部 PE 集体把 AI 当**双寡头终局**押注，比 IPO 估值设计更早期的资本布局信号。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-05-04<span class="sub">资本套利</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>Anthropic × SpaceX Colossus 1 全量租约</div>
+      <div class="body">220K NVIDIA H100/H200/GB200 + 300MW，估算 $4-7B/年 = SpaceX 2026E 总收入 20-23%。<strong>资本套利路径</strong>：私募 $65B → Anthropic → take-or-pay 给 SpaceX → SpaceX IPO 估值乘数。一笔钱被估值套利两次。**类比电信泡沫 1999 Worldcom-Sprint 收购震荡**。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-05-14<span class="sub">tracker v1</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>本 tracker 首版：Stage 1.5 中段</div>
+      <div class="body">截至 5/14：大规模发债仍 oversubscribed，ORCL CDS 175bp 高位但未失控。当时定义 Stage 2 触发 = ORCL CDS &gt;200bp + neocloud 重组。6/2 GOOG ATM 让 Stage 1.5 内部分化出"股权融资"+ "IPO 大潮"两个新子阶段。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-04-30<span class="sub">META 发债</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>META 再发 $25B 六档 + Anthropic 在融 (后扩大至 $65B)</div>
+      <div class="body">META 订单峰值 $96B 但溢价高于 2025-10 那轮（市场要求更高补偿）。Anthropic 在融初期 ~$50B@$900B 传闻，最终 5/28 扩大到 $65B@$965B。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-04-01<span class="sub">SpaceX S-1</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>SpaceX 提交 confidential S-1</div>
+      <div class="body">距离 6/12 IPO 目标 ~10 周。IPO 大潮明确启动。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-04-29<span class="sub">Q1 财报</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>MSFT $190B + META $145B 上修</div>
+      <div class="body">MSFT FY26 全年 capex ~$190B 显著超共识 $154.6B；META 全年指引从 $115-135B 上调到 $125-145B；AMZN TTM FCF 从 $25.9B 暴跌到 $1.2B。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2026-03-31<span class="sub">OAI 终闭</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>OpenAI 终闭 $122B @ $852B post</div>
+      <div class="body">2/27 初闭 $110B → 3/31 扩 $122B。SoftBank $30B + AMZN $50B + NVDA $30B 三巨头 strategic。Token 增长继续叙事支撑超大额一级融资——这是 capex 链条最末端的 ROI 兜底。当时 OAI 是 AI labs 估值之王，2 个月后被 Anthropic 超越 ($852B vs $965B)。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-02-27<span class="sub">OAI 初闭</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>OAI 初闭 $110B (Anthropic Series G $14B ARR 披露)</div>
+      <div class="body">OpenAI 第一波 close $110B = 历史上最大单一私募融资。Anthropic 同期披露 ARR $14B (Series G $30B@$380B)。两大 AI lab 估值差距开始缩小，资本市场把 AI 当**双寡头终局**押注初现。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-03-10<span class="sub">ORCL Q3</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>ORCL FY26 capex 指引 $35B → $50B</div>
+      <div class="body">+43% 上调，RPO $553B (+438% YoY)。Stargate Abilene + 多个新站点驱动。同期 5Y CDS 在 139-175bp 高位震荡。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2026-02-09<span class="sub">GOOG</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>GOOG $20B 七档 + 多币种 &gt;$30B</div>
+      <div class="body">50Y +95bp UST / 3Y +27bp。GBP 100Y ~6% / CHF 也发——多币种降融资成本，但说明单一美元市场需求接近天花板。同月 Anthropic Series G $30B @ $380B 闭轮。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2025-12<span class="sub">CDS 突破</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>ORCL 5Y CDS 突破 174.9bp</div>
+      <div class="body"><strong>2008-09 金融危机以来最高水平</strong>。Baa2 评级（仅高于垃圾两档）。市场重新定价 AI 集中度风险 + 客户集中度风险（OpenAI / Stargate）。同期 META CDS 也创纪录。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2025-10<span class="sub">Meta Hyperion</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5</span>Meta Hyperion JV $27B A+ debt（Blue Owl）</div>
+      <div class="body">PIMCO $18B + BlackRock $3B 锚定。Blue Owl 80% / Meta 20%。$13B 独立 TX SPV 同期推出 → 直接诱发 META CDS 创纪录。表外化加速 = 单家承受不起的信号。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2025-10<span class="sub">META 发债</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5 入口</span>META $30B 六档（订单 $125B）</div>
+      <div class="body">史上最大企业债之一。十年净回购的公司首次大规模发债——这是 Stage 1.5 正式开始的标志性事件。</div>
+    </div>
+
+    <div class="tl-row major">
+      <div class="date">2025-09-24<span class="sub">ORCL 发债</span></div>
+      <div class="heading"><span class="stage-tag s15">1.5 入口</span>ORCL $18B 六档（40Y +165bp UST）</div>
+      <div class="body">5/7/10/20/30/40Y 期限拉到极限。40Y +165bp 较 IG 同期溢价显著。同月 NVDA 公开包销 CoreWeave $6.3B + Lambda $1.5B——产业链开始用「兜底」结构强行维持算力扩张。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2025-Q1<span class="sub">META</span></div>
+      <div class="heading"><span class="stage-tag">STAGE 1</span>META Q1 capex/FCF 突破 1.6×</div>
+      <div class="body">FCF 第一次不再覆盖 capex（季度口径）。这是 Stage 1 的关键拐点——从「赚的钱够花」滑向「赚的不够借差额」。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">2024-Q3<span class="sub">Capex 起飞</span></div>
+      <div class="heading"><span class="stage-tag">STAGE 1</span>Hyperscaler Capex 全面起飞</div>
+      <div class="body">仍由 FCF 全覆盖（捕获到 capex 接近 FCF 的临界）。MSFT / GOOG / META / AMZN 集体上修 FY 指引。市场欢呼 AI capex，无人讨论可持续性。</div>
+    </div>
+
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">2026 Capex 合计</div>
+      <div class="value">$725B+</div>
+      <div class="delta">MSFT 190 · GOOG 185 · META 135 · AMZN 200 · ORCL 50</div>
+    </div>
+    <div class="card">
+      <div class="label">Hyperscaler FCF (TTM)</div>
+      <div class="value">~$150B</div>
+      <div class="delta">缺口 $575B → 债 + 表外 + 一级股本</div>
+    </div>
+    <div class="card">
+      <div class="label">Capex / FCF 比</div>
+      <div class="value red">&gt;4.8×</div>
+      <div class="delta">十年前 ≈ 0.5× · 已永久结构性转变</div>
+    </div>
+    <div class="card">
+      <div class="label">ORCL 5Y CDS</div>
+      <div class="value red">174.9 bp</div>
+      <div class="delta">2008-09 以来最高 · Baa2 评级</div>
+    </div>
+    <div class="card">
+      <div class="label">CoreWeave 7Y 票息</div>
+      <div class="value red">9.75%</div>
+      <div class="delta">vs IG hyperscaler ~5.5% · 高收益债定价</div>
+    </div>
+    <div class="card">
+      <div class="label">OpenAI + Anthropic ARR</div>
+      <div class="value">~$54B</div>
+      <div class="delta">vs capex $725B = 13× · ROI 缺口巨大</div>
+    </div>
+  </div>
+
+  <div class="callout red">
+    <h4>核心结论</h4>
+    <p>
+      ① <strong>资金结构已根本改变</strong>：从「赚的钱」到「借的钱+表外的钱+股权稀释+主权」。
+      ② <strong>最先报警的不是 MAG7 股价</strong>，是 ORCL CDS、CoreWeave 高收益债 yield、私募 AI 二级折价。
+      ③ <strong>整链脆弱点在 neocloud</strong>：12% 浮息债 + $7.5B 2026 到期墙 + H100 二手租金 -60%。
+      ④ <strong>表外化加速</strong> = 单家承受不起的信号（Meta Hyperion $27B JV、Stargate $400B 联盟）。
+      ⑤ <strong>2026-06 IPO 大潮</strong> = L5 (ATM) + L6 (主权) 同时跑：GOOG ATM + SpaceX/OAI/Anthropic 三 IPO + 主权 $120B 部署。
+    </p>
+  </div>
+
+  <h3>主权基金 / 国家级 AI 部署<span class="tag red">L6 已启动</span></h3>
+  <div class="grid">
+    <div class="card">
+      <div class="label">主权 AI 总投入 2025-26</div>
+      <div class="value red">$120B</div>
+      <div class="delta">GCC funds 已部署 + 承诺</div>
+    </div>
+    <div class="card">
+      <div class="label">PIF (Saudi)</div>
+      <div class="value">$36B</div>
+      <div class="delta">Humain (PIF wholly-owned) → $3B 入 xAI · 谈判中入 OAI $40B 轮</div>
+    </div>
+    <div class="card">
+      <div class="label">Mubadala (UAE)</div>
+      <div class="value">$13B</div>
+      <div class="delta">G42 / MGX $100B fund 主导方</div>
+    </div>
+    <div class="card half">
+      <div class="label">Stargate UAE (G42 + OAI + ORCL + NVDA + Cisco + SoftBank)</div>
+      <div class="value">$30B+</div>
+      <div class="delta">Khazna Data Centres 建设 · 2026-Q3 第一期完工</div>
+    </div>
+    <div class="card half">
+      <div class="label">MGX (Mubadala + G42)</div>
+      <div class="value">$100B fund</div>
+      <div class="delta">AI infrastructure 专项 · 在谈 OAI / Anthropic 等</div>
+    </div>
+  </div>
+  <p style="font-size:13px;opacity:.85;margin-top:8px">
+    <strong>关键认知差</strong>：我们不是"等 ATM 失败后才到 L6 主权阶段"，是 <strong>L5 (ATM) + L6 (主权) 同时进行</strong>。主权资金 $120B 已部署，不是未来选项。
+    Humain (PIF) 已通过 xAI 实现转换为 SpaceX 0.24% 股权（合并后 $1.25T），PIF/MGX 已在谈 OAI $40B 增量轮。<strong>融资形态升级速度比我们 v1.1 假设的快 6-9 个月</strong>。
+  </p>
+
+  <h3>电信泡沫 (1996-2003) vs AI 泡沫 (2024-?) 并列时间线<span class="tag red">历史镜像</span></h3>
+  <table>
+    <thead><tr><th style="width:18%">阶段</th><th style="width:41%">电信泡沫节点</th><th style="width:41%">AI capex 对应节点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>解除管制 / 范式启动</strong></td>
+        <td><strong>1996</strong> Telecom Act 解除长途电话管制 → 资本涌入</td>
+        <td><strong>2022-11</strong> ChatGPT 发布 → AI scaling law 范式确立</td>
+      </tr>
+      <tr>
+        <td><strong>基础设施第一波</strong></td>
+        <td><strong>1998-夏</strong> Global Crossing 海底光缆 $700M 完成 → STM-1 从 $20M 降到 $8M</td>
+        <td><strong>2024-Q3</strong> Hyperscaler capex 全面起飞，仍 FCF 全覆盖</td>
+      </tr>
+      <tr>
+        <td><strong>IPO 大潮 / 估值飙升</strong></td>
+        <td><strong>1999</strong> Worldcom-Sprint $129B 并购被阻 / Qwest 上市后两年涨 40x</td>
+        <td><strong>2026-06~10</strong> ⚡ SpaceX (6/12) + OAI (9月) + Anthropic (10月) 三 Mega IPO 集中</td>
+      </tr>
+      <tr>
+        <td><strong>资本套利 / 循环融资</strong></td>
+        <td><strong>2001</strong> Qwest × Global Crossing $700M+ 互卖光纤带宽虚增收入</td>
+        <td><strong>2026-05-04</strong> Anthropic × SpaceX C1 全量租约 ($4-7B/年) + 同日 OAI-Anth PE-JV 零交叉投资人</td>
+      </tr>
+      <tr>
+        <td><strong>分析师明星化</strong></td>
+        <td>Jack Grubman (Salomon) $25M/年薪 推电信</td>
+        <td>各大 sell-side AI 分析师全力 推 hyperscaler (NVDA / GOOGL / META / ORCL 集体 OW)</td>
+      </tr>
+      <tr class="row-divider">
+        <td><strong>NASDAQ 顶</strong></td>
+        <td class="num red"><strong>2000-03</strong></td>
+        <td class="num red"><strong>???</strong> 融资顶 (L7) 可能 2026-Q4 ~ 2027-Q1</td>
+      </tr>
+      <tr>
+        <td><strong>容量过剩定价崩</strong></td>
+        <td><strong>2000-Q3</strong> STM-1 跌到 $2M (vs 1998 $8M, -75%)</td>
+        <td><strong>2025-?</strong> H100 二手租金 -60% from peak (已发生!) · B200 spot 价格波动</td>
+      </tr>
+      <tr>
+        <td><strong>Capex 下修 (Stage 3 信号枪)</strong></td>
+        <td><strong>2001-Q1</strong> Cisco / Sun / Nortel 订单首次下修</td>
+        <td><strong>2027-Q1?</strong> hyperscaler 任一首次下修 capex 指引</td>
+      </tr>
+      <tr>
+        <td><strong>系统性违约 (Path Y)</strong></td>
+        <td><strong>2002-01</strong> Global Crossing 破产 (链上第一倒)</td>
+        <td><strong>?</strong> 首个中型 Neocloud (CoreWeave / Crusoe / Lambda) 重组</td>
+      </tr>
+      <tr>
+        <td><strong>会计造假爆雷</strong></td>
+        <td><strong>2002-07</strong> Worldcom 虚增 $11B 利润曝光 → 破产</td>
+        <td><strong>?</strong> Neocloud / AI lab 营收会计被质疑（关联交易 / Take-or-pay 虚增）</td>
+      </tr>
+      <tr>
+        <td><strong>FCF 反弹型公司 (Path X)</strong></td>
+        <td><strong>2003</strong> Cisco / Oracle FCF 恢复反弹 +50-80%</td>
+        <td><strong>?</strong> Hyperscaler capex 削减后 FCF 恢复 → 短期反弹</td>
+      </tr>
+      <tr>
+        <td><strong>真正赢家</strong></td>
+        <td>GOOG / AMZN / MSFT 接盘破产光纤资产 (2003-2008) → 建数据中心王国</td>
+        <td>?? 谁会接盘破产 neocloud 的 GPU 资产 / 接管 AI lab IP / 接手主权基金亏损头寸？</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h4>关键差异（不是完全镜像）</h4>
+    <ul>
+      <li><strong>花钱的不是 Worldcom 是 MAG-4</strong>：MSFT / GOOG / META / AMZN 资产负债表远强于 2000 电信公司，**不会破产** → 走 Meta 2022-Q4 efficiency 路径概率高 (Path X)</li>
+      <li><strong>需求侧真实性更强</strong>：dark fiber 是 supply ahead of demand；AI 是 demand pulling supply。OAI / Anthropic ARR 兑现速度 (Anthropic 3.5 月 +236%) 是 dot-com 没见过的</li>
+      <li><strong>主权 / 政府兜底空间</strong>：电信泡沫无国家级兜底；AI 已有 PIF / Mubadala / 美国政府明确兜底意愿</li>
+      <li><strong>速度更快</strong>：电信用了 4 年 (1996-2000) 到顶 + 2 年 (2000-2002) 崩塌；AI 可能 1-2 年到顶 + 6-12 月崩塌（融资形态升级速度 6-9 月内走完 L0→L5+L6，电信花了 4 年走完同样路径）</li>
+      <li><strong>当前位置类比</strong>：王川 5/18 判断 = Meta 2022-10 (管理层还在犟，转折前 4 个月)。**电信对应物 = 2000-01 NASDAQ 顶前 2-3 个月**</li>
+    </ul>
+  </div>
+
+  <h3>三个看多反驳 vs 我的反驳</h3>
+  <table>
+    <thead><tr><th>看多论点</th><th>反驳</th><th>判定</th></tr></thead>
+    <tbody>
+    <tr><td>"Capex 是 NPV 正的，债务可承受"</td><td>NPV 依赖未来 token 单价不暴跌；OpenAI/Anthropic ARR 加总仅 capex 的 1/13</td><td class="num flag">弱</td></tr>
+    <tr><td>"hyperscaler 资产负债表强，发债是优化"</td><td>ORCL Baa2、META TX SPV $13B 让 CDS 创纪录——市场不信"优化"叙事</td><td class="num flag">弱</td></tr>
+    <tr><td>"Stargate / Hyperion 是聪明的风险分摊"</td><td>表外 JV 本质是隐藏杠杆 + 找人当 LP——找伙伴本身说明绝对量级太大</td><td class="num flag">弱</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ TAB 2: 资金链 ============ -->
+<section class="tab" id="t2">
+  <h2>资金链 / Capex vs FCF</h2>
+  <p>钱从三层流出：第一层经营现金流（FCF），第二层企业债，第三层表外 SPV / 一级股本。比率破 1 表示「赚的不够花」，破 2 表示「主要靠借」。</p>
+
+  <h3>Hyperscaler Q1 2026 实际值<span class="tag">SOURCE: 各家 Q1 2026 财报</span></h3>
+  <table>
+    <thead>
+      <tr><th>公司</th><th class="num">Q1 Capex</th><th class="num">Q1 FCF</th><th class="num">Q Capex/FCF</th><th class="num">2026 全年指引</th><th class="num">TTM FCF</th><th class="num">Y Capex/FCF</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>MSFT (FY26 Q3)</td><td class="num">$31.9B</td><td class="num">$25.7B</td><td class="num">1.24×</td><td class="num">~$190B</td><td class="num">$74.5B</td><td class="num red">2.55×</td></tr>
+      <tr><td>GOOG</td><td class="num">$35.7B</td><td class="num">$16.1B</td><td class="num red">2.22×</td><td class="num">$180-190B</td><td class="num">$64.4B</td><td class="num red">2.87×</td></tr>
+      <tr><td>META</td><td class="num">$19.8B</td><td class="num">$12.4B</td><td class="num">1.60×</td><td class="num">$125-145B</td><td class="num">~$45B*</td><td class="num red">3.00×</td></tr>
+      <tr><td>AMZN</td><td class="num">$43.2B</td><td class="num">$0.3B</td><td class="num flag">140×</td><td class="num">~$200B</td><td class="num">$1.2B</td><td class="num flag">167×</td></tr>
+      <tr><td>ORCL (FY26)</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">$50B</td><td class="num">~$11B</td><td class="num flag">4.5×</td></tr>
+      <tr class="row-divider"><td><strong>合计</strong></td><td class="num">$130.6B</td><td class="num">$54.5B</td><td class="num red">2.40×</td><td class="num"><strong>$725-790B</strong></td><td class="num">~$196B</td><td class="num flag"><strong>3.83×</strong></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;opacity:.7">*META TTM FCF 估算（Q1 $12.4B annualized 加 2025 利润率折扣）</p>
+
+  <div class="callout">
+    <h4>关键观察</h4>
+    <ul>
+      <li><strong>AMZN 已脱钩</strong> — FCF 从 $25.9B 跌到 $1.2B，capex 几乎 100% 靠经营现金流 + 债务挤出</li>
+      <li><strong>GOOG / MSFT 不是历史模式</strong> — 全年 capex/FCF 接近 3×，意味着每赚 1 块借 2 块</li>
+      <li><strong>META 全年指引上调</strong> $115-135B → $125-145B（4 月再上修），但 FCF 没跟上</li>
+      <li><strong>ORCL 倍数最极端</strong> — FY26 capex 从 $35B → $50B，但 FCF 仅 ~$11B</li>
+    </ul>
+  </div>
+
+  <h3>融资发行（债 + 股权，2025-2026）<span class="tag red">十年净回购公司反向融资 = 拐点前兆</span></h3>
+  <table>
+    <thead><tr><th>公司</th><th>类型</th><th>规模</th><th>结构</th><th>日期</th><th>信号</th></tr></thead>
+    <tbody>
+      <tr><td>GOOG</td><td>股权 (ATM + 私募 + 承销)</td><td class="num flag">$80B</td><td>$10B BRK 私募 @~$350 + $30B 机构承销 + $40B Q3 起 ATM</td><td class="num">2026-06-02</td><td class="num flag">首例 hyperscaler ATM 股权稀释</td></tr>
+      <tr><td>META</td><td>债</td><td class="num">$25B</td><td>六档 / 订单 $96B</td><td class="num">2026-04-30</td><td>溢价高于 10 月那轮</td></tr>
+      <tr><td>META</td><td>债</td><td class="num">$30B</td><td>订单 $125B 史上最大企业债之一</td><td class="num">2025-10</td><td>首次大规模发债</td></tr>
+      <tr><td>GOOG</td><td>债</td><td class="num">$20B</td><td>七档 / 50Y +95bp UST</td><td class="num">2026-02-09</td><td>另含 GBP 100Y ~6%</td></tr>
+      <tr><td>GOOG 多币种总额</td><td>债</td><td class="num">&gt;$30B</td><td>含 CHF / GBP</td><td class="num">2026-02</td><td>多币种降融资成本</td></tr>
+      <tr><td>ORCL</td><td>债</td><td class="num">$18B</td><td>六档 5/7/10/20/30/40Y · 40Y +165bp UST</td><td class="num">2025-09-24</td><td>40Y 期限拉到极限</td></tr>
+      <tr><td>ORCL</td><td>债</td><td>计划再发</td><td>Goldman 主承</td><td class="num">2026-Q1</td><td>需求边际验证</td></tr>
+      <tr><td>MSFT</td><td>债</td><td>—</td><td>无大额公告（靠运营 + JV）</td><td class="num">—</td><td>仍是最强资产负债表</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout red">
+    <h4>GOOG ATM 解读 · 2026-06-02</h4>
+    <p>
+      <strong>为什么这是结构性事件</strong>：FCF 机器 + IG 顶级评级 + 历史净回购的代表 GOOG，主动选择股权稀释而非全部走债——意味着 GOOG 内部判断「发更多债边际成本已不优于股权稀释」，或 capex 规模已大到债市单一吞不下。
+      <br><br>
+      <strong>三段为什么这么拆</strong>：(1) BRK $10B 私募 = 信号背书 + 不在二级稀释；(2) $30B 机构承销 = 一次性吸纳；(3) $40B ATM = Q3 起按市价分批，避免一次性砸盘但拉长稀释时间。
+      <br><br>
+      <strong>BRK $350 锚要小心</strong>：Buffett 8-10% 长期复利 hurdle，不是个人 12-15% mega-cap quality alpha 锚。当前 GOOG 5y IRR ~3.8% 仍在 priced-in 区。
+      <br><br>
+      <strong>下一观察</strong>：第二家 hyperscaler 跟进 ATM = 从「个案」翻成「模式」。MSFT / META / AMZN 任一启动同类股权融资即触发 Stage 1.5 升级到 1.75。
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 3: 信用价差 ============ -->
+<section class="tab" id="t3">
+  <h2>信用价差 / 最领先的市场信号</h2>
+  <p class="lead">
+    若只能盯一个指标：<strong>ORCL 5Y CDS</strong>。
+    它是 hyperscaler 里资产负债表最弱、capex/FCF 最极端、ROI 高度依赖单一客户（OpenAI）的代表，
+    比 MAG7 股价领先 6-12 个月。
+  </p>
+
+  <h3>ORCL CDS 演进<span class="tag red">2008-09 以来最高</span></h3>
+  <div class="flex-row">
+    <div><div class="k">最新峰值</div><div class="v" style="color:#FF3000">174.9 bp</div><div class="s">2025-12 · +7.4bp 单日</div></div>
+    <div><div class="k">前次突破</div><div class="v">139 bp</div><div class="s">2025-12-11 · +12bp</div></div>
+    <div><div class="k">历史对照</div><div class="v">2008-09</div><div class="s">金融危机以来最高水平</div></div>
+    <div><div class="k">信用评级</div><div class="v">Baa2</div><div class="s">仅高于垃圾级两档</div></div>
+  </div>
+
+  <h3>2025 Q4 bond spread 走阔（9/1 → 11/14）</h3>
+  <table>
+    <thead><tr><th>公司</th><th class="num">Spread 走阔</th><th>解读</th></tr></thead>
+    <tbody>
+      <tr><td>ORCL</td><td class="num red">+48 bp</td><td>市场重新定价 AI 集中度风险</td></tr>
+      <tr><td>META</td><td class="num red">+15 bp</td><td>$13B TX SPV 推出后 CDS 创纪录</td></tr>
+      <tr><td>GOOG</td><td class="num">+10 bp</td><td>相对温和但方向一致</td></tr>
+    </tbody>
+  </table>
+
+  <h3>具体发行档 spread to UST<span class="tag">2025-09 ~ 2026-02</span></h3>
+  <table>
+    <thead><tr><th>债</th><th class="num">期限</th><th class="num">Spread</th><th>日期</th></tr></thead>
+    <tbody>
+      <tr><td>ORCL</td><td class="num">40Y</td><td class="num red">+165 bp</td><td>2025-09-24</td></tr>
+      <tr><td>GOOG</td><td class="num">50Y</td><td class="num">+95 bp</td><td>2026-02-09</td></tr>
+      <tr><td>GOOG</td><td class="num">3Y</td><td class="num">+27 bp</td><td>2026-02-09</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout red">
+    <h4>为什么 CDS 是最领先的</h4>
+    <ul>
+      <li><strong>债市先于股市定价违约风险</strong>——历史上每次大型科技/工业资本周期反转，IG spread 都先动 6-12 个月</li>
+      <li><strong>ORCL 是 hyperscaler 链条的"最弱一环"</strong>——Baa2 + capex/FCF 4.5× + 客户集中度高（Stargate / OpenAI）</li>
+      <li><strong>META CDS 创纪录</strong> 出现在公开 Hyperion JV + TX SPV 之后——市场看到表外化就提价</li>
+      <li><strong>当前还没失控</strong>——发债 oversubscribed 说明流动性充足。需观察 spread 突破 200bp / order book 不再 4× 覆盖</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ TAB 4: Neocloud ============ -->
+<section class="tab" id="t4">
+  <h2>Neocloud / GPU 融资断裂点</h2>
+  <p>整个 AI 资本链条最脆弱的一段：GPU 抵押贷 + 高收益债 + 短期到期墙。Hyperscaler 还可以发 40Y 债，neocloud 只能拿 5-7Y 高收益债 + 私募信贷。当 GPU 租金或利用率掉下来，债务先违约。</p>
+
+  <h3>主要 Neocloud 融资情况</h3>
+  <table>
+    <thead><tr><th>公司</th><th>动作</th><th class="num">规模 / 利率</th><th>日期</th></tr></thead>
+    <tbody>
+      <tr><td>CoreWeave</td><td>优先无担保债 2031 到期</td><td class="num red">$1.75B @ 9.75%</td><td>2026-Q1</td></tr>
+      <tr><td>CoreWeave</td><td>另一档 2030 到期</td><td class="num red">$1.5B @ 9.25%</td><td>2025-09</td></tr>
+      <tr><td>CoreWeave</td><td>Moody's / S&P 评级</td><td class="num">Ba3 / B+</td><td>2025-26</td></tr>
+      <tr><td>NVDA → CoreWeave</td><td>未售算力包销</td><td class="num">$6.3B</td><td>2025-09</td></tr>
+      <tr><td>NVDA → Lambda</td><td>包销</td><td class="num">$1.5B</td><td>2025-09</td></tr>
+      <tr><td>Lambda</td><td>Supermicro 21MW DC sublease</td><td class="num">$600M</td><td>2025-06</td></tr>
+      <tr><td>Nebius</td><td>equity + convert mega-raise</td><td class="num">$4.2B</td><td>2025-09</td></tr>
+      <tr><td>Nebius</td><td>MSFT 5Y 合同 backlog</td><td class="num">$17.4-19.4B</td><td>2025-Q3</td></tr>
+      <tr><td>Nebius</td><td>Meta 合同</td><td class="num">$3B</td><td>2025-Q4</td></tr>
+      <tr><td>Nebius</td><td>2026 ARR 指引</td><td class="num">$7-9B</td><td>2026</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Neocloud 系统性数据</h3>
+  <div class="grid">
+    <div class="card half">
+      <div class="label">短期债加权利率</div>
+      <div class="value red">&gt;12%</div>
+      <div class="note">浮动 SOFR-based。私募信贷给 GPU 公司更高 premium，公开债 9.25-9.75%</div>
+    </div>
+    <div class="card half">
+      <div class="label">2026 内到期墙</div>
+      <div class="value red">$7.5B</div>
+      <div class="note">行业总债 $8.7B / 2026 集中到期 $7.5B（来源未指名具体厂商）</div>
+    </div>
+  </div>
+
+  <h3>私募信贷端的压力<span class="tag red">Blue Owl 赎回危机</span></h3>
+  <p>Blue Owl 两只 fund 2026 Q1 收到 21.9% / 40.7% 赎回请求（cap 5%），总 ~$5.4B。私募信贷自身在去杠杆——这意味着 GPU/AI 基建公司明年滚债成本会显著上升，或直接拿不到钱。</p>
+
+  <div class="callout red">
+    <h4>断裂场景</h4>
+    <p>
+      H100 二手租金已从峰值 -60%。如果 H200/B200 大规模上线 + token 价格战继续，
+      neocloud GPU $/hour 收入端压力 vs 12% 浮息债成本端——某家中型 neocloud 重组将是阶段 2 的信号枪。
+      届时 NVDA 包销条款会被市场重新定价，hyperscaler 表外算力 capex 也会被审视。
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 5: GPU 经济学 ============ -->
+<section class="tab" id="t5">
+  <h2>GPU 经济学 / ROI 终极考核</h2>
+  <p>把整条链条压成两个比率：① GPU $/hour 收入 vs 资本成本；② 整体 AI ARR vs 整体 AI capex。两个比率任一恶化都会反推回融资端。</p>
+
+  <h3>当前 GPU 租金水平<span class="tag">2026-03</span></h3>
+  <table>
+    <thead><tr><th>卡型</th><th class="num">Hyperscaler</th><th class="num">Neocloud</th><th class="num">Spot/低端</th><th>趋势</th></tr></thead>
+    <tbody>
+      <tr><td>H100</td><td class="num">$7.43-7.52</td><td class="num">$2.43-2.63</td><td class="num red">$1.38</td><td>二手 -60% from peak</td></tr>
+      <tr><td>H200</td><td class="num">$3.72-10.60</td><td class="num">$3.80</td><td class="num">—</td><td>on-demand +25% YoY（短期）</td></tr>
+      <tr><td>B200</td><td class="num">$4.96 avg</td><td class="num">—</td><td class="num">$2.25 (36M reserve)</td><td>月波 $4.40-6.00 区间</td></tr>
+    </tbody>
+  </table>
+
+  <h3>核心矛盾：5% 企业 GPU 利用率<span class="tag red">VentureBeat 2026</span></h3>
+  <div class="callout red">
+    <h4>5% 利用率意味什么</h4>
+    <p>
+      VentureBeat 2026 报告：企业平均 GPU 利用率 5%——也就是说 95% 的算力费等于送给云厂。
+      但这同时意味着：<strong>真正的算力需求弹性可能远低于 capex 投建假设</strong>。
+      Hyperscaler 在投 95% 利用率的 capex（按"AI 算力供不应求"叙事），但终端企业用户在按 5% 利用率付费。
+    </p>
+  </div>
+
+  <h3>ARR vs Capex<span class="tag red">13× 缺口</span></h3>
+  <div class="flex-row">
+    <div><div class="k">OpenAI ARR</div><div class="v">$24B</div><div class="s">2026-04</div></div>
+    <div><div class="k">Anthropic ARR</div><div class="v">$30B</div><div class="s">2026-04 run-rate · 目标年内 $44B+</div></div>
+    <div><div class="k">两家合计</div><div class="v">~$54B</div><div class="s">主要 AI labs</div></div>
+    <div><div class="k">2026 Capex</div><div class="v" style="color:#FF3000">~$725B</div><div class="s">vs ARR = 13×</div></div>
+  </div>
+
+  <p>
+    13× 不是单年问题——它是「这些 capex 折旧前要回收多少 ARR」的隐含 IRR 测试。
+    按 6 年折旧 + 50% gross margin 反推，需要 OpenAI+Anthropic 合计 ARR 翻 5-7 倍才打平。
+    这就是为什么 OpenAI 估值能跑到 $852B、Anthropic 在融 $900B——市场必须相信指数增长继续。
+  </p>
+
+  <h3>私募 AI 估值（融资定价）</h3>
+  <table>
+    <thead><tr><th>公司</th><th>估值</th><th>规模</th><th>日期</th></tr></thead>
+    <tbody>
+      <tr><td>OpenAI primary</td><td class="num">$852B post</td><td class="num">$122B 承诺</td><td>2026-03-31</td></tr>
+      <tr><td>OpenAI 二级 tender</td><td class="num">$500B</td><td class="num">$6.6B (600+ 员工)</td><td>2025-10</td></tr>
+      <tr><td>Anthropic Series G</td><td class="num">$380B post</td><td class="num">$30B</td><td>2026-02</td></tr>
+      <tr><td>Anthropic 在融轮（在途）</td><td class="num red">~$900B 目标</td><td class="num">~$50B</td><td>2026-04-30</td></tr>
+      <tr><td>xAI</td><td class="num">—</td><td class="num">$20B（已 close）</td><td>2026-01</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ TAB 6: 表外结构 ============ -->
+<section class="tab" id="t6">
+  <h2>表外结构 / SPV + JV + 项目融资</h2>
+  <p>当资产负债表撑不住，绕开 GAAP 把负债推出去：Stargate / Meta Hyperion / Nebius 合同金融化都是同类工程。单看每家财报永远算不出真实杠杆。</p>
+
+  <h3>Stargate（OpenAI + ORCL + SoftBank）</h3>
+  <div class="grid">
+    <div class="card third">
+      <div class="label">总规划</div>
+      <div class="value">$400B+</div>
+      <div class="note">~7 GW · 三年投资</div>
+    </div>
+    <div class="card third">
+      <div class="label">Abilene 旗舰</div>
+      <div class="value" style="font-size:22px">450K GB200</div>
+      <div class="note">15Y Oracle 租约 · 前 2 栋 2025-09 已上线</div>
+    </div>
+    <div class="card third">
+      <div class="label">新站点</div>
+      <div class="value">5+</div>
+      <div class="note">Shackelford TX / Doña Ana NM / Midwest 等</div>
+    </div>
+  </div>
+  <p style="font-size:13px;opacity:.85">⚠️ 部分进展受阻——合作方分歧导致某些项目搁置（mlq.ai 2026 报告）。Stargate 是叙事最重的结构，也是单点失败风险最大的：ORCL 长租回租 + OpenAI 长期付款 + SoftBank 股权，三方任一退让则整个 stack 重定价。</p>
+
+  <h3>Meta Hyperion JV（Blue Owl）<span class="tag red">$27B A+ rated debt</span></h3>
+  <table>
+    <tbody>
+      <tr><td>结构</td><td>$27B A+ rated debt + $2.5B equity</td></tr>
+      <tr><td>锚定</td><td>PIMCO $18B + BlackRock $3B</td></tr>
+      <tr><td>股权拆分</td><td>Blue Owl 80% / Meta 20%</td></tr>
+      <tr><td>规模</td><td>4M sqft · 2-5 GW · LA Rayville</td></tr>
+      <tr><td>现金影响</td><td>Blue Owl 注 ~$7B · Meta 一次性 distribution $3B</td></tr>
+      <tr><td>含追加</td><td>~$29B（含 Louisiana 30B 总封顶报道）</td></tr>
+      <tr class="row-divider"><td>另一独立 SPV</td><td class="num red">TX SPV $13B（CDS 创纪录的诱因）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h4>为什么这是 hyperscaler 杠杆隐形化</h4>
+    <p>
+      Hyperion JV 把 $27B 负债放进 SPV，Meta 持有 20% 股权但承担算力购买义务（off-balance）。
+      表面 Meta 资产负债表保持干净，<strong>但实际经济暴露和 100% 自建几乎一样</strong>。
+      Blue Owl 当 LP / PIMCO 当债主 = 找私募信贷分担风险，而私募信贷自己正在去杠杆（见 Tab 4）。
+    </p>
+  </div>
+
+  <h3>Nebius 合同金融化</h3>
+  <p style="font-size:13px">用 MSFT / Meta 长期合同现金流抵押发债——把<strong>客户合同</strong>变成可融资资产。这是 neocloud 模式从「卖算力」到「卖合同未来现金流证券化」的进化。优点：扩张快；风险：合同方违约或重新议价，整个结构崩塌。</p>
+</section>
+
+<!-- ============ TAB 7: 观察清单 ============ -->
+<section class="tab" id="t7">
+  <h2>观察清单 / 按领先度排序</h2>
+  <p>从最领先到最 lagging。若资源有限，盯 1-3 号；若想完整画面，5 个一起看。每条都附「触发动作」。</p>
+
+  <ol class="indicator-list">
+    <li>
+      <div class="heading">Hyperscaler ATM 股权稀释跟进<span style="background:#FF3000;color:#fff;font-size:9px;padding:1px 6px;margin-left:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.05em">NEW · 2026-06-02</span></div>
+      <div class="desc">GOOG 6/2 已开第一枪 ($80B 含 $40B ATM)。第二家跟进 = "个案"翻成"模式"，融资范式正式从债转股权——这是 Stage 1.5 → 1.75 的最快领先信号，比 CDS 更直接。</div>
+      <span class="watch">WATCH</span>MSFT / META / AMZN / ORCL 公告 ATM-style 股权稀释 · GOOG ATM Q3 实际执行节奏 (10-Q 披露已发行规模 / 剩余额度) · ATM 当周日均成交量占比
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：第二家 hyperscaler 跟进 ATM → 1 周内更新本 tracker + 升级到 Stage 1.75；GOOG Q3 ATM 执行受阻（成交不足 / 折价过深）→ 公开市场吸收能力不足信号，重估 mega-cap 流动性</div>
+    </li>
+    <li>
+      <div class="heading">私募一级估值 / 二级折价</div>
+      <div class="desc">OpenAI / Anthropic / xAI 二级 tender 折价、AI startup 桥轮利率。私募市场最先感知 ROI 怀疑——比公开市场领先 3-6 个月。</div>
+      <span class="watch">WATCH</span>Forge / EquityZen AI 标的折价幅度 · Anthropic $900B 在融轮是否能 close at price
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：二级折价 &gt;20% 或在融轮被迫降估值 → 减仓所有 AI infra 间接受益标的</div>
+    </li>
+    <li>
+      <div class="heading">Neocloud 信用价差</div>
+      <div class="desc">CoreWeave 公开债 yield、Blue Owl / Apollo 私募信贷 GPU 抵押贷利率。资本链最弱环节。</div>
+      <span class="watch">WATCH</span>CoreWeave 2031 债 yield（当前 9.75%）· Crusoe / Nebius / Lambda 滚债成本
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：CoreWeave yield &gt;12% 或任一中型 neocloud 重组消息 → 进入阶段 2，减仓 NVDA + 间接 AI 设备链</div>
+    </li>
+    <li>
+      <div class="heading">超大盘 IG 利差 / CDS</div>
+      <div class="desc">MSFT / META / GOOG / ORCL 10Y bond spread 和 CDS。ORCL 5Y CDS 已经在 175bp 高位，是最该日盯的。</div>
+      <span class="watch">WATCH</span>ORCL 5Y CDS（当前 175bp）· META 10Y spread · GOOG / MSFT 新发债 bid-to-cover
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：ORCL CDS &gt;200bp 持续 4 周 → 减仓 ORCL + 重新评估 AI 配置；ORCL 发债被压价（spread +50bp from talk） → 立即降配</div>
+    </li>
+    <li>
+      <div class="heading">Capex / FCF 比率</div>
+      <div class="desc">季报数据，约 1 季度滞后。最硬的财务证据，但不领先——确认前面的领先信号。</div>
+      <span class="watch">WATCH</span>各家季报 capex 指引与 FCF 趋势 · 全年 capex/FCF 是否突破 4×
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：任一家 capex 指引首次下修 → 这是阶段 3 信号枪，等于市场已认定 ROI 不达预期</div>
+    </li>
+    <li>
+      <div class="heading">GPU $/hour & 利用率</div>
+      <div class="desc">neocloud 报价、$/GPU-hour（Lambda / CoreWeave / Spheron）+ 企业利用率。掉到边际不经济触发违约。</div>
+      <span class="watch">WATCH</span>H100 neocloud 价 &lt; $1.50/hr · B200 跌破 $4.00 · 企业利用率从 5% 进一步下滑
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：H100 spot &lt; $1.20 持续 1 月 → 阶段 2 临近，准备 neocloud 违约场景</div>
+    </li>
+    <li>
+      <div class="heading">Hyperscaler 股价 (最 lagging)</div>
+      <div class="desc">市场最后定价。等股价反映已是阶段 3-4。</div>
+      <span class="watch">WATCH</span>MAG7 forward P/E · AI 主题指数 vs SPX 超额回报
+      <div style="margin-top:6px;font-size:12px"><strong>触发动作</strong>：股价已动 = 看清了别人也都看清了 → 这时减仓代价大，应该已经在前 5 项触发时操作过</div>
+    </li>
+  </ol>
+
+  <h3>数据缺口（需要补）</h3>
+  <ul>
+    <li>ORCL / MSFT / GOOG / META 10Y bond 对 UST 具体 bp（目前只有 40Y / 50Y / 3Y）</li>
+    <li>ORCL 5Y CDS 12 个月前对照值（绝对水平 vs 历史）</li>
+    <li>Forge / EquityZen 具体二级折价百分比</li>
+    <li>已发生违约 / 重组的具体 neocloud 公司名（来源只提"consolidation 临近"）</li>
+    <li>AMZN / MSFT 通过私募投 OpenAI / Anthropic 的桥轮利率</li>
+  </ul>
+
+  <h3>下一次更新</h3>
+  <p>建议月频复核 Tab 3（CDS / spread）+ Tab 4（neocloud yield）；季频复核 Tab 2（capex/FCF）+ Tab 5（GPU 经济学）；事件驱动更新 Tab 6（每次新 SPV / JV 公告）。</p>
+</section>
+
+<!-- ============ TAB 8: 融资范式 · 双顶 ============ -->
+<section class="tab" id="t8">
+  <h2>融资范式演化 · 双顶框架</h2>
+  <p class="lead">
+    6/2 GOOG ATM 不是"capex 到头"，是<strong>融资形态</strong>又下一级。
+    要分清两个独立的"顶"：<strong>Capex spending 顶</strong>（量级顶 / 需求侧）vs <strong>Capex 融资顶</strong>（capacity 顶 / 资本市场承接力）。
+    历史上融资顶领先 spending 顶 6-12 个月——这才是更便宜的退出时机。
+  </p>
+
+  <h3>融资形态光谱<span class="tag red">按风险/稀释递增排序</span></h3>
+  <div class="tl-vertical">
+
+    <div class="tl-row">
+      <div class="date">L0<span class="sub">已耗尽</span></div>
+      <div class="heading"><span class="stage-tag">PAST</span>内生 FCF</div>
+      <div class="body">2024-Q3 起 capex/FCF 突破 1×，2025-Q1 META 季度突破 1.6×。Hyperscaler 合计 TTM FCF $150B vs 2026 capex $725B+ = 缺口 $575B。AMZN FCF 从 $25.9B → $1.2B 是最极端的脱钩。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">L1<span class="sub">主导</span></div>
+      <div class="heading"><span class="stage-tag">CURRENT</span>IG 投资级公司债（含多币种）</div>
+      <div class="body">META $30B (10/25) + $25B (4/26) · GOOG $20B 七档 (2/26) + 多币种总计 $30B+ · ORCL $18B 六档 40Y +165bp (9/25)。**新币种登场（CHF/GBP/可能 JPY/CNY）= 单一美元市场需求接近天花板**。MSFT 仍未大额发债，是最强资产负债表。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">L2<span class="sub">活跃</span></div>
+      <div class="heading"><span class="stage-tag">CURRENT</span>HY 债 / 私募信贷（neocloud）</div>
+      <div class="body">CoreWeave $1.75B @ 9.75% + $1.5B @ 9.25% (Ba3/B+)。Blue Owl/Apollo 私募信贷给 GPU 抵押贷 >12%。**Blue Owl 2026-Q1 收到 21.9%/40.7% 赎回（cap 5%）= 私募信贷自己在去杠杆**，明年滚债成本会显著上升。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">L3<span class="sub">加速</span></div>
+      <div class="heading"><span class="stage-tag">CURRENT</span>JV / SPV 表外项目融资</div>
+      <div class="body">Meta Hyperion JV $27B A+ debt + $2.5B equity（Blue Owl 80% / Meta 20%）+ 独立 TX SPV $13B → 直接诱发 META CDS 创纪录。Stargate $400B+ 联盟（OpenAI + ORCL + SoftBank）。**表外化加速 = 单家承受不起的硬信号**。</div>
+    </div>
+
+    <div class="tl-row">
+      <div class="date">L4<span class="sub">边缘</span></div>
+      <div class="heading"><span class="stage-tag">EMERGING</span>合同证券化 / 客户预付 RPO 抵押</div>
+      <div class="body">Nebius 已用 MSFT $17.4-19.4B + Meta $3B 长约合同发债。**hyperscaler 大版**还没做：MSFT/AMZN 把自身 backlog $460B+/$320B+ 客户合同打包发 ABS。一旦出现 = neocloud 模式被 hyperscaler 复制。</div>
+    </div>
+
+    <div class="tl-row now">
+      <div class="date">L5<span class="sub">2026-06-02 启动</span></div>
+      <div class="heading">⚡ 公开市场股权（ATM + PIPE + 承销）· 我们在这里</div>
+      <div class="body">GOOG $80B：$10B BRK 私募 + $30B 机构承销 + $40B Q3 起 ATM。**十年净回购代表首次大规模股权稀释扩 AI infra**。第二家跟进 = 范式确认。NVDA vendor finance（→ CoreWeave $6.3B / Lambda $1.5B）是上游 L1.5 反向变种。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">L6<span class="sub">下一档</span></div>
+      <div class="heading"><span class="stage-tag s2">NEXT</span>战略私募 + 主权基金大额一级</div>
+      <div class="body">Saudi PIF / Mubadala / GIC / Temasek / SoftBank 直接入股 hyperscaler 母公司或 AI 专属子板块。Stargate 有 SoftBank 主导但**还没主权直接进 GOOGL/MSFT 股权**。**这一步出现 = ATM 也吃不下，公开市场承接顶**。UAE G42 / 法国 93 亿€ / 韩国-日本 sovereign cloud 是雏形。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">L7<span class="sub">尾段</span></div>
+      <div class="heading"><span class="stage-tag s3">FAR</span>政府担保 / 国家入股 / DOE 贷款</div>
+      <div class="body">CHIPS Act 是先例（Intel $8.9B 直接拨款 + 国家入股）。AI 版可能：(a) DOE LPO 贷款给 Stargate/Hyperion；(b) DPA 国防生产法启动；(c) 类 TARP 紧急工具。**这一步出现 = 资本市场已 broken**，进入政府兜底范式。</div>
+    </div>
+
+    <div class="tl-row future">
+      <div class="date">L8<span class="sub">末端</span></div>
+      <div class="heading"><span class="stage-tag s4">END</span>Tokenization / Retail preferred / 跨境政策互换</div>
+      <div class="body">算力 RWA 链上分数化（Pendle/Plume-style）+ BDC-style retail preferred 高收益 + 跨境主权 demand 锁定（UAE / Saudi / 法 / 日 / 韩主权云）。**末端形态 = 散户/外部被动接盘 hyperscaler capex**。出现 = 接近资本周期顶点的标志。</div>
+    </div>
+
+  </div>
+
+  <h3>我可能还漏了的（补充清单）</h3>
+  <div class="grid">
+    <div class="card half">
+      <div class="label">Sale-and-leaseback</div>
+      <div class="value" style="font-size:18px">DC + GPU</div>
+      <div class="note">Lambda Supermicro 21MW sublease 是 mini 版。规模化版本 = Meta 把已建 DC 卖给 Digital Realty 反租。属 L3-L4 之间</div>
+    </div>
+    <div class="card half">
+      <div class="label">Spinoff / Tracking stock</div>
+      <div class="value" style="font-size:18px">AWS · GCP · AI 子</div>
+      <div class="note">AMZN AWS spinoff 传闻、GOOGL Cloud 单独 IPO 可能。让市场单独定价子业务，绕开 hyperscaler 整体估值锚。属 L5-L6 之间</div>
+    </div>
+    <div class="card half">
+      <div class="label">Mandatory Convertible Preferred</div>
+      <div class="value" style="font-size:18px">混合工具</div>
+      <div class="note">介于债和股。hyperscaler 还没用，AI labs 一级轮已有变种。属 L4-L5 之间</div>
+    </div>
+    <div class="card half">
+      <div class="label">PPA 证券化 / 能源合同抵押</div>
+      <div class="value" style="font-size:18px">20Y 现金流</div>
+      <div class="note">把 Amazon-X-energy / Google-Kairos / MSFT-Constellation 的 PPA 打包发债。属 L4 变种</div>
+    </div>
+    <div class="card half">
+      <div class="label">AI Infrastructure REIT</div>
+      <div class="value" style="font-size:18px">DC 地产 spin</div>
+      <div class="note">类 Digital Realty/Equinix 但专做 AI DC。让 retail 散户接盘 capex。属 L8</div>
+    </div>
+    <div class="card half">
+      <div class="label">跨 hyperscaler 互持</div>
+      <div class="value" style="font-size:18px">MSFT-OAI · AMZN-ANT</div>
+      <div class="note">已有 MSFT-OpenAI / AMZN-Anthropic / GOOGL-Anthropic 雏形。极端版 = hyperscaler 之间互持 minority equity。属 L6 变种</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:48px">双顶框架</h2>
+
+  <div class="grid">
+    <div class="card half" style="border-color:#000;border-width:2px">
+      <div class="label">顶 ①</div>
+      <div class="value" style="font-size:22px">Capex Spending 顶</div>
+      <div class="delta" style="margin-top:12px">量级顶 / 需求侧 / 基本面</div>
+      <div class="note" style="border-top:1px solid #000;padding-top:10px">
+        <strong>定义</strong>：hyperscaler 主动放缓 capex 指引<br>
+        <strong>触发信号</strong>：任一家首次下修全年指引 (Stage 3 信号枪)<br>
+        <strong>领先信号</strong>：财报"capital discipline"言论密度↑ · NVDA Q+1 订单增速放缓 · HBM/GPU lead time 缩短 · 电力 PPA 新签溢价回落<br>
+        <strong>当前状态</strong>：<span style="color:#FF3000;font-weight:700">没到顶</span> · MSFT/GOOG/META/AMZN/ORCL FY26 指引全在↑<br>
+        <strong>预计时点</strong>：2027-Q1?
+      </div>
+    </div>
+    <div class="card half" style="border-color:#FF3000;border-width:2px">
+      <div class="label" style="color:#FF3000">顶 ② · 关键</div>
+      <div class="value red" style="font-size:22px">Capex 融资顶</div>
+      <div class="delta" style="margin-top:12px">capacity 顶 / 资本市场承接力 / 流动性</div>
+      <div class="note" style="border-top:1px solid #FF3000;padding-top:10px">
+        <strong>定义</strong>：资本市场拒绝继续吸纳 hyperscaler 新融资<br>
+        <strong>触发信号</strong>：融资形态被迫切到 L6+ (主权 / 政府)<br>
+        <strong>领先信号</strong>：第二家 hyperscaler ATM 股价跌幅 &gt;15% · GOOG ATM Q3 执行率 &lt;40% 就停 · ORCL CDS &gt;200bp · 主权基金直接入股 hyperscaler<br>
+        <strong>当前状态</strong>：<span style="color:#FF3000;font-weight:700">L5 启动中</span> · ATM 范式刚开 · 距 L6 一步<br>
+        <strong>预计时点</strong>：2026-Q4 ~ 2027-Q1
+      </div>
+    </div>
+  </div>
+
+  <div class="callout red">
+    <h4>核心认知差</h4>
+    <p>
+      市场会把两个顶混为一谈："GOOG ATM 是因为 capex 到头了？"——<strong>错</strong>。
+      GOOG ATM 是因为<strong>融资容量在演化逼近顶</strong>，但 spending 还在加速。这是两个不同时钟。
+      <br><br>
+      <strong>融资顶通常先于 spending 顶 6-12 个月出现</strong>。融资被迫切走 (L5→L6→L7) 后，公司才被动放慢 spending = Stage 1.5 → Stage 2 → Stage 3 的传导链。
+      <br><br>
+      <strong>操作上要盯的不是 spending 顶，是融资顶</strong>——后者更便宜的退出时机。
+    </p>
+  </div>
+
+  <h3>历史类比：2000 年互联网泡沫</h3>
+  <div class="flex-row">
+    <div>
+      <div class="k">融资顶</div>
+      <div class="v" style="color:#FF3000">2000-Q3</div>
+      <div class="s">科技 IPO 配售 fail · 二级配股折价 &gt;30%</div>
+    </div>
+    <div>
+      <div class="k">Spending 顶</div>
+      <div class="v">2001-Q1</div>
+      <div class="s">Cisco / Nortel 首次下修订单指引</div>
+    </div>
+    <div>
+      <div class="k">时滞</div>
+      <div class="v">~6 个月</div>
+      <div class="s">融资顶领先 spending 顶</div>
+    </div>
+    <div>
+      <div class="k">类比成立度</div>
+      <div class="v">高</div>
+      <div class="s">形态同构 · 速度略慢于 2000</div>
+    </div>
+  </div>
+
+  <p style="margin-top:16px">
+    2000 年的"融资顶"信号也是融资形态被迫向更稀释方向推进：先是二级配股折价加深，再是高收益债市场关闭，最后是 VC 后期轮估值砍半。
+    AI 这次的对应物：ATM 范式启动 → 主权基金大额入股 → 政府担保。形态完全同构。
+  </p>
+
+  <h3>操作含义</h3>
+  <ul>
+    <li><strong>不要等 spending 顶</strong>：等 hyperscaler 自己下修指引时 (Stage 3)，AI 主题股价已经反映了 1-2 个季度。退出代价大</li>
+    <li><strong>盯融资顶领先指标</strong>：第二家 ATM 跟进 + 股价反应、ORCL CDS &gt;200bp、主权基金入股公告 — 任一触发都比 spending 顶早 6 个月</li>
+    <li><strong>从 L5 到 L6 的过渡是最敏感窗口</strong>：当前在 L5 启动阶段。L6 出现 (主权 / 政府) = 融资顶基本确认</li>
+    <li><strong>形态升级速度本身就是信号</strong>：FCF→L1 用了 ~12 个月，L1→L3 用了 ~12 个月，L3→L5 用了 ~6 个月。**形态升级加速 = 接近顶**</li>
+  </ul>
+
+  <div class="callout">
+    <h4>当前位置 · 一句话</h4>
+    <p>
+      Capex spending 仍在加速 (Stage 1.5 后段)，但 spending 的融资来源在<strong>快速向更稀释 / 更外部 / 更政府化的方向退化</strong> (L0 → L5)。
+      Spending 顶最早 2027-Q1 出现，<strong>融资顶可能 2026-Q4 就到</strong>（如果第二家 ATM + 主权基金入场）。
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 9: 推演逻辑 · 世界线 ============ -->
+<section class="tab" id="t9">
+  <h2>推演逻辑链 · 世界线分支</h2>
+  <p class="lead">
+    Tab 8 是"我们在哪里"，Tab 9 是"会去哪里"。
+    先拆推演的<strong>逻辑链</strong>（每一步的强度 + 可证伪点），再列<strong>六条世界线</strong>（概率 + falsification 信号 + 分支点）。
+    任何一步逻辑失效 → 不同世界线概率重排。
+  </p>
+
+  <h3>推演逻辑链<span class="tag">从观察到结论的 8 步</span></h3>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:30%">步骤</th><th style="width:45%">内容</th><th style="width:10%">强度</th><th style="width:10%">证据级</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><strong>观察</strong></td><td>6/2 GOOG 用 ATM 募 $80B，融资形态从债 → 股权</td><td class="num">硬</td><td class="num">A</td></tr>
+      <tr><td class="num">2</td><td><strong>第一推断</strong></td><td>ATM 出现两种解释：(a) 债市单一吞不下 $80B 量级 / (b) GOOG opportunistic 主动稀释。IG 债已被推到 40Y +165bp / 多币种 → 指向 (a) 主导</td><td class="num">中</td><td class="num">B</td></tr>
+      <tr><td class="num">3</td><td><strong>第二推断</strong>·核心假设</td><td>融资形态沿"风险/稀释递增"光谱<strong>单向演化</strong>（FCF→IG→HY→SPV→ABS→ATM→主权→政府→token）</td><td class="num red">中-高</td><td class="num">B</td></tr>
+      <tr><td class="num">4</td><td><strong>第三推断</strong></td><td>L5 (ATM) 吃不下时被迫切到 L6 (主权)，再到 L7 (政府)。主权/政府入场速度可能比预期快</td><td class="num">中</td><td class="num">B</td></tr>
+      <tr><td class="num">5</td><td><strong>第四推断</strong>·最强环</td><td>L5→L6→L7 这条路走完之前，capex spending 仍可继续（公司"找得到钱就继续花"是 hyperscaler 行为铁律）</td><td class="num">高</td><td class="num">A</td></tr>
+      <tr><td class="num">6</td><td><strong>第五推断</strong></td><td>L7 也撑不住时，hyperscaler 才被迫下修 capex = spending 顶</td><td class="num">高</td><td class="num">B</td></tr>
+      <tr><td class="num">7</td><td><strong>综合</strong></td><td>融资顶（L7 不够时点）领先 spending 顶（capex 下修）。时滞 6-12 个月</td><td class="num">高</td><td class="num">B</td></tr>
+      <tr><td class="num">8</td><td><strong>历史锚</strong></td><td>2000 年序列镜像：融资顶 (2000-Q3 IPO fail + 配股折价 &gt;30%) 领先 spending 顶 (2001-Q1 Cisco/Nortel 订单下修) ~6 个月</td><td class="num">中</td><td class="num">A</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h4>整条链的最弱环 vs 最强环</h4>
+    <p>
+      <strong>最弱环（步骤 3）</strong>：单向演化假设。MSFT 仍能发巨债不 ATM，AMZN 仍有现金可 spinoff 跳过 ATM。各家走不同路径 → 融资顶可能根本不出现，而是多路径并行延长。
+      <br><br>
+      <strong>最强环（步骤 5）</strong>：找得到钱就继续花。hyperscaler 怕"在 Mag-7 竞争中掉队" &gt; 怕"稀释 / 借贵债"。这条铁律是整链最稳的支撑。
+      <br><br>
+      <strong>整链可靠度</strong>：步骤 1-2-5-6-7-8 都是中-高强度，步骤 3-4 是中。**核心结论"融资顶领先 spending 顶"基本稳健，但时滞和顺序的具体路径可能多样**。
+    </p>
+  </div>
+
+  <h2 style="margin-top:48px">六条世界线</h2>
+  <p>按融资顶 vs spending 顶时点 + 谁先到分支。括号内为主观概率，合计 100%。</p>
+
+  <div class="legend">
+    <span><span class="dot r"></span>Bear · 顶在 6-18 月内</span>
+    <span><span class="dot g"></span>Bull · 顶被推迟到 2028+</span>
+    <span><span class="dot a"></span>政策化 / 结构变形</span>
+  </div>
+
+  <div class="grid">
+    <!-- 世界线 A -->
+    <div class="card full" style="border-color:#FF3000;border-width:2px">
+      <div class="label" style="color:#FF3000">世界线 A · 融资顶先（当前 thesis 暗含）</div>
+      <div class="value red" style="font-size:24px">35%</div>
+      <div class="note" style="border-top:1px solid #FF3000;padding-top:10px">
+        <strong>剧本</strong>：2026-Q4 第二家 hyperscaler 跟进 ATM（META 最可能：BS 最弱 + 已在大举发债）→ 2027-Q1 主权基金（SoftBank/PIF）直接入股 hyperscaler 母公司或 AI 子板块 → 2027-Q2-Q3 融资成本拉到 ROI 临界值之上，被动放缓 capex<br>
+        <strong>结局</strong>：AI 主题股价提前 6-12 个月反映，下行有秩序，类 2001 而非 2000-3 月<br>
+        <strong>Falsification</strong>：到 2027-Q2 仍无第二家 ATM 跟进 → 此线证伪
+      </div>
+    </div>
+
+    <!-- 世界线 B -->
+    <div class="card full" style="border-color:#FF3000;border-width:2px">
+      <div class="label" style="color:#FF3000">世界线 B · Spending 顶先（Hard Bear）</div>
+      <div class="value red" style="font-size:24px">20%</div>
+      <div class="note" style="border-top:1px solid #FF3000;padding-top:10px">
+        <strong>剧本</strong>：2026-Q4 OpenAI / Anthropic ARR 增速明显放缓（token 价格战 + 5% 利用率被揭穿）→ 2027-Q1 NVDA 订单首次未达预期 / Q+1 backlog 增速 &lt;10% → 2027-Q2 hyperscaler 主动下修 capex（ROI 失灵，先于融资窗口关闭）<br>
+        <strong>结局</strong>：崩塌更剧烈，融资市场反身性放大下行，类 2000 年 3 月<br>
+        <strong>Falsification</strong>：2026-Q4 财报季 ARR / 订单数据继续 beat → 此线证伪
+      </div>
+    </div>
+
+    <!-- 世界线 C -->
+    <div class="card full" style="border-color:#000;border-width:2px">
+      <div class="label">世界线 C · 双顶推迟（Bull）</div>
+      <div class="value" style="font-size:24px">20%</div>
+      <div class="note" style="border-top:1px solid #000;padding-top:10px">
+        <strong>剧本</strong>：OpenAI / Anthropic 持续兑现 ARR（2027 双双过 $100B ARR）→ Tokenization / 主权 / 政府工具全部上场，融资容量被"创造"→ Spending 持续到 2028-2029<br>
+        <strong>结局</strong>：超长周期，结构性 AI 板块跑赢 SPX 4-6 年。类 2003-2007 房地产周期延长版<br>
+        <strong>Falsification</strong>：OAI / Anthropic 任一融资轮估值下行 &gt;20% → 此线证伪
+      </div>
+    </div>
+
+    <!-- 世界线 D -->
+    <div class="card full" style="border-color:#000;border-width:2px;background:#F2F2F2">
+      <div class="label">世界线 D · 政府主导兜底（政策化）</div>
+      <div class="value" style="font-size:24px">15%</div>
+      <div class="note" style="border-top:1px solid #000;padding-top:10px">
+        <strong>剧本</strong>：美国把 AI 升级为国家安全议题，CHIPS Act → AI Act → 巨额政府入股 / DOE 担保上场。融资顶被国家信用兜住，spending 持续。但 hyperscaler 估值被"utility-like"化（低 multiple，regulated returns）<br>
+        <strong>结局</strong>：AI 不崩，但 hyperscaler equity 长期低 multiple，板块结构性熊（类电力公用事业转型期）<br>
+        <strong>Falsification</strong>：2027 中前无任何政府入股 / DOE 大额贷款公告 → 此线证伪
+      </div>
+    </div>
+
+    <!-- 世界线 E -->
+    <div class="card full" style="border-color:#FF3000;border-width:2px">
+      <div class="label" style="color:#FF3000">世界线 E · 反身性闪崩（Tail Risk）</div>
+      <div class="value red" style="font-size:24px">7%</div>
+      <div class="note" style="border-top:1px solid #FF3000;padding-top:10px">
+        <strong>剧本</strong>：某单点事件触发（Anthropic 估值轮 fail / OpenAI 内部分裂 / ORCL 大债招标失败 / 主权基金高位减持）→ 信用利差闪扩 + 股价闪崩 + 融资窗口关闭，1-2 个月内 cascade<br>
+        <strong>结局</strong>：sharp top，类 2000 年 3 月 NASDAQ 单月 -34%<br>
+        <strong>Falsification</strong>：触发事件未出现 → 持续观察。**最难证伪因为是 tail**
+      </div>
+    </div>
+
+    <!-- 世界线 F -->
+    <div class="card full" style="border-color:#000;border-width:2px;background:#F2F2F2">
+      <div class="label">世界线 F · L5 直接到 L8 跳跃（创新化解）</div>
+      <div class="value" style="font-size:24px">3%</div>
+      <div class="note" style="border-top:1px solid #000;padding-top:10px">
+        <strong>剧本</strong>：Tokenization / GPU RWA / DC REIT 成功大规模化 → 散户成为最后接盘方，capex 继续<br>
+        <strong>结局</strong>：spending 拉长但赔率最差。Mag-7 不一定崩，但散户 AI 主题产品（ETF / RWA 代币）崩<br>
+        <strong>Falsification</strong>：2027 底前无规模化 RWA 算力代币 / AI DC REIT IPO → 此线证伪
+      </div>
+    </div>
+  </div>
+
+  <div class="callout red">
+    <h4>概率分布的核心暗示</h4>
+    <ul>
+      <li><strong>A + B + E 合计 62%</strong> → 6-18 个月内某种形式的顶（融资顶 / spending 顶 / 闪崩）</li>
+      <li><strong>C + D + F 合计 38%</strong> → 周期被延长到 2028+（兑现 ROI / 政府兜底 / 散户接盘）</li>
+      <li><strong>任一情景下，capex spending 仍至少跑到 2026-Q4</strong> → 短期 1-2 季度 AI 主题不会立刻崩</li>
+      <li><strong>最高概率 A (35%) + 第二 B (20%)</strong> = 下行偏好情景下的双主线，注意监控信号优先级</li>
+    </ul>
+  </div>
+
+  <h3>分支点信号表<span class="tag red">触发即重排概率</span></h3>
+  <table>
+    <thead><tr><th>信号</th><th>触发条件</th><th>指向世界线</th><th>动作</th></tr></thead>
+    <tbody>
+      <tr><td>第二家 hyperscaler ATM</td><td>META / AMZN / MSFT 公告 ATM-style 股权稀释</td><td class="num red">A ↑</td><td>1 周内更新 tracker · A 概率 35% → 55%</td></tr>
+      <tr><td>OAI / Anthropic ARR 增速 &lt;30% YoY</td><td>Q4 财报季 / 透露增速</td><td class="num red">B ↑</td><td>减仓所有 AI infra 间接受益标的 · B 概率 20% → 40%</td></tr>
+      <tr><td>ARR beat + 估值轮 close at price</td><td>Anthropic $900B 轮按计划 close</td><td class="num">C ↑</td><td>暂缓减仓 · C 概率 20% → 35%</td></tr>
+      <tr><td>政府入股公告</td><td>DOE LPO 给 Stargate / Hyperion 大额贷款 / 担保</td><td class="num">D ↑</td><td>重估 hyperscaler multiple · D 概率 15% → 35%</td></tr>
+      <tr><td>ORCL 大债招标 cover &lt;2×</td><td>ORCL 2026-Q3-Q4 新发债订单簿覆盖不足</td><td class="num red">E ↑</td><td>立即降配 ORCL · E 概率 7% → 20%</td></tr>
+      <tr><td>GPU RWA 代币 TVL &gt;$1B</td><td>任一协议（Pendle / Plume / 新协议）</td><td class="num">F ↑</td><td>评估散户接盘端崩裂风险 · F 概率 3% → 12%</td></tr>
+      <tr><td>主权基金大额入股 hyperscaler 母公司</td><td>SoftBank / PIF / Mubadala 直接进 GOOGL / MSFT / META 股权</td><td class="num red">A→D ↑</td><td>融资顶基本确认 · 进入退出窗口</td></tr>
+      <tr><td>第三家 hyperscaler ATM</td><td>三家齐发 ATM</td><td class="num flag">范式确认</td><td>融资顶逼近 · 启动退出 timeline</td></tr>
+    </tbody>
+  </table>
+
+  <h3>操作含义</h3>
+  <ul>
+    <li><strong>当前优先级 1 信号</strong> = 第二家 hyperscaler ATM 跟进 (Tab 7 # 1 观察点)</li>
+    <li><strong>当前优先级 2 信号</strong> = ORCL 大债招标覆盖率 + ORCL CDS &gt;200bp 持续 4 周</li>
+    <li><strong>不要等 spending 顶</strong>：等 Stage 3 信号枪时 AI 主题股价已反映 1-2 季度</li>
+    <li><strong>盯融资顶的领先指标</strong>：A 线信号 + E 线 tail 信号一起监控</li>
+    <li><strong>形态升级速度本身是信号</strong>：FCF→L1 用了 ~12 月，L1→L3 用了 ~12 月，L3→L5 用了 ~6 月。**形态升级加速 = 接近顶**</li>
+  </ul>
+
+  <div class="callout">
+    <h4>方法论备注</h4>
+    <p>
+      世界线概率是<strong>主观先验</strong>，每个分支点信号触发后<strong>必须 Bayesian 更新</strong>。
+      不要把 6/2 的 thesis 当成 "事实"，把它当成 "概率分布的中心" — 信号到来时分布会偏移。
+      <strong>真正的失败模式</strong>不是预测错世界线，是信号触发后概率不更新 → 反身性陷入"我之前怎么说的"叙事锚定。
+      参考"叙事锚定"模式：上下文里讨论过的观点会自动加权污染后续分析。
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 10: 下修后传导 · Path X/Y/Z ============ -->
+<section class="tab" id="t10">
+  <h2>Capex 下修后的传导路径</h2>
+  <p class="lead">
+    Capex 下修（Stage 3 信号枪）<strong>不是终点，是新一轮 cascade 的起点</strong>。
+    传导分四阶段：直接 (T+0~1m) → 系统性违约 (T+1~3m) → <strong>三条分支 Path X/Y/Z (T+3~6m)</strong> → rotation 终局 (T+6~12m)。
+    最反直觉的是 Path X：hyperscaler 自己 capex 下修反而 FCF 恢复 → 短期受益（思科 03-05 模式）。
+  </p>
+
+  <h3>第一阶 · 直接受损<span class="tag">T+0 ~ T+1 月</span></h3>
+  <div class="tl-vertical">
+    <div class="tl-row">
+      <div class="date">T+0<span class="sub">下修当日</span></div>
+      <div class="heading">NVDA 订单直接砍</div>
+      <div class="body">Hyperscaler 占 NVDA DC 收入 ~50%。下修 capex → NVDA forward revenue 下修 → 半导体板块整体回撤。Q+1 backlog 增速 &lt;10% 是预演信号。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">T+1 周</div>
+      <div class="heading">算力上游链全部受损</div>
+      <div class="body">HBM (Hynix/Micron) · 光模块 (Lumentum/Coherent) · 电力 / 数据中心 · WFE 设备 (ASML/AMAT/LRCX/KLAC) 全线下修。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">T+1 月</div>
+      <div class="heading">AI labs 兜底叙事失灵</div>
+      <div class="body">OAI / Anthropic 一级估值下行 → 风投 AI 项目融资难度↑ → 二级 tender 折价加深 → 私募 AI 估值整体重定价。</div>
+    </div>
+  </div>
+
+  <h3>第二阶 · 系统性违约<span class="tag red">T+1 ~ T+3 月</span></h3>
+  <div class="tl-vertical">
+    <div class="tl-row">
+      <div class="date">T+1 月</div>
+      <div class="heading">Neocloud 利用率掉 → 违约第一波</div>
+      <div class="body">Hyperscaler 不再买算力 → $/GPU-hour 收入端崩 vs 12% 浮息债成本 → $7.5B 2026 到期墙第一波违约 → 某中型 neocloud 重组（CoreWeave / Crusoe / Lambda / Nebius 之一）。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">T+2 月</div>
+      <div class="heading">私募信贷反身循环</div>
+      <div class="body">Blue Owl / Apollo GPU 抵押贷违约 → LP 赎回潮加速（Q1 21.9%/40.7% 是预演）→ 私募信贷板块整体重定价 → 给所有 AI infra 滚债的公司断融。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">T+3 月</div>
+      <div class="heading">AI 主题 ETF 被动反映</div>
+      <div class="body">SOXX / SMH / AIQ / WCLD 全面下行。被动资金被迫减仓 = 二阶下行压力。</div>
+    </div>
+  </div>
+
+  <h3>第三阶 · 三条分支<span class="tag red">T+3 ~ T+6 月 · 决定路径</span></h3>
+
+  <div class="grid">
+    <div class="card full" style="border-color:#000;border-width:2px">
+      <div class="label">Path X · Hyperscaler 自己反而企稳</div>
+      <div class="value" style="font-size:24px">30%</div>
+      <div class="delta" style="margin-top:8px;color:#FF3000">最反直觉 · 思科 2003-2005 模式</div>
+      <div class="note" style="border-top:1px solid #000;padding-top:10px">
+        <strong>剧本</strong>：Capex 下修 → FCF 恢复 → 短期 EPS 改善 → hyperscaler 股价企稳甚至反弹<br>
+        <strong>对比 capex 链</strong>：hyperscaler 跑赢 NVDA / 设备链 / neocloud 30-50%<br>
+        <strong>认知差</strong>：市场会先把 hyperscaler 杀一遍（短期 supply shock + multiple compression），然后发现 capex 下修反而救了它们的 FCF。第二跌之后是企稳<br>
+        <strong>历史参照</strong>：Cisco 2003-2005、Oracle 同期都是 FCF 恢复型反弹
+      </div>
+    </div>
+
+    <div class="card full" style="border-color:#FF3000;border-width:2px">
+      <div class="label" style="color:#FF3000">Path Y · 全链条 cascade（类 2001）</div>
+      <div class="value red" style="font-size:24px">40%</div>
+      <div class="delta" style="margin-top:8px">最常见历史路径</div>
+      <div class="note" style="border-top:1px solid #FF3000;padding-top:10px">
+        <strong>剧本</strong>：NVDA 崩 → 半导体崩 → WFE 设备崩 → AI labs 崩 → 私募信贷崩 → 信用利差闪扩 + Mag-7 集中度 unwind 同时启动 → macro risk-off → SPX -20%+ → crypto / 高 β 同步崩<br>
+        <strong>速度</strong>：cascade 从首个 neocloud 违约到 SPX 触底通常 3-6 个月<br>
+        <strong>历史参照</strong>：2001 telecom 链（dark fiber + Cisco/Sun/Nortel）<br>
+        <strong>对我们最坏</strong>：crypto sleeve 高 β 同步崩
+      </div>
+    </div>
+
+    <div class="card full" style="border-color:#000;border-width:2px;background:#F2F2F2">
+      <div class="label">Path Z · Fed pivot 软着陆</div>
+      <div class="value" style="font-size:24px">30%</div>
+      <div class="delta" style="margin-top:8px">利率端对冲</div>
+      <div class="note" style="border-top:1px solid #000;padding-top:10px">
+        <strong>剧本</strong>：Macro 走弱 + 信用利差扩大 → Fed 降息预期升温 → 长债 yield 下行 → 利率敏感板块（REIT / 公用事业 / 高股息）受益 → 估值压缩被利率下行部分对冲 → AI 主题 grinding lower 而非崩盘<br>
+        <strong>关键变量</strong>：Fed 反应速度。慢 → Path Y；快 → Path Z<br>
+        <strong>历史参照</strong>：2019 yield curve 倒挂后 Fed 转 dovish 那一波
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h4>哪条 Path 真发生取决于 4 个变量</h4>
+    <table style="margin-top:8px">
+      <thead><tr><th>变量</th><th>偏向</th></tr></thead>
+      <tbody>
+        <tr><td>Fed 反应速度</td><td>快 → Path Z · 慢 → Path Y</td></tr>
+        <tr><td>AI labs ARR 兑现度</td><td>兑现 → Path X · 失灵 → Path Y</td></tr>
+        <tr><td>私募信贷板块去杠杆速度</td><td>快崩 → Path Y · 缓 → Path X</td></tr>
+        <tr><td>集中度 unwind 是否同步</td><td>同步 → Path Y · 分散 → Path X</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>第四阶 · 终局<span class="tag">T+6 ~ T+12 月</span></h3>
+  <div class="callout red">
+    <h4>资金 rotation 完成</h4>
+    <ul>
+      <li><strong>流出</strong>：AI 主题 / hyperscaler / 高 multiple growth</li>
+      <li><strong>流入 (a)</strong>：防御板块（utilities / staples / 高股息）</li>
+      <li><strong>流入 (b)</strong>：价值股 + 能源 + 大宗商品</li>
+      <li><strong>流入 (c)</strong>：现金 + 长债 + 黄金</li>
+      <li><strong>流入 (d)</strong>：港股 / A 股（脱钩 + 估值低 + 类 cash sleeve）</li>
+    </ul>
+  </div>
+
+  <h3>2001-2003 历史镜像<span class="tag">类比时间线</span></h3>
+  <div class="tl-vertical">
+    <div class="tl-row major">
+      <div class="date">2000-03</div>
+      <div class="heading">NASDAQ 顶</div>
+      <div class="body">融资顶 (IPO fail + 配股折价 &gt;30%) 已领先 6 个月在 2000-Q3 出现。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">2001-Q1</div>
+      <div class="heading">Cisco / Sun / Nortel capex 下修</div>
+      <div class="body">现代对应 = hyperscaler capex 下修。Stage 3 信号枪。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">2001 全年</div>
+      <div class="heading">Telecom / 设备链全面违约</div>
+      <div class="body">Dark fiber 泡沫 = 当代 neocloud 类比。系统性违约 cascade。</div>
+    </div>
+    <div class="tl-row">
+      <div class="date">2002</div>
+      <div class="heading">资金 rotation</div>
+      <div class="body">流向 commodities / financials / 价值股。SPX -23%（2002 全年）。</div>
+    </div>
+    <div class="tl-row major">
+      <div class="date">2003</div>
+      <div class="heading">FCF 恢复型公司反弹</div>
+      <div class="body">Cisco / Oracle 等 capex 削减后 FCF 改善的反弹 50-80%。**真正赢家是接盘破产光纤资产的人** (GOOG / AMZN / MSFT 从此开始建数据中心王国)。</div>
+    </div>
+  </div>
+
+  <h3>对我们的两点结论</h3>
+  <ol class="indicator-list">
+    <li>
+      <div class="heading">无论哪条 Path，crypto 都该减</div>
+      <div class="desc">Path X/Y/Z 三条路对 crypto sleeve 都是负面（risk-off），区别只是程度。Capex 下修信号到来前后是 crypto 减仓的硬窗口，特别是周期顶部头寸是首要减仓对象。</div>
+      <span class="watch">ACTION</span>Stage 3 触发即启动 crypto 减仓 50%+
+    </li>
+    <li>
+      <div class="heading">真正受益机会在 Path X 后段 + 2003 类比</div>
+      <div class="desc">现金 + 防御板块 + 港股 / A 股脱钩 + 能源链。神华 / 海尔 H / BWXT / OKLO / NVTS / VRM 已在观察名单。<strong>不要在 capex 下修信号到来前重仓</strong>——等 Stage 3 信号枪触发再分批建仓，参考 2003 反弹时点。</div>
+      <span class="watch">ACTION</span>Stage 3 触发 + 6 个月内分批建仓防御 + 能源链
+    </li>
+    <li>
+      <div class="heading">认知差：hyperscaler 自己可能跑赢 capex 链</div>
+      <div class="desc">市场习惯把 hyperscaler 和 AI 主题混为一谈。但 Path X 概率 30%：capex 下修后 hyperscaler 自身 FCF 恢复跑赢 NVDA / 设备链 30-50%。如果未来要建 AI 链仓位，等 Stage 3 后 6 个月窗口配置 hyperscaler 优于配置 capex 上游。</div>
+      <span class="watch">WATCH</span>Stage 3 后观察 hyperscaler vs NVDA 相对强度
+    </li>
+  </ol>
+
+  <div class="callout">
+    <h4>一句话</h4>
+    <p>
+      Capex 下修不是终点，是新一轮 cascade 的起点。<strong>Path Y (类 2001 cascade) 概率最高 40%，但 Path X (hyperscaler 自己 muddle through) 是最反直觉的认知差</strong>——市场会先把 hyperscaler 杀一遍，然后发现 capex 下修反而救了它们。
+    </p>
+  </div>
+</section>
+
+<div class="footer">
+  <div>SCOPE · MSFT / GOOG / META / AMZN / ORCL / NEOCLOUDS / PRIVATE AI · 不构成投资建议</div>
+  <div>SWISS MINIMALIST · v1.7 · 2026-06-05</div>
+</div>
+
+<div style="margin-top:64px;padding-top:48px;border-top:4px solid #000">
+  <h2 style="font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:24px">留言</h2>
+  <div class="giscus"></div>
+  <script src="https://giscus.app/client.js"
+    data-repo="June911/personal-site"
+    data-repo-id="R_kgDORNjR9Q"
+    data-category="General"
+    data-category-id="DIC_kwDORNjR9c4C2TU2"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+  </script>
+</div>
+
+</div>
+
+<script>
+const tabs = document.querySelectorAll('nav.tabs button');
+const sections = document.querySelectorAll('section.tab');
+function setTab(id){
+  tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  sections.forEach(s => s.classList.toggle('active', s.id === id));
+  if(history.replaceState) history.replaceState(null,'','#'+id);
+}
+tabs.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+const initial = (location.hash || '#t1').slice(1);
+if(document.getElementById(initial)) setTab(initial);
+</script>
+
+</body>
+</html>
