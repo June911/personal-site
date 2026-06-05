@@ -1,0 +1,34 @@
+date,indicator,value,unit,regime,source,notes
+2025-09,orcl_5y_cds,139,bp,baseline,bondblox,9-10 月震荡区间下沿
+2025-10,orcl_5y_cds,160,bp,rising,bondblox,Meta Hyperion JV 公告后
+2025-12,orcl_5y_cds,174.9,bp,breakout,bondblox,突破 2008-09 高点的开端
+2026-01,orcl_5y_cds,180,bp,rising,bondblox,持续上行
+2026-03-27,orcl_5y_cds,185,bp,rising,Bloomberg,AI debt fears 报道
+2026-05-14,orcl_5y_cds,175,bp,plateau,本 tracker v1,首版 baseline (5/14)
+2026-06-04,orcl_5y_cds,198.18,bp,record,thetradable,⚡ 创纪录新高 超 2008 峰值 197.8bp · 距 Stage 2 触发(>200bp) 仅 2bp
+2022-06,hy_oas,600,bp,stressed,FRED BAMLH0A0HYM2,2022 加息周期峰值参考
+2024-12,hy_oas,295,bp,tight,FRED BAMLH0A0HYM2,
+2025-06,hy_oas,310,bp,tight,FRED BAMLH0A0HYM2,
+2026-05,hy_oas,272,bp,very_tight,FRED BAMLH0A0HYM2,历史极紧水平 无 panic 信号
+2026-06-04,hy_oas,272,bp,very_tight,FRED BAMLH0A0HYM2,软银 -11% 当日未走阔
+2026-YTD,rsp_spy_ratio,-1.57,pp,sp_leading,portfolioslab,SPY +11.69% vs RSP +10.12% YTD 2026 · Mag-7 集中度仍加深
+2026-06-04,rsp_spy_ratio,-1.57,pp,sp_leading,247wallst,Tech sector 35% SPX 占比 · 集中度 unwind 未启动
+2024-Q1,corecweave_yield,8.5,pct,baseline,FRED HY index,首发债参考
+2025-09,coreweave_2030_yield,9.25,pct,rising,bondblox,2030 到期 HY 债
+2026-Q1,coreweave_2031_yield,9.75,pct,elevated,本 tracker,2031 到期 HY 债 7Y
+2026-06-04,btc_price,63649,usd,weak,blockchainreporter,周跌 -13% · 持续 ETF outflow
+2026-05-25,btc_etf_flow_streak,0,days,positive,coinglass,
+2026-06-04,btc_etf_flow_streak,11,days,outflow,coinglass,11 日连续流出 ($1.5B+ 累计 liquidated)
+2026-06-04,btc_funding_rate,10,pct_apy,leveraged_long,coinglass,leveraged 多头未清算 · 仍赌反弹
+2025-Q4,blue_owl_redemption_pct,5,pct_cap,normal,industry,正常赎回水位 (5% cap)
+2026-Q1,blue_owl_fund1_redemption,21.9,pct_cap,stressed,Blue Owl filings,远超 5% cap = 私募信贷端去杠杆早期
+2026-Q1,blue_owl_fund2_redemption,40.7,pct_cap,stressed,Blue Owl filings,
+2025-09,h100_neocloud_rental,2.43,usd_per_hr,baseline,industry,
+2026-03,h100_neocloud_rental,2.50,usd_per_hr,stable,industry,
+2026-03,h100_spot_rental,1.38,usd_per_hr,weak,industry,从峰值 -60%
+2026-Q2,b200_avg_rental,4.96,usd_per_hr,emerging,industry,$4.40-6.00 区间月波
+2026-04,enterprise_gpu_util,5,pct,low,VentureBeat,95% 算力费等于送给云厂 · ROI 反指
+2025-12,sb_market_cap_jpy_trillion,40,jpy_trillion,baseline,SoftBank reports,
+2026-06-02,sb_market_cap_jpy_trillion,53,jpy_trillion,peak,Forbes,孙正义身家 $100.7B 亚洲首富
+2026-06-04,sb_market_cap_jpy_trillion,42.14,jpy_trillion,crash,Bitget,3 日 -18% 暴跌
+2026-06-04,son_net_worth_usd_b,87.1,usd_b,crash,Bitget,-$13.2B 单日 · 落后 Ambani/Adani

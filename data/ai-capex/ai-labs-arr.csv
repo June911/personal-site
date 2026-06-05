@@ -1,0 +1,15 @@
+date,company,arr_usd_b,valuation_post_usd_b,event,source
+2024-01,Anthropic,0.087,,run rate 起步,
+2024-06,Anthropic,0.5,,,
+2024-12,Anthropic,1,,Series E 后,
+2025-06,Anthropic,4,,,
+2025-12,Anthropic,9,,,
+2026-02,Anthropic,14,380,Series G 披露,
+2026-03,Anthropic,19,380,,
+2026-05,Anthropic,47,965,Series H close $65B,Anthropic.com news/series-h
+2024-12,OpenAI,4,157,,
+2025-06,OpenAI,10,300,,
+2025-12,OpenAI,12,500,二级 tender $500B,
+2026-02,OpenAI,15,852,初闭 $110B,
+2026-04,OpenAI,18,852,扩闭 $122B 终值,Bloomberg 3/31
+2026-05,OpenAI,20,852,confidential S-1,CNBC 5/22

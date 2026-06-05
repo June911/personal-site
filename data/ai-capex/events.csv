@@ -1,0 +1,32 @@
+date,category,actor,event,amount_usd_b,valuation_usd_b,notes
+2024-Q3,milestone,Hyperscaler,Capex 全面起飞 仍 FCF 全覆盖,,, FCF/Capex 临界点
+2025-Q1,milestone,META,Q1 Capex/FCF 突破 1.6×,,, FCF 首次不再覆盖 capex 季度口径
+2025-09-24,debt,ORCL,$18B 六档 5/7/10/20/30/40Y · 40Y +165bp UST,18,,40Y 期限拉到极限
+2025-09,vendor_finance,NVDA,公开包销 CoreWeave $6.3B + Lambda $1.5B,7.8,,产业链兜底结构开始
+2025-10,debt,META,$30B 六档 订单 $125B 史上最大企业债之一,30,,首次大规模发债 Stage 1.5 入口
+2025-10,off_balance,Meta+BlueOwl,Hyperion JV $27B A+ debt (Blue Owl 80%/Meta 20%),27,,直接诱发 META CDS 创纪录
+2025-12,cds,ORCL,5Y CDS 突破 174.9bp,,, 2008-09 金融危机以来开端 (后续 6 月触及 198.18bp 创纪录)
+2026-06,cds,ORCL,5Y CDS 触及 198.18bp,,, 创纪录新高 超 2008-09 峰值 197.8bp · 距 Stage 2 触发(>200bp) 仅 2bp
+2026-01-26,sovereign,UAE+G42,Stargate UAE 公告 $30B+ Q3 2026 完工,30,,Khazna Data Centres + G42 + OAI + ORCL + NVDA + Cisco + SoftBank
+2026-02,debt,GOOG,$20B 七档 + 多币种总计 $30B+,30,,50Y +95bp UST · CHF/GBP
+2026-02-09,debt,GOOG,$20B IG 七档,20,,50Y +95bp UST
+2026-02-12,primary,Anthropic,Series G $30B @ $380B (ARR $14B 披露),30,380,Series G 首次披露 ARR
+2026-02-18,sovereign,Humain(PIF),$3B 入 xAI,3,,PIF 通过 Humain 间接进入 AI infra
+2026-02-27,primary,OpenAI,初闭 Series ? $110B,110,852,历史最大单一私募融资 初版
+2026-03-10,debt,ORCL,FY26 capex 指引 $35B → $50B (+43%),,,RPO $553B (+438% YoY)
+2026-03-31,primary,OpenAI,终闭 $122B @ $852B (SoftBank $30B + AMZN $50B + NVDA $30B),122,852,三方 strategic 锁仓
+2026-04-01,ipo_prep,SpaceX,提交 confidential S-1,,,距 6/12 IPO ~10 周
+2026-04-29,quarterly,Hyperscaler,Q1 2026 capex 指引上修 MSFT/META/AMZN/GOOG,,,MSFT FY26 ~$190B / AMZN TTM FCF $25.9B→$1.2B
+2026-04-30,debt,META,$25B 六档 订单 $96B,25,,溢价高于 10 月那轮
+2026-04-30,primary,Anthropic,在融初期 ~$50B@$900B 传闻,,900,最终 5/28 扩大
+2026-05-04,strategic,Anthropic+OAI,同日 PE-funded JV (零交叉投资人),11.5,,Anth $1.5B + OAI $10B Dev Co · 双寡头终局押注
+2026-05-04,strategic,Anthropic+SpaceX,Colossus 1 全量租约 220K GPU 300MW,,,$4-7B/年 · 资本套利 私募→Anth→take-or-pay→SpaceX IPO 估值
+2026-05-20,ipo_prep,SpaceX,公开 S-1 NASDAQ 6/12 目标,,1770,目标 $1.77T 估值 ($135/股 × 555.6M 股)
+2026-05-22,ipo_prep,OpenAI,confidential S-1 提交,,,目标 9 月 IPO &gt;$1T
+2026-05-28,primary,Anthropic,Series H $65B @ $965B 超 OAI,65,965,ARR $14B → $47B 3.5 月 +236%
+2026-06-01,ipo_prep,Anthropic,confidential S-1 提交,,,目标 10 月 IPO
+2026-06-02,atm,GOOG,$80B 增发 (BRK $10B + 承销 $30B + ATM $40B Q3),80,,十年净回购公司首次大规模股权稀释 L5 启动
+2026-06-04,market_reaction,SoftBank,股价 -11% 单日 (孙正义 -$13.2B 身家 $87.1B),,,有息债务 $104B · OAI 占 SoftBank 组合 30% (S&P 估算) / OAI 累计 $64.6B = 13% 股权 · listed leveraged holdco L6 内部分裂首信号
+2026-06-12,ipo,SpaceX,IPO Day NASDAQ 发行价 $135 / 555.6M 股 / 募 $75B,,1770,融资顶第一个市场测试 · 马斯克 82% 投票权
+2026-09,ipo,OpenAI,IPO 目标 &gt;$1T,,1000,第二个 mega IPO
+2026-10,ipo,Anthropic,IPO 目标 ~$1T+,,1000,第三个 mega IPO 最后市场承接力测试
