@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 周期监控 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ===== AI Cycle specific ===== */
+.dashboard { max-width: 1440px; margin: 0 auto; padding: 20px; }
+
+/* Stat cards row */
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card { background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); position: relative; }
+.stat-card .label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 6px; }
+.stat-card .val { font-family: var(--mono); font-size: 24px; font-weight: 900; line-height: 1.2; }
+.stat-card .sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.stat-card .chg { font-size: 11px; font-weight: 700; margin-top: 4px; }
+.stat-card .chg.up { color: var(--green); }
+.stat-card .chg.dn { color: #e54545; }
+.stat-card .chg.warn { color: var(--yellow); }
+
+/* Phase indicator */
+.phase-strip { display: flex; align-items: stretch; margin-bottom: 24px; border: var(--border-w) solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.phase { flex: 1; padding: 14px 16px; text-align: center; position: relative; transition: all .2s; }
+.phase .ph-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
+.phase .ph-desc { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.phase.active { background: rgba(240,192,32,.08); }
+.phase.active .ph-label { color: var(--yellow); }
+.phase.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--yellow); }
+.phase.done { background: rgba(52,211,153,.04); }
+.phase.done .ph-label { color: var(--green); opacity: .7; }
+
+/* Analogy bar */
+.analogy { background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow); }
+.analogy-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+.timeline-bar { position: relative; height: 48px; background: var(--bg3); border-radius: var(--radius); border: 2px solid var(--border); overflow: visible; }
+.tl-fill { position: absolute; top: 0; left: 0; bottom: 0; border-radius: var(--radius) 0 0 var(--radius); }
+.tl-marker { position: absolute; top: -8px; bottom: -8px; width: 4px; border-radius: 2px; transform: translateX(-50%); }
+.tl-label { position: absolute; bottom: -22px; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--text3); white-space: nowrap; }
+.tl-label-top { position: absolute; top: -22px; transform: translateX(-50%); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.tl-year { position: absolute; top: 50%; transform: translate(-50%,-50%); font-family: var(--mono); font-size: 11px; color: var(--text3); font-weight: 700; }
+.tl-zone { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); opacity: .6; }
+
+/* Chart section */
+.chart-section { background: var(--bg2); border: var(--border-w) solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+.chart-section .title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.chart-section .subtitle { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
+.chart-wrap { position: relative; }
+.chart-wrap.h320 { height: 320px; }
+.chart-wrap.h260 { height: 260px; }
+.chart-wrap.h200 { height: 200px; }
+
+/* Monitor table */
+.monitor-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.monitor-table th { text-align: left; padding: 10px 12px; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; border-bottom: 2px solid var(--border); }
+.monitor-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.06); vertical-align: top; }
+.monitor-table tr:last-child td { border-bottom: none; }
+.monitor-table .indicator-name { font-weight: 700; color: var(--text); }
+.monitor-table .signal { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.monitor-table .signal.green { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,.4); }
+.monitor-table .signal.yellow { background: var(--yellow); box-shadow: 0 0 6px rgba(240,192,32,.4); }
+.monitor-table .signal.red { background: var(--red); box-shadow: 0 0 6px rgba(208,32,32,.4); }
+
+/* Responsive */
+/* Debt pyramid */
+.pyramid { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.pyramid-layer { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,.06); width: 100%; }
+.pyramid-layer:last-child { border-bottom: none; }
+.pyramid-bar { height: 10px; border-radius: 4px; min-width: 20px; }
+.pyramid-name { font-size: 12px; font-weight: 700; width: 180px; flex-shrink: 0; }
+.pyramid-detail { font-size: 11px; color: var(--text3); flex: 1; text-align: right; }
+.pyramid-amount { font-family: var(--mono); font-size: 14px; font-weight: 900; width: 80px; text-align: right; flex-shrink: 0; }
+
+@media (max-width: 1000px) {
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+  .phase-strip { flex-direction: column; }
+  .g2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="dash-nav">
+  <div class="dash-nav-inner">
+    <a href="../index.html" class="dash-nav-logo">
+      <div class="nav-shapes">
+        <div class="shape-circle"></div>
+        <div class="shape-square"></div>
+        <div class="shape-triangle"></div>
+      </div>
+      <span class="nav-title">june</span>
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="btc.html">BTC</a></li>
+      <li><a href="eth-valuation.html">ETH</a></li>
+      <li><a href="ai-cycle.html" class="active">AI 周期</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="dashboard">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>AI 周期监控</h1>
+      <div class="page-header-sub">资本开支 vs 收入差距 / 需求侧 / 采用率 / 算力定价</div>
+    </div>
+    <div class="page-header-right">
+      <div class="header-metric">
+        <div class="label">四大 CapEx 指引</div>
+        <div class="value" style="color:var(--red)">$635B+</div>
+      </div>
+      <div class="header-metric">
+        <div class="label">互联网类比</div>
+        <div class="value" style="color:var(--yellow)">~1997</div>
+      </div>
+      <div class="verdict-badge" style="border-color:var(--yellow); color:var(--yellow)">泡沫膨胀中</div>
+    </div>
+  </div>
+
+  <!-- Stat Cards Row 1 -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="label">CapEx / 运营现金流</div>
+      <div class="val" style="color:var(--red)">~90%</div>
+      <div class="sub">10 年均值: 40%</div>
+      <div class="chg warn">2.25 倍历史水平</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">AI 有息债务</div>
+      <div class="val" style="color:var(--red)">$3,000B+</div>
+      <div class="sub">年利息 >$200B</div>
+      <div class="chg dn">+ 类债务 CapEx $5,000B+</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">私募信贷 ICR</div>
+      <div class="val" style="color:var(--red)">1.59x</div>
+      <div class="sub">已破 2.0x 红线</div>
+      <div class="chg dn">逼近 1.5x 危机阈值</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">应用 / 卖铲收入比</div>
+      <div class="val" style="color:var(--orange)">23%</div>
+      <div class="sub">$370B / $1,500B</div>
+      <div class="chg warn">价值未传导到应用层</div>
+    </div>
+  </div>
+
+  <!-- Stat Cards Row 2 -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="label">NVDA 数据中心 YoY</div>
+      <div class="val" style="color:var(--green)">+75%</div>
+      <div class="sub">Q4 FY2026</div>
+      <div class="chg up">Blackwell 二次加速</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">ChatGPT 周活</div>
+      <div class="val">900M</div>
+      <div class="sub">智能手机渗透率 ~20%</div>
+      <div class="chg up">同比翻倍</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">H100 现货价</div>
+      <div class="val" style="color:var(--cyan)">$1.87</div>
+      <div class="sub">/小时 (vast.ai)</div>
+      <div class="chg dn">较峰值 -64%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">AI VC 融资 2025</div>
+      <div class="val" style="color:var(--orange)">$226B</div>
+      <div class="sub">占全部 VC 的 65%</div>
+      <div class="chg warn">同比 ~2 倍</div>
+    </div>
+  </div>
+
+  <!-- Phase Strip -->
+  <div class="phase-strip">
+    <div class="phase done">
+      <div class="ph-label">萌芽</div>
+      <div class="ph-desc">ChatGPT 发布</div>
+    </div>
+    <div class="phase done">
+      <div class="ph-label">确认</div>
+      <div class="ph-desc">NVDA +400% YoY</div>
+    </div>
+    <div class="phase active">
+      <div class="ph-label">狂热</div>
+      <div class="ph-desc">CapEx 军备竞赛</div>
+    </div>
+    <div class="phase">
+      <div class="ph-label">顶部</div>
+      <div class="ph-desc">收入不及预期？</div>
+    </div>
+    <div class="phase">
+      <div class="ph-label">回调</div>
+      <div class="ph-desc">削减 CapEx</div>
+    </div>
+    <div class="phase">
+      <div class="ph-label">成熟</div>
+      <div class="ph-desc">幸存者兑现</div>
+    </div>
+  </div>
+
+  <!-- Internet Analogy Timeline -->
+  <div class="analogy">
+    <div class="analogy-title">互联网类比时间线（AI 采用速度 2 倍于互联网）</div>
+    <div style="position:relative; padding: 28px 0 30px;">
+      <div class="timeline-bar">
+        <!-- Zones -->
+        <div class="tl-zone" style="left:0; width:25%; border-right:1px dashed rgba(255,255,255,.1);">早期</div>
+        <div class="tl-zone" style="left:25%; width:35%; border-right:1px dashed rgba(255,255,255,.1);">增长</div>
+        <div class="tl-zone" style="left:60%; width:15%; border-right:1px dashed rgba(255,255,255,.1);">顶部</div>
+        <div class="tl-zone" style="left:75%; width:25%;">泡沫后</div>
+        <!-- Fill to current position -->
+        <div class="tl-fill" style="width:42%; background: linear-gradient(90deg, rgba(52,211,153,.15) 0%, rgba(240,192,32,.2) 70%, rgba(240,192,32,.3) 100%);"></div>
+        <!-- Year markers -->
+        <div class="tl-year" style="left:5%;">1993</div>
+        <div class="tl-year" style="left:20%;">1996</div>
+        <div class="tl-year" style="left:40%;">1998</div>
+        <div class="tl-year" style="left:60%;">2000</div>
+        <div class="tl-year" style="left:80%;">2002</div>
+      </div>
+      <!-- Internet markers -->
+      <div class="tl-marker" style="left:20%; background:var(--green);">
+        <div class="tl-label">渗透率 20%</div>
+      </div>
+      <div class="tl-marker" style="left:60%; background:var(--red);">
+        <div class="tl-label" style="color:var(--red);">互联网泡沫顶峰</div>
+      </div>
+      <!-- AI position -->
+      <div class="tl-marker" style="left:42%; background:var(--yellow); width:6px; box-shadow: 0 0 12px rgba(240,192,32,.6);">
+        <div class="tl-label-top" style="color:var(--yellow);">AI 在这里 (2026)</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:24px; margin-top:12px; font-size:11px; color:var(--text3);">
+      <span><span style="color:var(--green);">&#9679;</span> 渗透率 20% = 互联网 1996 = AI 2026</span>
+      <span><span style="color:var(--yellow);">&#9679;</span> AI 速度约 2 倍：相当于 ~1997-98</span>
+      <span><span style="color:var(--red);">&#9679;</span> 若规律成立，潜在顶部 ~2028-29</span>
+    </div>
+  </div>
+
+  <!-- Debt Pyramid + Revenue Split -->
+  <div class="g g2">
+
+    <!-- Debt Pyramid -->
+    <div class="chart-section">
+      <div class="title">AI 债务金字塔</div>
+      <div class="subtitle">有息债务 ~$3,000B+，自上而下风险递增。泡沫破裂从底层开始级联</div>
+      <div class="pyramid">
+        <div class="pyramid-layer" style="background:rgba(52,211,153,.06);">
+          <div class="pyramid-name" style="color:var(--green);">第一层：巨头企业债</div>
+          <div style="flex:1; padding: 0 16px;">
+            <div class="pyramid-bar" style="width:100%; background:linear-gradient(90deg, rgba(52,211,153,.3), rgba(52,211,153,.6));"></div>
+            <div style="font-size:10px; color:var(--text3); margin-top:4px;">MSFT / GOOG / AMZN / META &mdash; 利率 ~5%，年利息 ~$75B</div>
+          </div>
+          <div class="pyramid-amount" style="color:var(--green);">$1,500B</div>
+        </div>
+        <div class="pyramid-layer" style="background:rgba(240,192,32,.06);">
+          <div class="pyramid-name" style="color:var(--yellow);">第二层：私募信贷</div>
+          <div style="flex:1; padding: 0 16px;">
+            <div class="pyramid-bar" style="width:80%; background:linear-gradient(90deg, rgba(240,192,32,.3), rgba(240,192,32,.6));"></div>
+            <div style="font-size:10px; color:var(--text3); margin-top:4px;">Blackstone / Apollo / KKR &mdash; 利率 ~10%，年利息 ~$120B &mdash; <strong style="color:var(--yellow);">ICR 1.59x</strong></div>
+          </div>
+          <div class="pyramid-amount" style="color:var(--yellow);">$1,200B</div>
+        </div>
+        <div class="pyramid-layer" style="background:rgba(208,32,32,.06);">
+          <div class="pyramid-name" style="color:var(--red);">第三层：算力二房东</div>
+          <div style="flex:1; padding: 0 16px;">
+            <div class="pyramid-bar" style="width:27%; background:linear-gradient(90deg, rgba(208,32,32,.3), rgba(208,32,32,.6));"></div>
+            <div style="font-size:10px; color:var(--text3); margin-top:4px;">CoreWeave / Lambda &mdash; 抵押 GPU 高息贷 &mdash; <strong style="color:var(--red);">利息 = 6x 经营利润</strong></div>
+          </div>
+          <div class="pyramid-amount" style="color:var(--red);">$350B</div>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:12px 0 0; font-size:11px; border-top:1px solid rgba(255,255,255,.06); margin-top:12px;">
+        <span style="color:var(--text3);">+ 类债务 CapEx 承诺 ~$5,000B+</span>
+        <span style="color:var(--red); font-weight:700;">年利息合计 >$200B</span>
+      </div>
+    </div>
+
+    <!-- Revenue Split -->
+    <div class="chart-section">
+      <div class="title">AI 收入结构（2025）</div>
+      <div class="subtitle">企业级 AI 市场 ~$1,500B，应用层仅占 23%</div>
+      <div class="chart-wrap h260">
+        <canvas id="revSplitChart"></canvas>
+      </div>
+      <div style="margin-top:12px; font-size:11px; color:var(--text3); line-height:1.7;">
+        <div><span style="color:var(--red);">&#9679;</span> 仅 6% 企业通过 AI 实现显著商业化（EBIT 贡献 >5%）&mdash; McKinsey</div>
+        <div><span style="color:var(--red);">&#9679;</span> 大多数企业 AI 投入 ROI 为零 &mdash; MIT 2025</div>
+        <div><span style="color:var(--green);">&#9679;</span> 亮点：Cursor $10B ARR / Midjourney $5B ARR / Manus $1B ARR</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Charts Row -->
+  <div class="g g2">
+
+    <!-- NVDA Data Center Revenue -->
+    <div class="chart-section">
+      <div class="title">NVDA 数据中心收入 & 增速</div>
+      <div class="subtitle">季度收入（$B）+ 同比增速叠加</div>
+      <div class="chart-wrap h320">
+        <canvas id="nvdaChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Hyperscaler CapEx -->
+    <div class="chart-section">
+      <div class="title">四大 Hyperscaler 季度 CapEx</div>
+      <div class="subtitle">MSFT + GOOG + AMZN + META 合计资本开支（$B）</div>
+      <div class="chart-wrap h320">
+        <canvas id="capexChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="g g2">
+
+    <!-- AI Adoption -->
+    <div class="chart-section">
+      <div class="title">ChatGPT 月访问量</div>
+      <div class="subtitle">Similarweb 数据，单位：十亿次/月</div>
+      <div class="chart-wrap h260">
+        <canvas id="adoptionChart"></canvas>
+      </div>
+    </div>
+
+    <!-- GPU Pricing -->
+    <div class="chart-section">
+      <div class="title">H100 GPU 现货价格趋势</div>
+      <div class="subtitle">每小时租赁价（$/hr），vast.ai 市场</div>
+      <div class="chart-wrap h260">
+        <canvas id="gpuChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Monitor Table -->
+  <div class="chart-section">
+    <div class="title">信号仪表盘</div>
+    <div class="subtitle">各指标当前状态及下一步关注点</div>
+    <table class="monitor-table">
+      <thead>
+        <tr>
+          <th>指标</th>
+          <th>信号</th>
+          <th>当前状态</th>
+          <th>关注要点</th>
+          <th>下次更新</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="indicator-name">CapEx / 收入差距</td>
+          <td><span class="signal yellow"></span><span class="b b-y">扩大中</span></td>
+          <td>CapEx 指引 ~$635B，AI 收入远低于此。OCF 占比 90% vs 历史 40%</td>
+          <td>任一巨头削减 CapEx 指引 = 早期破裂信号</td>
+          <td>Q1 2026 财报（4-5 月）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">NVDA 数据中心增速</td>
+          <td><span class="signal green"></span><span class="b b-g">二次加速</span></td>
+          <td>Q4 FY26: +75% YoY ($62.3B)，Blackwell 驱动第二波</td>
+          <td>增速 &lt;50% = 需求见顶；&lt;30% = 峰值信号</td>
+          <td>Q1 FY27（2026.05）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">AI 采用率</td>
+          <td><span class="signal green"></span><span class="b b-g">加速中</span></td>
+          <td>周活 9 亿，月访问 57 亿（YoY +122%），智能手机渗透率 20%</td>
+          <td>月访问增速 &lt;50% YoY = 减速；周活停滞</td>
+          <td>每月（DemandSage）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">GPU 现货价格</td>
+          <td><span class="signal yellow"></span><span class="b b-y">供过于求</span></td>
+          <td>H100 现货 $1.87/hr（较峰值 $8 下跌 64%）。2026 初小幅反弹</td>
+          <td>&lt;$1/hr = 严重过剩；&gt;$4/hr = 供不应求（利好基建）</td>
+          <td>每月（GetDeploying）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">AI VC 融资</td>
+          <td><span class="signal red"></span><span class="b b-r">过热</span></td>
+          <td>2025 年 $226B（同比 ~2 倍），占全部 VC 的 65%。大额轮次占 79%</td>
+          <td>VC 缩减 = 早期信号；AI 创业公司大面积失败 = 晚期信号</td>
+          <td>季度（CB Insights）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">AI 估值倍数</td>
+          <td><span class="signal yellow"></span><span class="b b-y">偏高</span></td>
+          <td>LLM 厂商 65x EV/Revenue（Q1'26）。BOTZ P/E ~29x</td>
+          <td>收入增长中倍数压缩 = 健康；倍数继续扩张 = 泡沫加剧</td>
+          <td>季度（Finro / StockAnalysis）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">私募信贷 ICR</td>
+          <td><span class="signal red"></span><span class="b b-r">逼近危机</span></td>
+          <td>ICR 1.59x，已跌破 2.0x Covenant 红线。年利息 $120B+</td>
+          <td>&lt;1.5x = 危机阈值（违约连锁启动）；&lt;1.0x = 全面违约</td>
+          <td>季度/年度（Houlihan Lokey）</td>
+        </tr>
+        <tr>
+          <td class="indicator-name">应用/卖铲收入比</td>
+          <td><span class="signal red"></span><span class="b b-r">价值未传导</span></td>
+          <td>AI 应用软件 $370B / 总收入 $1,500B = 23%。应用层利润为负</td>
+          <td>&gt;30% = 商业化起步；&gt;50% = 健康。持续 &lt;25% = 泡沫缺乏支撑</td>
+          <td>年度（Gartner / 财报）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Key Takeaway -->
+  <div class="chart-section" style="border-left: 4px solid var(--yellow);">
+    <div class="title">综合判断</div>
+    <div style="font-size:14px; line-height:1.8; color:var(--text2); margin-top:8px;">
+      <strong style="color:var(--yellow);">泡沫在膨胀，但采用是真实的。</strong>
+      CapEx 与收入差距持续扩大（$635B+ 投入 vs AI 应用收入仅 $370B），类似互联网 1997-98 阶段。
+      AI 行业有息债务 $3,000B+，年利息 >$200B，而应用层利润仍为负——债务周期与商业化周期严重错配。
+      私募信贷 ICR 已跌至 1.59x（破 2.0x 红线），底层脆弱性持续积累。
+      <br><br>
+      <strong style="color:var(--text);">核心矛盾：</strong>当前营收增长全靠路径 2（渗透率提升），路径 1（新商业模式/新 TAM）尚未出现。路径 2 有天花板，路径 1 的到来时间不确定，而债务的指数增长是确定的。
+      <br>
+      <strong style="color:var(--green);">牛市情景：</strong>路径 1 出现（Agent 真正替代人工，产生新 TAM）+ 采用曲线支撑 2-3 年增长。
+      <br>
+      <strong style="color:var(--red);">熊市触发：</strong>流动性紧缩 → 算力二房东再融资困难 → 私募信贷 ICR 跌破 1.5x → 级联去杠杆。预估窗口：2027-28。
+      <br>
+      <strong style="color:var(--text3); font-size:12px;">「真正的技术革命和大规模投机可以同时存在」—— Bill Gurley</strong>
+    </div>
+  </div>
+
+  <!-- Data Sources -->
+  <div class="chart-section">
+    <div class="title">数据来源（均免费）</div>
+    <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:12px; margin-top:10px; font-size:12px;">
+      <div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">资本开支</div>
+        <div style="color:var(--text3);">SEC EDGAR XBRL API<br>Epoch AI Charts<br>Macrotrends</div>
+      </div>
+      <div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">NVDA 收入</div>
+        <div style="color:var(--text3);">NVIDIA IR<br>Bullfincher<br>yCharts</div>
+      </div>
+      <div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">采用率</div>
+        <div style="color:var(--text3);">DemandSage<br>Similarweb GenAI<br>MacroMicro</div>
+      </div>
+      <div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">GPU 定价</div>
+        <div style="color:var(--text3);">GetDeploying<br>vast.ai<br>ComputePrices</div>
+      </div>
+      <div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">AI VC 融资</div>
+        <div style="color:var(--text3);">CB Insights<br>Stanford HAI<br>KPMG Pulse</div>
+      </div>
+      <div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">估值倍数</div>
+        <div style="color:var(--text3);">StockAnalysis (BOTZ)<br>Finro Quarterly<br>Aventis Advisors</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="dash-footer">
+  数据截至 2026 年 3 月。季度指标来自最新财报。静态快照 &mdash; 每个财报季后更新。
+  <br><a href="../index.html">june</a>
+</footer>
+
+<script>
+// ===== Chart defaults =====
+Chart.defaults.color = '#666';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'Outfit','SF Mono',system-ui,sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+
+// ===== Revenue Split =====
+new Chart(document.getElementById('revSplitChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['基础设施/卖铲子 (NVDA等)', 'AI 应用软件', '广告优化 (META等)', '垂直应用 (Cursor/MJ等)'],
+    datasets: [{
+      data: [1150, 200, 100, 50],
+      backgroundColor: ['rgba(249,115,22,0.8)', 'rgba(52,211,153,0.8)', 'rgba(167,139,250,0.7)', 'rgba(34,211,238,0.7)'],
+      borderColor: ['#f97316', '#34d399', '#a78bfa', '#22d3ee'],
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: { position: 'right', labels: { font: { size: 11 }, padding: 12, color: '#999' } },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+            const pct = Math.round(ctx.raw / total * 100);
+            return `${ctx.label}: $${ctx.raw}B (${pct}%)`;
+          }
+        }
+      }
+    }
+  }
+});
+
+// ===== NVDA Data Center Revenue =====
+const nvdaLabels = ['Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26','Q2\'26','Q3\'26','Q4\'26'];
+const nvdaRevenue = [22.6, 26.3, 30.8, 35.6, 39.2, 41.1, 51.2, 62.3];
+const nvdaYoY = [427, 154, 112, 93, 73, 56, 66, 75];
+
+new Chart(document.getElementById('nvdaChart'), {
+  type: 'bar',
+  data: {
+    labels: nvdaLabels,
+    datasets: [
+      {
+        label: '数据中心收入 ($B)',
+        data: nvdaRevenue,
+        backgroundColor: nvdaRevenue.map((v,i) => {
+          const g = nvdaYoY[i];
+          if (g > 100) return 'rgba(52,211,153,0.7)';
+          if (g > 60) return 'rgba(240,192,32,0.7)';
+          return 'rgba(249,115,22,0.7)';
+        }),
+        borderColor: nvdaRevenue.map((v,i) => {
+          const g = nvdaYoY[i];
+          if (g > 100) return '#34d399';
+          if (g > 60) return '#F0C020';
+          return '#f97316';
+        }),
+        borderWidth: 2,
+        borderRadius: 2,
+        yAxisID: 'y'
+      },
+      {
+        label: '同比增速 %',
+        data: nvdaYoY,
+        type: 'line',
+        borderColor: '#ff6b9d',
+        backgroundColor: 'rgba(255,107,157,0.1)',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: '#ff6b9d',
+        pointBorderColor: '#1a1a1a',
+        pointBorderWidth: 2,
+        tension: 0.3,
+        fill: true,
+        yAxisID: 'y1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { position: 'top', align: 'end' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label.includes('增速')
+            ? `${ctx.dataset.label}: ${ctx.raw}%`
+            : `${ctx.dataset.label}: $${ctx.raw}B`
+        }
+      }
+    },
+    scales: {
+      y: {
+        position: 'left',
+        title: { display: true, text: '收入 ($B)', color: '#666' },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: { callback: v => '$'+v+'B' }
+      },
+      y1: {
+        position: 'right',
+        title: { display: true, text: '同比 %', color: '#666' },
+        grid: { drawOnChartArea: false },
+        ticks: { callback: v => v+'%' },
+        min: 0
+      }
+    }
+  }
+});
+
+// ===== Hyperscaler CapEx =====
+const capexLabels = ['Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26*'];
+const msftCapex = [16.8, 19.0, 20.0, 22.6, 21.4];
+const googCapex = [12.2, 13.2, 13.1, 14.3, 17.2];
+const amznCapex = [17.6, 20.3, 22.6, 26.3, 24.3];
+const metaCapex = [7.1, 8.5, 9.2, 14.8, 13.7];
+
+new Chart(document.getElementById('capexChart'), {
+  type: 'bar',
+  data: {
+    labels: capexLabels,
+    datasets: [
+      { label: 'MSFT', data: msftCapex, backgroundColor: 'rgba(16,64,192,0.8)', borderColor: '#1040C0', borderWidth: 2, borderRadius: 2 },
+      { label: 'GOOG', data: googCapex, backgroundColor: 'rgba(52,211,153,0.7)', borderColor: '#34d399', borderWidth: 2, borderRadius: 2 },
+      { label: 'AMZN', data: amznCapex, backgroundColor: 'rgba(249,115,22,0.7)', borderColor: '#f97316', borderWidth: 2, borderRadius: 2 },
+      { label: 'META', data: metaCapex, backgroundColor: 'rgba(167,139,250,0.7)', borderColor: '#a78bfa', borderWidth: 2, borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', align: 'end' },
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: $${ctx.raw}B` } }
+    },
+    scales: {
+      x: { stacked: true },
+      y: {
+        stacked: true,
+        ticks: { callback: v => '$'+v+'B' },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        title: { display: true, text: '季度 CapEx ($B)', color: '#666' }
+      }
+    }
+  }
+});
+
+// ===== ChatGPT Monthly Visits =====
+const visitLabels = ['1月\'25','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月','1月\'26'];
+const visits = [3.8, 3.5, 3.9, 4.2, 4.8, 5.4, 5.1, 5.2, 5.3, 5.8, 5.5, 5.5, 5.7];
+
+new Chart(document.getElementById('adoptionChart'), {
+  type: 'line',
+  data: {
+    labels: visitLabels,
+    datasets: [{
+      label: '月访问量 (十亿)',
+      data: visits,
+      borderColor: '#22d3ee',
+      backgroundColor: 'rgba(34,211,238,0.08)',
+      borderWidth: 2.5,
+      pointRadius: 4,
+      pointBackgroundColor: '#22d3ee',
+      pointBorderColor: '#1a1a1a',
+      pointBorderWidth: 2,
+      fill: true,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `${ctx.raw}B 次访问` } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => v+'B' },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        min: 2
+      }
+    }
+  }
+});
+
+// ===== GPU Spot Price =====
+const gpuLabels = ['Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26'];
+const gpuPrices = [8.0, 6.5, 4.8, 3.8, 3.2, 2.4, 1.9, 1.5, 1.87];
+
+new Chart(document.getElementById('gpuChart'), {
+  type: 'line',
+  data: {
+    labels: gpuLabels,
+    datasets: [{
+      label: 'H100 现货 ($/hr)',
+      data: gpuPrices,
+      borderColor: '#F0C020',
+      backgroundColor: function(ctx) {
+        const chart = ctx.chart;
+        const {ctx: c, chartArea} = chart;
+        if (!chartArea) return 'rgba(240,192,32,0.1)';
+        const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        gradient.addColorStop(0, 'rgba(208,32,32,0.15)');
+        gradient.addColorStop(0.5, 'rgba(240,192,32,0.1)');
+        gradient.addColorStop(1, 'rgba(52,211,153,0.1)');
+        return gradient;
+      },
+      borderWidth: 2.5,
+      pointRadius: 5,
+      pointBackgroundColor: gpuPrices.map(v => v > 4 ? '#D02020' : v > 2 ? '#F0C020' : '#34d399'),
+      pointBorderColor: '#1a1a1a',
+      pointBorderWidth: 2,
+      fill: true,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `$${ctx.raw}/小时` } }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => '$'+v },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        min: 0
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
