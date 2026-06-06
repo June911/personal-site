@@ -118,6 +118,10 @@ tr:hover td{background:#F2F2F2}
   .tl-progress,.tl-axis-mini{grid-template-columns:1fr 1fr;font-size:9px}
   .tl-progress .seg:nth-child(n+3){display:none}
 }
+/* ===== SVG Charts ===== */
+.svg-chart{margin:12px 0 32px;border:1px solid #000;background:#FFF;padding:12px 8px 8px}
+.svg-chart svg{display:block;width:100%;height:auto;font-family:'JetBrains Mono',monospace}
+.svg-chart .caption{font-size:11px;font-family:'JetBrains Mono',monospace;opacity:.65;padding:6px 8px 0;border-top:1px dashed #ccc;margin-top:8px}
 /* ===== Bar Chart ===== */
 .bar-chart{margin:16px 0 32px;font-family:'JetBrains Mono',monospace}
 .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:12px}
@@ -213,6 +217,18 @@ tr:hover td{background:#F2F2F2}
     <div class="bar-row"><span class="bar-label">2026-02</span><div class="bar-bg"><div class="bar-fill" style="width:29.7%">$14B</div></div></div>
     <div class="bar-row"><span class="bar-label">2026-03</span><div class="bar-bg"><div class="bar-fill" style="width:40.4%">$19B</div></div></div>
     <div class="bar-row"><span class="bar-label">2026-05</span><div class="bar-bg"><div class="bar-fill red" style="width:100%">$47B · Series H</div></div></div>
+  </div>
+
+  <h3>历史 Capex 汇总 2022-2026<span class="tag red">5 家合计 $162B → $760B</span></h3>
+  <p style="font-size:12px;opacity:.7">2024-2026 数据：<a href="../data/ai-capex/hyperscaler-capex.csv" style="color:#FF3000;text-decoration:underline">hyperscaler-capex.csv</a>；2022-2023 数据：SEC 10-K filings / <a href="https://platformonomics.com/2025/02/follow-the-capex-cloud-table-stakes-2024-retrospective/" style="color:#FF3000;text-decoration:underline">Platformonomics 历年 retrospective</a>。MSFT/ORCL 用 calendar year 近似（财年截 6 月/5 月）。</p>
+  <div class="svg-chart"><div id="chart-hist-capex"></div>
+    <div class="caption">5 家 hyperscaler 历史 capex 堆叠柱。2023→2024 翻倍，2025→2026 再翻倍。2022 vs 2026 = 4.8× 跳升。Bar 上方为年度合计 $B。</div>
+  </div>
+
+  <h3>Capex / OCF 比 (2024-2026)<span class="tag red">0.4× → 1.0+× · ORCL 2.13×</span></h3>
+  <p style="font-size:12px;opacity:.7">2024/2025：年度 capex / 年度 OCF（OCF = FCF + capex 反推自 <a href="../data/ai-capex/hyperscaler-capex.csv" style="color:#FF3000;text-decoration:underline">csv</a>）。2026：前瞻 capex 指引 / TTM OCF（Q1 2026 财报口径，AMZN/ORCL 直接 Tab 2 披露，MSFT/GOOG/META 按 TTM 估算）。1.0× = capex 已超过运营造血。</p>
+  <div class="svg-chart"><div id="chart-capex-ocf"></div>
+    <div class="caption">2024 平均 0.46× → 2025 0.62× → 2026 ~1.1× (剔除 ORCL)。ORCL 2026 直接 2.13× = capex 是 OCF 的两倍，差额必须从债 + 表外 + RPO 现金前置补。</div>
   </div>
 
   <h3>Hyperscaler Capex / FCF Ratio (2024-2026)<span class="tag red">0.7× → 4.5× / ORCL N/A</span></h3>
@@ -328,7 +344,13 @@ tr:hover td{background:#F2F2F2}
     <span>2027-Q3+?</span>
   </div>
 
-  <h3>事件时间线<span class="tag">PAST + FUTURE TRIGGERS</span></h3>
+  <h3>事件时间线 · 视觉版<span class="tag red">PAST + NOW + FUTURE</span></h3>
+  <p style="font-size:12px;opacity:.7">数据：<a href="../data/ai-capex/events.csv" style="color:#FF3000;text-decoration:underline">events.csv</a> · 时间窗 2025-09 ~ 2027-Q1 · 点大小 = 事件量级 / 颜色 = 类型</p>
+  <div class="svg-chart"><div id="chart-timeline"></div>
+    <div class="caption">从 STAGE 1.5 入口 (2025-10 META $30B debt) 到 STAGE 3 触发预测 (2027-Q1)。5 个月密集 5 个 mega-event 集中在 2026-Q2~Q4。红点 = 已记录的 IPO/ATM/CDS 信号；虚线 = 未发生。</div>
+  </div>
+
+  <h3>事件时间线 · 详细版<span class="tag">PAST + FUTURE TRIGGERS</span></h3>
   <div class="tl-vertical">
 
     <div class="tl-row future">
@@ -1679,6 +1701,226 @@ tr:hover td{background:#F2F2F2}
 </div>
 
 <script>
+// ===== Chart 1: 历史 Capex 汇总 (2022-2026 stacked bars) =====
+(function(){
+  const data = [
+    {year:'2022', MSFT:28, GOOG:31, META:32, AMZN:63, ORCL:4},
+    {year:'2023', MSFT:42, GOOG:32, META:28, AMZN:53, ORCL:7},
+    {year:'2024', MSFT:55, GOOG:52, META:40, AMZN:75, ORCL:7},
+    {year:'2025', MSFT:80, GOOG:75, META:72, AMZN:120, ORCL:21},
+    {year:'2026', MSFT:190, GOOG:185, META:135, AMZN:200, ORCL:50}
+  ];
+  const cos = ['MSFT','GOOG','META','AMZN','ORCL'];
+  const colors = {MSFT:'#000', GOOG:'#444', META:'#777', AMZN:'#AAA', ORCL:'#FF3000'};
+  const W=800, H=400, padL=60, padR=20, padT=24, padB=80;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  const maxVal=800;
+  const xCenter = i => padL + (i+0.5)*(plotW/data.length);
+  const yPos = v => padT + plotH - (v/maxVal)*plotH;
+  const barW = (plotW/data.length)*0.55;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
+  for(let v=0; v<=800; v+=200){
+    const y = yPos(v);
+    svg += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="${v===0?'#000':'#ddd'}" stroke-width="${v===0?1.5:1}" ${v===0?'':'stroke-dasharray="2,2"'}/>`;
+    svg += `<text x="${padL-8}" y="${y+4}" font-size="10" fill="#666" text-anchor="end">$${v}${v===maxVal?'B':''}</text>`;
+  }
+  data.forEach((d,i) => {
+    let yCum = yPos(0);
+    let total = 0;
+    cos.forEach(co => {
+      const v=d[co];
+      total += v;
+      const h=(v/maxVal)*plotH;
+      const y=yCum-h;
+      svg += `<rect x="${xCenter(i)-barW/2}" y="${y}" width="${barW}" height="${h}" fill="${colors[co]}" stroke="#FFF" stroke-width="0.5"/>`;
+      if(v >= 40){
+        svg += `<text x="${xCenter(i)}" y="${y+h/2+3}" font-size="9" fill="${co==='AMZN'?'#000':'#FFF'}" text-anchor="middle" font-weight="600">${co} ${v}</text>`;
+      }
+      yCum = y;
+    });
+    svg += `<text x="${xCenter(i)}" y="${yCum-6}" font-size="13" font-weight="700" text-anchor="middle">$${total}B</text>`;
+    svg += `<text x="${xCenter(i)}" y="${H-padB+20}" font-size="13" font-weight="700" text-anchor="middle">${d.year}</text>`;
+  });
+  // Legend
+  const legY = H-26;
+  cos.forEach((co, i) => {
+    const x = padL + i*((plotW)/cos.length);
+    svg += `<rect x="${x}" y="${legY-9}" width="12" height="12" fill="${colors[co]}"/>`;
+    svg += `<text x="${x+18}" y="${legY+1}" font-size="11" fill="#000">${co}</text>`;
+  });
+  svg += `</svg>`;
+  const el = document.getElementById('chart-hist-capex');
+  if(el) el.innerHTML = svg;
+})();
+
+// ===== Chart 2: Capex / OCF Ratio (grouped bars) =====
+(function(){
+  const data = [
+    {co:'MSFT', y2024:0.42, y2025:0.53, y2026:1.06},
+    {co:'GOOG', y2024:0.43, y2025:0.54, y2026:1.03},
+    {co:'META', y2024:0.42, y2025:0.59, y2026:1.04},
+    {co:'AMZN', y2024:0.66, y2025:0.82, y2026:1.35},
+    {co:'ORCL', y2024:0.37, y2025:0.64, y2026:2.13}
+  ];
+  const years = ['y2024','y2025','y2026'];
+  const yearLabels = {y2024:'2024', y2025:'2025', y2026:'2026'};
+  const colors = {y2024:'#BBB', y2025:'#666', y2026:'#FF3000'};
+  const W=800, H=360, padL=50, padR=20, padT=24, padB=80;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  const maxVal=2.4;
+  const groupW = plotW/data.length;
+  const barW = groupW*0.22;
+  const xGroup = i => padL + (i+0.5)*groupW;
+  const yPos = v => padT + plotH - (v/maxVal)*plotH;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
+  // gridlines + Y labels
+  [0, 0.5, 1.0, 1.5, 2.0].forEach(v => {
+    const y = yPos(v);
+    const isOne = v===1.0;
+    svg += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="${v===0?'#000':(isOne?'#FF3000':'#ddd')}" stroke-width="${(v===0||isOne)?1.2:1}" ${(v===0)?'':`stroke-dasharray="${isOne?'5,3':'2,2'}"`}/>`;
+    svg += `<text x="${padL-8}" y="${y+4}" font-size="10" fill="${isOne?'#FF3000':'#666'}" text-anchor="end" font-weight="${isOne?'700':'400'}">${v.toFixed(1)}×</text>`;
+  });
+  svg += `<text x="${W-padR-4}" y="${yPos(1.0)-4}" font-size="10" fill="#FF3000" text-anchor="end" font-weight="700">capex = OCF</text>`;
+  // bars
+  data.forEach((d, i) => {
+    const cx = xGroup(i);
+    years.forEach((yr, j) => {
+      const v = d[yr];
+      const cappedV = Math.min(v, maxVal);
+      const y = yPos(cappedV);
+      const h = yPos(0) - y;
+      const x = cx + (j-1)*(barW+4) - barW/2;
+      const isAboveOne = v >= 1.0;
+      svg += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${colors[yr]}"/>`;
+      svg += `<text x="${x+barW/2}" y="${y-4}" font-size="9" fill="${isAboveOne?'#FF3000':'#333'}" text-anchor="middle" font-weight="${isAboveOne?'700':'500'}">${v.toFixed(2)}</text>`;
+    });
+    svg += `<text x="${cx}" y="${H-padB+22}" font-size="13" font-weight="700" text-anchor="middle">${d.co}</text>`;
+  });
+  // legend
+  const legY = H-26;
+  years.forEach((yr, i) => {
+    const x = padL + i*120;
+    svg += `<rect x="${x}" y="${legY-9}" width="12" height="12" fill="${colors[yr]}"/>`;
+    svg += `<text x="${x+18}" y="${legY+1}" font-size="11" fill="#000">${yearLabels[yr]}</text>`;
+  });
+  svg += `</svg>`;
+  const el = document.getElementById('chart-capex-ocf');
+  if(el) el.innerHTML = svg;
+})();
+
+// ===== Chart 3: 事件时间线 视觉版 =====
+(function(){
+  // Date: parsed to fractional year quarters from 2025.7 (2025-Q3) to 2027.25
+  // Each event: {date, label, short, category, importance(1-3), future}
+  const events = [
+    {date:2025.75, short:'ORCL $18B 40Y', cat:'debt', imp:2},
+    {date:2025.83, short:'META $30B / Hyperion JV', cat:'debt', imp:3},
+    {date:2025.95, short:'ORCL CDS 175bp', cat:'cds', imp:2},
+    {date:2026.10, short:'GOOG $20B 七档', cat:'debt', imp:2},
+    {date:2026.18, short:'OAI 初闭 $110B', cat:'primary', imp:2},
+    {date:2026.20, short:'ORCL FY26 $50B (+43%)', cat:'guide', imp:2},
+    {date:2026.25, short:'OAI 终闭 $122B', cat:'primary', imp:3},
+    {date:2026.33, short:'SpaceX S-1', cat:'ipo', imp:2},
+    {date:2026.36, short:'META $25B / Q1 上修', cat:'debt', imp:2},
+    {date:2026.39, short:'Anthropic × SpaceX C1', cat:'strat', imp:3},
+    {date:2026.41, short:'Anthropic Series H $965B', cat:'primary', imp:3},
+    {date:2026.42, short:'OAI S-1 file', cat:'ipo', imp:2},
+    {date:2026.415, short:'GOOG ATM $80B ⚡', cat:'atm', imp:3},
+    {date:2026.425, short:'SoftBank -11% ⚡ NOW', cat:'now', imp:3},
+    {date:2026.45, short:'SpaceX IPO Day ⚡', cat:'ipo', imp:3, future:true},
+    {date:2026.67, short:'OAI IPO Day', cat:'ipo', imp:3, future:true},
+    {date:2026.75, short:'Anthropic IPO', cat:'ipo', imp:3, future:true},
+    {date:2026.83, short:'ORCL CDS >200bp 4w?', cat:'cds', imp:2, future:true},
+    {date:2027.00, short:'Stage 3: Capex 下修', cat:'stage', imp:3, future:true}
+  ];
+  const colors = {
+    debt:'#000', cds:'#666', primary:'#444', guide:'#888',
+    strat:'#999', ipo:'#FF3000', atm:'#FF3000', now:'#FF3000', stage:'#FF3000'
+  };
+  const labels = {
+    debt:'Debt', cds:'CDS', primary:'Primary $', guide:'Capex Guide',
+    strat:'Strategic Deal', ipo:'IPO', atm:'ATM', now:'NOW', stage:'Stage'
+  };
+
+  const W=800, H=420, padL=30, padR=30, padT=70, padB=60;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  const minD=2025.7, maxD=2027.1;
+  const xPos = d => padL + ((d-minD)/(maxD-minD))*plotW;
+  const lineY = padT + plotH/2;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
+  // X axis (time)
+  svg += `<line x1="${padL}" y1="${lineY}" x2="${W-padR}" y2="${lineY}" stroke="#000" stroke-width="2"/>`;
+  // Time ticks (quarters)
+  const ticks = [
+    {d:2025.75,lbl:'2025-Q3'},{d:2026.00,lbl:'2026-Q1'},{d:2026.25,lbl:'Q2'},
+    {d:2026.50,lbl:'Q3'},{d:2026.75,lbl:'Q4'},{d:2027.00,lbl:'2027-Q1'}
+  ];
+  ticks.forEach(t => {
+    const x = xPos(t.d);
+    svg += `<line x1="${x}" y1="${lineY-6}" x2="${x}" y2="${lineY+6}" stroke="#000" stroke-width="1"/>`;
+    svg += `<text x="${x}" y="${lineY+22}" font-size="11" fill="#000" text-anchor="middle" font-weight="600" font-family="'JetBrains Mono',monospace">${t.lbl}</text>`;
+  });
+  // Stage zones
+  svg += `<rect x="${padL}" y="${padT-6}" width="${xPos(2026.42)-padL}" height="3" fill="#000"/>`;
+  svg += `<text x="${(padL+xPos(2026.42))/2}" y="${padT-12}" font-size="10" fill="#000" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono',monospace">STAGE 1.5</text>`;
+  svg += `<rect x="${xPos(2026.42)}" y="${padT-6}" width="${xPos(2027.00)-xPos(2026.42)}" height="3" fill="#FF3000"/>`;
+  svg += `<text x="${(xPos(2026.42)+xPos(2027.00))/2}" y="${padT-12}" font-size="10" fill="#FF3000" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono',monospace">IPO PEAK</text>`;
+  svg += `<rect x="${xPos(2027.00)}" y="${padT-6}" width="${W-padR-xPos(2027.00)}" height="3" fill="#fff" stroke="#000" stroke-dasharray="3,2"/>`;
+  svg += `<text x="${(xPos(2027.00)+W-padR)/2}" y="${padT-12}" font-size="10" fill="#000" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono',monospace">STAGE 2-3</text>`;
+
+  // Events: alternate above / below the line
+  const above = []; const below = [];
+  events.forEach((e,i) => {
+    if(i%2===0) above.push(e); else below.push(e);
+  });
+  const drawEvent = (e, isAbove) => {
+    const x = xPos(e.date);
+    const stemLen = 20 + (e.imp-1)*18;
+    const y = isAbove ? (lineY - stemLen) : (lineY + stemLen);
+    const r = 3 + e.imp;
+    const color = colors[e.cat] || '#000';
+    const fill = e.future ? '#FFF' : color;
+    const strokeDash = e.future ? '2,2' : '0';
+    // stem
+    svg += `<line x1="${x}" y1="${lineY}" x2="${x}" y2="${y}" stroke="${color}" stroke-width="1" stroke-dasharray="${strokeDash}"/>`;
+    // dot
+    svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${color}" stroke-width="1.5"/>`;
+    // label
+    const labelY = isAbove ? (y - 8) : (y + 14);
+    const fontWeight = e.imp >= 3 ? '700' : '500';
+    const fontSize = e.imp >= 3 ? 11 : 10;
+    svg += `<text x="${x}" y="${labelY}" font-size="${fontSize}" font-family="'JetBrains Mono',monospace" fill="${color}" text-anchor="middle" font-weight="${fontWeight}">${e.short}</text>`;
+  };
+  above.forEach(e => drawEvent(e, true));
+  below.forEach(e => drawEvent(e, false));
+
+  // NOW vertical line
+  const nowX = xPos(2026.425);
+  svg += `<line x1="${nowX}" y1="${padT-6}" x2="${nowX}" y2="${H-padB+4}" stroke="#FF3000" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>`;
+  svg += `<text x="${nowX}" y="${H-padB+18}" font-size="9" fill="#FF3000" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono',monospace">NOW 6/4</text>`;
+
+  // Legend
+  const legY = H-22;
+  const legItems = [
+    {color:'#000', label:'Debt'},
+    {color:'#444', label:'Primary $'},
+    {color:'#FF3000', label:'IPO / ATM'},
+    {color:'#666', label:'CDS'},
+    {color:'#FFF', label:'Future', stroke:true}
+  ];
+  legItems.forEach((it, i) => {
+    const x = padL + i*150;
+    svg += `<circle cx="${x+6}" cy="${legY-2}" r="5" fill="${it.color}" ${it.stroke?'stroke="#000" stroke-width="1.5" stroke-dasharray="2,2"':''}/>`;
+    svg += `<text x="${x+16}" y="${legY+2}" font-size="11" fill="#000" font-family="'JetBrains Mono',monospace">${it.label}</text>`;
+  });
+  svg += `</svg>`;
+  const el = document.getElementById('chart-timeline');
+  if(el) el.innerHTML = svg;
+})();
+
 const tabs = document.querySelectorAll('nav.tabs button');
 const sections = document.querySelectorAll('section.tab');
 function setTab(id){
