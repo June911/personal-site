@@ -1822,7 +1822,7 @@ body.fs-lg { font-size: 17px; }
 <p style="font-size:13px;color:#666;text-transform:uppercase;letter-spacing:0.05em;">被动买盘 × insider 卖压 · 估值锚 $1.2T · 2026-06-12</p>
 
 <blockquote style="border-left:4px solid #FF3000;background:#FFF5F0;padding:14px 18px;margin:12px 0;">
-<strong>一句话</strong>：被动盘只能吸收 ~30-40% 的同期 insider 卖压。6 个月累计净缺口 <strong>-$108B（12/8 触底）</strong>。市场反复传"$22-27B 强制买盘"是只算了 W1 (NDX 15 日 fast-entry)，<strong>真正最大单波是 W2 (9/19 NDX 季度 rebalance)</strong> 因 3x cap 公式下 effective mcap 6 倍化——但这波 $37B 仍远不够补同期 -$58B 的累计卖压。
+<strong>一句话</strong>：被动盘只能吸收 ~45% 的同期 insider 卖压（$71B 买 vs $156B 卖）。6 个月累计净缺口 <strong>-$104.5B（12/8 触底）</strong>。市场反复传"$22-27B 强制买盘"是只算了 W1 (NDX 15 日 fast-entry)，<strong>真正最大单波是 W2 (9/19 NDX 季度 rebalance)</strong> 因 3x cap 公式下 effective mcap 6 倍化——但这波 $37B 仍远不够补同期 -$45.5B 的累计卖压。
 </blockquote>
 
 <h2>关键数字 · 6 个月窗口</h2>
@@ -1834,12 +1834,12 @@ body.fs-lg { font-size: 17px; }
   </div>
   <div style="border-left:3px solid #000;padding:8px 12px;">
     <div style="font-size:10px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">累计真实卖压</div>
-    <div style="font-size:24px;font-weight:700;">-$159B</div>
+    <div style="font-size:24px;font-weight:700;">-$156B</div>
     <div style="font-size:11px;color:#555;">头 6 个月 (8/17-12/8)</div>
   </div>
   <div style="border-left:3px solid #FF3000;padding:8px 12px;background:#FFF5F0;">
     <div style="font-size:10px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">净缺口（12/8 触底）</div>
-    <div style="font-size:24px;font-weight:700;color:#FF3000;">-$108B</div>
+    <div style="font-size:24px;font-weight:700;color:#FF3000;">-$104.5B</div>
     <div style="font-size:11px;color:#555;">~9% IPO 市值</div>
   </div>
   <div style="border-left:3px solid #000;padding:8px 12px;">
@@ -1940,11 +1940,11 @@ body.fs-lg { font-size: 17px; }
   <text x="153" y="237" text-anchor="middle" font-size="10" font-weight="700" fill="#FF3000">$8.5B</text>
   <text x="153" y="227" text-anchor="middle" font-size="9" fill="#666">W1</text>
 
-  <!-- W2 9/19: $37B → h=163, y=117 -->
-  <rect x="318" y="117" width="18" height="163" fill="#FF3000" />
-  <text x="327" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#FF3000">$37B</text>
-  <text x="327" y="94"  text-anchor="middle" font-size="11" fill="#FF3000" font-weight="700">W2</text>
-  <text x="327" y="80"  text-anchor="middle" font-size="10" fill="#000">9/19</text>
+  <!-- W2 9/19: $37B → h=163, y=117; x_center=325 -->
+  <rect x="316" y="117" width="18" height="163" fill="#FF3000" />
+  <text x="325" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#FF3000">$37B</text>
+  <text x="325" y="94"  text-anchor="middle" font-size="11" fill="#FF3000" font-weight="700">W2</text>
+  <text x="325" y="80"  text-anchor="middle" font-size="10" fill="#000">9/19</text>
 
   <!-- W3 12/19: $20B → h=88, y=192 -->
   <rect x="521" y="192" width="16" height="88" fill="#FF3000" opacity="0.85" />
@@ -1954,66 +1954,66 @@ body.fs-lg { font-size: 17px; }
   <!-- ===== Insider 卖压 (dark, below center) ===== -->
   <!-- Scale: $B × 2.75px/$B; bar width 14 -->
 
-  <!-- 8/17 Q2 EPS base: $57B → h=157, y=280 -->
-  <rect x="234" y="280" width="14" height="157" fill="#222" />
-  <text x="241" y="450" text-anchor="middle" font-size="11" font-weight="700" fill="#222">-$57B</text>
-  <text x="241" y="466" text-anchor="middle" font-size="10" fill="#666">Q2 EPS</text>
-  <text x="241" y="478" text-anchor="middle" font-size="9" fill="#666">8/17</text>
+  <!-- 8/17 Q2 EPS base: $38.5B → h=106, y=280; x_center=252 -->
+  <rect x="245" y="280" width="14" height="106" fill="#222" />
+  <text x="252" y="402" text-anchor="middle" font-size="11" font-weight="700" fill="#222">-$38.5B</text>
+  <text x="252" y="418" text-anchor="middle" font-size="10" fill="#666">Q2 EPS</text>
+  <text x="252" y="430" text-anchor="middle" font-size="9" fill="#666">8/17</text>
 
-  <!-- 8/17 conditional +$19B → stacked on top (below the base bar) -->
-  <rect x="234" y="437" width="14" height="52" fill="#FFA89E" />
-  <text x="280" y="488" text-anchor="middle" font-size="9" fill="#FF3000">+$19B 条件</text>
+  <!-- 8/17 conditional +$19B → stacked on top of base bar -->
+  <rect x="245" y="386" width="14" height="52" fill="#FFA89E" />
+  <text x="290" y="445" text-anchor="middle" font-size="9" fill="#FF3000">+$19B 条件</text>
 
-  <!-- D70 8/20: -$7.5B → h=21 -->
-  <rect x="252" y="280" width="10" height="21" fill="#222" opacity="0.7" />
-  <text x="257" y="316" text-anchor="middle" font-size="8" fill="#666">D70</text>
+  <!-- D70 8/20: -$10.5B → h=29; x_center=259 -->
+  <rect x="254" y="280" width="10" height="29" fill="#222" opacity="0.7" />
+  <text x="259" y="324" text-anchor="middle" font-size="8" fill="#666">D70</text>
 
-  <!-- D90 9/9: -$7.5B → h=21, x=302 -->
-  <rect x="297" y="280" width="10" height="21" fill="#222" opacity="0.7" />
-  <text x="302" y="316" text-anchor="middle" font-size="8" fill="#666">D90</text>
+  <!-- D90 9/9: -$10.5B → h=29; x_center=302 -->
+  <rect x="297" y="280" width="10" height="29" fill="#222" opacity="0.7" />
+  <text x="302" y="324" text-anchor="middle" font-size="8" fill="#666">D90</text>
 
-  <!-- D105 9/24: x=336 -->
-  <rect x="331" y="280" width="10" height="21" fill="#222" opacity="0.7" />
-  <text x="336" y="316" text-anchor="middle" font-size="8" fill="#666">D105</text>
+  <!-- D105 9/24: x_center=348 -->
+  <rect x="343" y="280" width="10" height="29" fill="#222" opacity="0.7" />
+  <text x="348" y="324" text-anchor="middle" font-size="8" fill="#666">D105</text>
 
-  <!-- D120 10/9: x=370 -->
-  <rect x="365" y="280" width="10" height="21" fill="#222" opacity="0.7" />
-  <text x="370" y="316" text-anchor="middle" font-size="8" fill="#666">D120</text>
+  <!-- D120 10/9: x_center=380 -->
+  <rect x="375" y="280" width="10" height="29" fill="#222" opacity="0.7" />
+  <text x="380" y="324" text-anchor="middle" font-size="8" fill="#666">D120</text>
 
-  <!-- D135 10/26: x=409 -->
-  <rect x="404" y="280" width="10" height="21" fill="#222" opacity="0.7" />
-  <text x="409" y="316" text-anchor="middle" font-size="8" fill="#666">D135</text>
+  <!-- D135 10/26: x_center=422 -->
+  <rect x="417" y="280" width="10" height="29" fill="#222" opacity="0.7" />
+  <text x="422" y="324" text-anchor="middle" font-size="8" fill="#666">D135</text>
 
-  <!-- 11/17 Q3 EPS: -$50B → h=138 -->
-  <rect x="431" y="280" width="14" height="138" fill="#222" />
-  <text x="438" y="432" text-anchor="middle" font-size="11" font-weight="700" fill="#222">-$50B</text>
-  <text x="438" y="448" text-anchor="middle" font-size="10" fill="#666">Q3 EPS</text>
-  <text x="438" y="460" text-anchor="middle" font-size="9" fill="#666">11/17</text>
+  <!-- 11/17 Q3 EPS: -$50B → h=138; x_center=456 -->
+  <rect x="449" y="280" width="14" height="138" fill="#222" />
+  <text x="456" y="432" text-anchor="middle" font-size="11" font-weight="700" fill="#222">-$50B</text>
+  <text x="456" y="448" text-anchor="middle" font-size="10" fill="#666">Q3 EPS</text>
+  <text x="456" y="460" text-anchor="middle" font-size="9" fill="#666">11/17</text>
 
-  <!-- D180 12/8: -$14.5B → h=40 -->
-  <rect x="496" y="280" width="12" height="40" fill="#222" />
-  <text x="502" y="335" text-anchor="middle" font-size="10" font-weight="700" fill="#222">-$14.5B</text>
-  <text x="502" y="348" text-anchor="middle" font-size="9" fill="#666">D180</text>
+  <!-- D180 12/8: -$14.5B → h=40; x_center=504 -->
+  <rect x="498" y="280" width="12" height="40" fill="#222" />
+  <text x="504" y="335" text-anchor="middle" font-size="10" font-weight="700" fill="#222">-$14.5B</text>
+  <text x="504" y="348" text-anchor="middle" font-size="9" fill="#666">D180</text>
 
-  <!-- Q4 EPS 2/17/27: -$5.5B → h=15 -->
-  <rect x="625" y="280" width="10" height="15" fill="#222" opacity="0.7" />
-  <text x="630" y="310" text-anchor="middle" font-size="8" fill="#666">Q4 EPS</text>
+  <!-- Q4 EPS 2/17/27: -$5.5B → h=15; x_center=660 -->
+  <rect x="655" y="280" width="10" height="15" fill="#222" opacity="0.7" />
+  <text x="660" y="310" text-anchor="middle" font-size="8" fill="#666">Q4 EPS</text>
 
-  <!-- D280 3/18/27: -$3B → h=8 -->
-  <rect x="690" y="280" width="8" height="8" fill="#222" opacity="0.6" />
+  <!-- D280 3/18/27: -$3B → h=8; x_center=723 -->
+  <rect x="719" y="280" width="8" height="8" fill="#222" opacity="0.6" />
 
-  <!-- D340 5/17/27 + Q1 EPS 5/18: combine -$11B → h=30 -->
-  <rect x="825" y="280" width="12" height="30" fill="#222" opacity="0.7" />
-  <text x="831" y="325" text-anchor="middle" font-size="8" fill="#666">D340 + Q1 EPS</text>
+  <!-- D340 5/17/27 + Q1 EPS 5/18: combine -$11B → h=30; x_center=857 -->
+  <rect x="851" y="280" width="12" height="30" fill="#222" opacity="0.7" />
+  <text x="857" y="325" text-anchor="middle" font-size="8" fill="#666">D340 + Q1 EPS</text>
 
-  <!-- D366 Musk 6/14/27: -$14.5B → h=40 -->
-  <rect x="892" y="280" width="12" height="40" fill="#222" />
-  <text x="898" y="335" text-anchor="middle" font-size="10" font-weight="700" fill="#222">-$14.5B</text>
-  <text x="898" y="348" text-anchor="middle" font-size="9" fill="#666">D366 Musk*</text>
+  <!-- D366 Musk 6/14/27: -$14.5B → h=40; x_center=918 -->
+  <rect x="912" y="280" width="12" height="40" fill="#222" />
+  <text x="918" y="335" text-anchor="middle" font-size="10" font-weight="700" fill="#222">-$14.5B</text>
+  <text x="918" y="348" text-anchor="middle" font-size="9" fill="#666">D366 Musk*</text>
 
-  <!-- Q2 EPS 8/17/27: -$7.5B → h=21 -->
-  <rect x="1028" y="280" width="10" height="21" fill="#222" opacity="0.7" />
-  <text x="1033" y="316" text-anchor="middle" font-size="8" fill="#666">Q2 EPS</text>
+  <!-- Q2 EPS 8/17/27: -$7.5B → h=21; x_center=1061 -->
+  <rect x="1056" y="280" width="10" height="21" fill="#222" opacity="0.7" />
+  <text x="1061" y="316" text-anchor="middle" font-size="8" fill="#666">Q2 EPS</text>
 
   <!-- ===== 累计净流线 (orange) ===== -->
   <!-- Right axis: 0 at y=60+20×scale; range -160 to +20 = 180 units / 440px = 2.44 px/$B -->
@@ -2039,36 +2039,31 @@ body.fs-lg { font-size: 17px; }
        6/14/27 (898, -122) → 60 + 142*2.44 = 407
        8/17/27 (1033, -129.5) → 60 + 149.5*2.44 = 425
   -->
+  <!-- Cumulative net flow (orange). y = 60 + (20 - net) × 2.444 -->
   <polyline
-    points="105,109 121,95 153,75 241,214 257,232 302,251 327,160 336,178 370,197 409,215 438,337 502,373 529,324 630,337 697,344 831,354 898,407 1033,425"
+    points="105,109 121,95 153,75 252,169 259,194 302,220 325,129 348,155 380,181 422,207 456,329 504,364 529,315 660,329 723,336 857,346 860,363 918,399 1061,417"
     fill="none" stroke="#FF7A00" stroke-width="2.5" stroke-linejoin="round" />
-  <!-- Note: 12/8 trough at 502 should come before 12/19 W3 at 463 — but visually order matters
-       Re-render order matches calendar: ...12/8 (502,373) → 12/19 (463,324) goes backward x — bug
-       Actually 12/8 happens BEFORE 12/19. x must monotonically increase. 12/8 x=502, 12/19 x=540.
-       Recalc 12/19 x: month index 6 (Dec), day 19. x = 80 + 6*68 + 18/30*68 = 80 + 408 + 41 = 529.
-       Adjust polyline: ..., 502,373 → 529,324 ...
-  -->
 
   <!-- Markers on net line at key points -->
   <g fill="#FF7A00">
     <circle cx="105" cy="109" r="3.5" />
-    <circle cx="241" cy="214" r="3.5" />
-    <circle cx="327" cy="160" r="4" stroke="#FFF" stroke-width="1.5" />
-    <circle cx="438" cy="337" r="3.5" />
-    <circle cx="502" cy="373" r="5" stroke="#FFF" stroke-width="2" />
-    <circle cx="529" cy="324" r="4" stroke="#FFF" stroke-width="1.5" />
-    <circle cx="898" cy="407" r="3.5" />
+    <circle cx="252" cy="169" r="3.5" />
+    <circle cx="325" cy="129" r="4" stroke="#FFF" stroke-width="1.5" />
+    <circle cx="456" cy="329" r="3.5" />
+    <circle cx="504" cy="364" r="5" stroke="#FFF" stroke-width="2" />
+    <circle cx="529" cy="315" r="4" stroke="#FFF" stroke-width="1.5" />
+    <circle cx="918" cy="399" r="3.5" />
   </g>
 
   <!-- Trough annotation -->
   <g>
-    <line x1="502" y1="383" x2="502" y2="488" stroke="#FF7A00" stroke-width="1" stroke-dasharray="3,2" />
-    <text x="502" y="500" text-anchor="middle" font-size="10" font-weight="700" fill="#FF7A00">⬇ 触底 -$108B · 12/8</text>
+    <line x1="504" y1="374" x2="504" y2="488" stroke="#FF7A00" stroke-width="1" stroke-dasharray="3,2" />
+    <text x="504" y="500" text-anchor="middle" font-size="10" font-weight="700" fill="#FF7A00">⬇ 触底 -$104.5B · 12/8</text>
   </g>
 
   <!-- NDX rebalance vertical dashed -->
   <g stroke="#999" stroke-width="1" stroke-dasharray="2,3" opacity="0.4">
-    <line x1="327" y1="60" x2="327" y2="500" />
+    <line x1="325" y1="60" x2="325" y2="500" />
     <line x1="529" y1="60" x2="529" y2="500" />
   </g>
 
@@ -2092,29 +2087,30 @@ body.fs-lg { font-size: 17px; }
   <tbody>
     <tr><td>6/19/2026</td><td>W0 · VTI + Russell 1000 fast-entry</td><td class="num">+5.5</td><td class="num">—</td><td class="num">+5.5</td><td class="num">+5.5</td></tr>
     <tr><td>7/3/2026</td><td>W1 · NDX 15-day fast-entry</td><td class="num">+8.5</td><td class="num">—</td><td class="num">+8.5</td><td class="num">+14.0</td></tr>
-    <tr style="background:#F8F8F8;"><td>8/17/2026</td><td>Q2'26 EPS（条件 +30% 未计入）</td><td class="num">—</td><td class="num">-57</td><td class="num">-57</td><td class="num">-43</td></tr>
-    <tr><td>8/20-10/26</td><td>D70/90/105/120/135 五波 ×$7.5B</td><td class="num">—</td><td class="num">-37.5</td><td class="num">-37.5</td><td class="num">-80.5</td></tr>
-    <tr class="wave" style="background:#FFF5F0;"><td>9/19/2026</td><td><strong>W2 · NDX 季度 rebalance（3x cap, float 25%）</strong></td><td class="num"><strong>+37</strong></td><td class="num">—</td><td class="num">+37</td><td class="num">-21（中段反弹）</td></tr>
-    <tr style="background:#F8F8F8;"><td>11/17/2026</td><td>Q3'26 EPS 第二波抛压</td><td class="num">—</td><td class="num">-50</td><td class="num">-50</td><td class="num">-93.5</td></tr>
-    <tr style="background:#F8F8F8;"><td>12/8/2026</td><td>D180 全释放（关联交易方清仓）</td><td class="num">—</td><td class="num">-14.5</td><td class="num">-14.5</td><td class="num" style="color:#FF3000;font-weight:700;">-108 · 触底</td></tr>
-    <tr class="wave" style="background:#FFF5F0;"><td>12/19/2026</td><td><strong>W3 · NDX 季度 + 年度 rebalance（cap 解除）</strong></td><td class="num"><strong>+20</strong></td><td class="num">—</td><td class="num">+20</td><td class="num">-88</td></tr>
-    <tr style="border-top:2px solid #000;"><td><strong>6 个月小计</strong></td><td></td><td class="num"><strong>+71</strong></td><td class="num"><strong>-159</strong></td><td class="num" colspan="2"><strong>净 -88（峰谷 -108）</strong></td></tr>
-    <tr style="color:#666;"><td>2/17 - 5/18/27</td><td>扩展群 Q4/D280/D340/Q1 EPS</td><td class="num">—</td><td class="num">-19.5</td><td class="num">-19.5</td><td class="num">-107.5</td></tr>
-    <tr style="color:#666;"><td>6/14/2027</td><td>D366 Musk 锁定到期（非自卖）</td><td class="num">—</td><td class="num">-14.5</td><td class="num">-14.5</td><td class="num">-122</td></tr>
-    <tr style="color:#666;"><td>8/17/2027</td><td>Q2'27 EPS 收尾</td><td class="num">—</td><td class="num">-7.5</td><td class="num">-7.5</td><td class="num">-129.5</td></tr>
-    <tr style="border-top:2px solid #000;"><td><strong>14 月累计</strong></td><td></td><td class="num"><strong>+71</strong></td><td class="num"><strong>-200</strong></td><td class="num" colspan="2"><strong>净 -129.5</strong></td></tr>
+    <tr style="background:#F8F8F8;"><td>8/17/2026</td><td>Q2'26 EPS base（条件 +30% 未计入）</td><td class="num">—</td><td class="num">-38.5</td><td class="num">-38.5</td><td class="num">-24.5</td></tr>
+    <tr><td>8/20-9/9</td><td>D70 + D90（W2 前 2 波 ×$10.5B）</td><td class="num">—</td><td class="num">-21</td><td class="num">-21</td><td class="num">-45.5</td></tr>
+    <tr class="wave" style="background:#FFF5F0;"><td>9/19/2026</td><td><strong>W2 · NDX 季度 rebalance（3x cap, float 25%）</strong></td><td class="num"><strong>+37</strong></td><td class="num">—</td><td class="num">+37</td><td class="num">-8.5（中段反弹）</td></tr>
+    <tr><td>9/24-10/26</td><td>D105 + D120 + D135（W2 后 3 波 ×$10.5B）</td><td class="num">—</td><td class="num">-31.5</td><td class="num">-31.5</td><td class="num">-40</td></tr>
+    <tr style="background:#F8F8F8;"><td>11/17/2026</td><td>Q3'26 EPS 第二波抛压</td><td class="num">—</td><td class="num">-50</td><td class="num">-50</td><td class="num">-90</td></tr>
+    <tr style="background:#F8F8F8;"><td>12/8/2026</td><td>D180 全释放（关联交易方清仓）</td><td class="num">—</td><td class="num">-14.5</td><td class="num">-14.5</td><td class="num" style="color:#FF3000;font-weight:700;">-104.5 · 触底</td></tr>
+    <tr class="wave" style="background:#FFF5F0;"><td>12/19/2026</td><td><strong>W3 · NDX 季度 + 年度 rebalance（cap 解除）</strong></td><td class="num"><strong>+20</strong></td><td class="num">—</td><td class="num">+20</td><td class="num">-84.5</td></tr>
+    <tr style="border-top:2px solid #000;"><td><strong>6 个月小计</strong></td><td></td><td class="num"><strong>+71</strong></td><td class="num"><strong>-155.5</strong></td><td class="num" colspan="2"><strong>净 -84.5（峰谷 -104.5）</strong></td></tr>
+    <tr style="color:#666;"><td>2/17 - 5/18/27</td><td>扩展群 Q4/D280/D340/Q1 EPS</td><td class="num">—</td><td class="num">-19.5</td><td class="num">-19.5</td><td class="num">-104</td></tr>
+    <tr style="color:#666;"><td>6/14/2027</td><td>D366 Musk 锁定到期（非自卖）</td><td class="num">—</td><td class="num">-14.5</td><td class="num">-14.5</td><td class="num">-118.5</td></tr>
+    <tr style="color:#666;"><td>8/17/2027</td><td>Q2'27 EPS 收尾</td><td class="num">—</td><td class="num">-7.5</td><td class="num">-7.5</td><td class="num">-126</td></tr>
+    <tr style="border-top:2px solid #000;"><td><strong>14 月累计</strong></td><td></td><td class="num"><strong>+71</strong></td><td class="num"><strong>-197</strong></td><td class="num" colspan="2"><strong>净 -126</strong></td></tr>
   </tbody>
 </table>
 
 <h2>三个判断</h2>
 <ol style="padding-left:20px;font-size:14px;line-height:1.7;">
-  <li><strong>被动盘吸收能力 ~30-40%</strong>：6 月累计 $71B 买盘 vs $159B 卖压 = 缺口 -$88B 必须靠主动盘 + 价格折价吸收。这就是 IPO 后第一年 SpaceX 价格发现失真的根因——<strong>价格不可信</strong>因为流动性结构性失衡。</li>
-  <li><strong>W2 (9/19) 是最大缓冲点不是触底点</strong>：3x cap 公式下 float 从 4% → 25% 让 effective mcap 6 倍化，单波 $37B 是 W1 的 4.4 倍。但同期 (8/17-10/26) 累计 -$94.5B 卖压，W2 弹回只能把净流从 -$58 拉到 -$21。<strong>反弹不持久，10 月起再次下行到 -$108B 触底</strong>。</li>
+  <li><strong>被动盘吸收能力 ~45%</strong>：6 月累计 $71B 买盘 vs $155.5B 卖压 = 缺口 -$84.5B 必须靠主动盘 + 价格折价吸收。这就是 IPO 后第一年 SpaceX 价格发现失真的根因——<strong>价格不可信</strong>因为流动性结构性失衡。</li>
+  <li><strong>W2 (9/19) 是最大缓冲点不是触底点</strong>：3x cap 公式下 float 从 4% → 25% 让 effective mcap 6 倍化，单波 $37B 是 W1 的 4.4 倍。但同期 (8/17-9/9) 累计 -$59.5B 卖压，W2 弹回只能把净流从 -$45.5 拉到 -$8.5。<strong>反弹不持久，10 月起再次下行到 -$104.5B 触底</strong>。</li>
   <li><strong>实际底部窗口 D+180 后</strong>：12/8 累计抛压清完 + 12/19 W3 买盘进场，是 12 月中下旬到 1 月可能的真底。<a href="#unlock">unlock tab</a> 的 C 重档窗口（11/17-12/8）实际上略早——真实建仓应是 12/15-1/15，给市场消化时间。这与 <a href="#index">index tab</a> 的 D+150 到 D+180 mid-tab 子档完全一致。</li>
 </ol>
 
 <blockquote style="border-left:3px solid #000;background:#F8F8F8;padding:10px 14px;margin:16px 0;font-size:13px;">
-<strong>公式速查</strong>：effective_mcap = mcap × min(3 × float, 1)；float ≤ 33.3% 时 cap 起作用（3 倍放大低 float），float &gt; 33.3% 时 cap 解除（全市值入指数）。<strong>SpaceX float 在 10/10 D120 后越过 33.3% 阈值</strong>，从此进入"全市值入指数"区——但因季度 rebalance 只在 9/19 和 12/19 触发，cap 解除的机械买盘要等到 12/19 才一次性反映。
+<strong>公式速查</strong>：effective_mcap = mcap × min(3 × float, 1)；float ≤ 33.3% 时 cap 起作用（3 倍放大低 float），float &gt; 33.3% 时 cap 解除（全市值入指数）。按 tier 3 释放轨迹：IPO 5% + Q2 7.55% + D70-D135 五波 13.2% + Q3 10.58% ≈ 36.3%——<strong>SpaceX float 在 11/17 Q3 EPS 后越过 33.3% 阈值</strong>，从此进入"全市值入指数"区，但因季度 rebalance 只在 9/19 和 12/19 触发，cap 解除的机械买盘要等到 12/19 才一次性反映。
 </blockquote>
 
 </div></div>
