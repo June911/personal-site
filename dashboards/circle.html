@@ -175,12 +175,12 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
 <header class="header">
   <div>
     <h1>Circle (CRCL) 投资信念看板</h1>
-    <div class="header-sub">V 模型 · 信念链 · 贝叶斯动态更新　|　已清仓换 HYPE（05-15 D#90）· 重新介入 &lt; $90 · 更新 2026-05-22</div>
+    <div class="header-sub">V 模型 · 信念链 · 贝叶斯动态更新　|　三假设→承重结构 · 见下「数学警示」· 更新 2026-07-13</div>
   </div>
   <div class="header-right">
-    <div class="hm"><div class="l">当前价格</div><div class="v">$<span id="hp">71</span></div></div>
-    <div class="hm"><div class="l">期望价值</div><div class="v" style="color:var(--blue)">$<span id="hev">79.1</span></div></div>
-    <div class="verdict" id="hverdict" style="background:rgba(52,211,153,.15);color:var(--green)">低估 -10% · 持有观察</div>
+    <div class="hm"><div class="l">当前价格</div><div class="v">$<span id="hp">63</span></div></div>
+    <div class="hm"><div class="l">期望价值</div><div class="v" style="color:var(--blue)">$<span id="hev">73</span></div></div>
+    <div class="verdict" id="hverdict" style="background:rgba(249,115,22,.15);color:var(--orange)">回报不过门槛 · 持有观察</div>
   </div>
 </header>
 
@@ -252,7 +252,7 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
         <div style="font-size:11px;color:var(--text3);margin-bottom:8px">$76B → $300-456B · CLARITY 后确定性↑</div>
         <div style="height:4px;background:var(--bg);border-radius:2px"><div style="width:70%;height:100%;background:var(--green);border-radius:2px"></div></div>
         <div class="sub-list">
-          · CLARITY 7/4 签署 → 增量确定性↑ <span class="b b-g" style="font-size:9px">最强</span> ⭐<br>
+          · CLARITY 立法推进 → 增量确定性↑ <span class="b b-g" style="font-size:9px">最强</span> ⭐<br>
           · RWA $300B+ <span class="b b-o" style="font-size:9px">待验证</span><br>
           · 新兴市场 $320B <span class="b b-g" style="font-size:9px">高</span><br>
           · 世界杯/预测市场 +$0.15-2.5B <span class="b b-y" style="font-size:9px">脉冲</span><br>
@@ -312,16 +312,34 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
     </div>
   </div>
 
+  <!-- 数学警示：机会成本门槛 -->
+  <div class="card" style="margin-top:24px;border:1px solid rgba(248,113,113,.35);background:linear-gradient(135deg,rgba(248,113,113,.06),transparent)">
+    <div class="card-title" style="color:var(--red)">⚠️ 数学警示 · 过不过机会成本门槛 <span class="b b-b">2026-07-13</span></div>
+    <div class="g g2">
+      <div class="ins warn" style="margin:0">
+        <strong>5 年期望回报低于门槛</strong>
+        5y 终点期望股价 <strong>$126</strong>（Bull $250 / Base $115 / Bear $25，概率 25 / 50 / 25）。以现价 ~$63 起算，到 $126 也仅 +100% ≈ <strong>年化 14.9%</strong>，仍低于 25% 的机会成本门槛；中性情景 $115 隐含年化仅 ~13%。<u>Base case 不足以清门槛，只有 Bull tail（链上股票化全球渗透 ≥3%，约 25% 概率）才撑得住</u>。
+      </div>
+      <div class="ins info" style="margin:0">
+        <strong>规模需求缺口</strong>
+        即便 take rate 被压到 30%，要与旧 base 持平也需 USDC 5y 均值 <strong>≥ $800B</strong>（当前 ~$76B 的 ~10x）。三触发点（CFTC 链上 perp / 富途·中国流向链上 / CEX 股票上链）乐观增量上限合计 <strong>~$720B</strong>，<u>仍够不到 $800B</u>。
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--text2);padding:10px;background:var(--bg2);border-radius:6px">
+      <strong style="color:var(--text)">口径结论</strong>：规模（H1）与位置（H2）双双向好，但每单位 USDC 的利润被平台抽走——<strong>价值捕获（H3）是唯一未解变量</strong>。<span style="color:var(--orange)">8 月 Coinbase 协议到期/重定价 + 8/18 Q2 财报</span>是分水岭。结构上价值捕获流向 Coinbase / 平台而非 Circle，<strong>COIN 相对 CRCL 更优</strong>；单纯裸多 CRCL 在当前赔率下不成立。
+    </div>
+  </div>
+
   <!-- 情景估值模型 -->
   <div class="card" style="margin-top:24px">
-    <div class="card-title">情景估值模型 <span class="b b-b">可调参数 · 自动计算</span></div>
+    <div class="card-title">情景估值模型 <span class="b b-b">可调参数 · 自动计算</span> <span class="b b-o">情景概率 25/50/25 已对齐；细分假设待 valuation 重算</span></div>
     <div class="g g2">
       <div>
         <div class="sc-row" style="background:rgba(248,113,113,.08)">
           <div style="color:var(--red);font-weight:600">悲观</div>
           <div class="mono" style="font-size:12px;color:var(--text3)" id="sp-p">$24</div>
-          <input type="range" id="sl-p" min="0" max="100" value="20" style="accent-color:var(--red)" oninput="upProb('p',this.value)">
-          <div class="mono" style="font-size:18px;font-weight:700;color:var(--red);text-align:right" id="pr-p">20%</div>
+          <input type="range" id="sl-p" min="0" max="100" value="25" style="accent-color:var(--red)" oninput="upProb('p',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--red);text-align:right" id="pr-p">25%</div>
         </div>
         <div class="sc-row" style="background:rgba(251,191,36,.08)">
           <div style="color:var(--yellow);font-weight:600">中性</div>
@@ -332,8 +350,8 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
         <div class="sc-row" style="background:rgba(52,211,153,.08)">
           <div style="color:var(--green);font-weight:600">乐观</div>
           <div class="mono" style="font-size:12px;color:var(--text3)" id="sp-o">$151</div>
-          <input type="range" id="sl-o" min="0" max="100" value="30" style="accent-color:var(--green)" oninput="upProb('o',this.value)">
-          <div class="mono" style="font-size:18px;font-weight:700;color:var(--green);text-align:right" id="pr-o">30%</div>
+          <input type="range" id="sl-o" min="0" max="100" value="25" style="accent-color:var(--green)" oninput="upProb('o',this.value)">
+          <div class="mono" style="font-size:18px;font-weight:700;color:var(--green);text-align:right" id="pr-o">25%</div>
         </div>
       </div>
       <div>
@@ -359,7 +377,7 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
       </div>
       <div id="modelDetail" style="display:none">
         <div style="display:flex;gap:16px;margin:10px 0;padding:10px;background:var(--bg2);border-radius:6px;flex-wrap:wrap;align-items:center">
-          <div style="font-size:11px;color:var(--text3)">当前股价 $<input class="mi" id="m-cp" type="number" value="60" step="1" oninput="recalc()"></div>
+          <div style="font-size:11px;color:var(--text3)">当前股价 $<input class="mi" id="m-cp" type="number" value="63" step="1" oninput="recalc()"></div>
           <div style="font-size:11px;color:var(--text3)">股数 <input class="mi" id="m-shares" type="number" value="235" step="1" oninput="recalc()">M</div>
           <div style="font-size:11px;color:var(--text3)">折现率 <input class="mi" id="m-discount" type="number" value="25" step="1" oninput="recalc()">%/年</div>
           <div style="font-size:11px;color:var(--text3)">年数 <input class="mi" id="m-years" type="number" value="5" step="1" oninput="recalc()"></div>
@@ -409,7 +427,7 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
 
   <!-- 估值逻辑：市场隐含 / Reverse-DCF -->
   <div class="card" style="margin-top:24px;border:1px solid rgba(34,211,238,.2)">
-    <div class="card-title">估值逻辑 · 市场隐含增长（Reverse-DCF） <span class="b b-b">2026-05-22</span></div>
+    <div class="card-title">估值逻辑 · 市场隐含增长（Reverse-DCF） <span class="b b-b">截至 2026-05-22 · Q2 财报 8/18 更新</span></div>
     <div class="ins warn" style="margin-bottom:12px">
       <strong>口径校正</strong>
       「45x PE」是 <u>forward</u> P/E（基于 FY2026E 净利 ~$668M），不是当前利润。当前 GAAP 年化净利仅 ~$220M（Q1 $55M ×4），按此为 ~126x trailing。即市场已把「今年净利 ~3x 到 $668M」price 进股价。
@@ -421,7 +439,7 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
       <div class="step" style="color:var(--cyan)">45 ÷ 20 ≈ 2.25x = 市场已 priced 的「额外增长」（PE 终将压缩，需 EPS 翻倍才撑住今天价格）</div><div class="arr">↓</div>
       <div class="step">若再要价格 5 年 3x：EPS 需 3 × (45/20) ≈ <strong>6.75x</strong></div><div class="arr">↓</div>
       <div class="step" style="color:var(--yellow)">利率/利润率不变 → 利润 ∝ USDC 规模 → USDC 需 ~5-6.75x：$76B → <strong>$400-456B</strong></div><div class="arr">↓</div>
-      <div class="step" style="color:var(--orange)">⚠️ 但「USDC 6x」≠「利润 6x」——AQAv2 把平台 reserve take rate 压向 0，扩散则规模与利润脱钩</div>
+      <div class="step" style="color:var(--orange)">⚠️ 但「USDC 6x」≠「利润 6x」——AQAv2 把平台 reserve take rate 压向 0，扩散则规模与利润脱钩；若 take rate 压到 30%，持平门槛从 $400B 升到 ~$800B（见上「数学警示」）</div>
     </div>
     <div class="g g3" style="margin-top:12px">
       <div style="padding:10px;background:rgba(167,139,250,.06);border-radius:6px"><div style="font-size:11px;color:var(--purple);font-weight:600">规模（H1）</div><div style="font-size:12px;color:var(--text2);margin-top:4px">CLARITY 后增量确定性↑，USDC 恢复增长接近确定 → 6x 到 $400B 的<strong>分子</strong>大概率成立</div></div>
@@ -434,20 +452,20 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
   <!-- 核心结论：当前立场 -->
   <div class="g g4" style="margin-top:24px">
     <div class="card" style="background:linear-gradient(135deg,rgba(248,113,113,.08),rgba(248,113,113,.02));border:1px solid rgba(248,113,113,.2)">
-      <div style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:6px">已清仓换 HYPE</div>
-      <div style="font-size:12px;color:var(--text2)">05-15 @ $119.6（D#90）· AQAv2 商品化先例</div>
+      <div style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:6px">回报不过门槛</div>
+      <div style="font-size:12px;color:var(--text2)">5y 终点 $126 ≈ 年化 4.95% &lt;&lt; 25% 门槛 · base 不成立</div>
     </div>
     <div class="card" style="background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(167,139,250,.02));border:1px solid rgba(167,139,250,.2)">
-      <div style="font-size:14px;font-weight:600;color:var(--purple);margin-bottom:6px">敞口经 HYPE 保留</div>
-      <div style="font-size:12px;color:var(--text2)">持 2-3% HYPE = 稳定币增量敞口</div>
+      <div style="font-size:14px;font-weight:600;color:var(--purple);margin-bottom:6px">价值捕获归平台</div>
+      <div style="font-size:12px;color:var(--text2)">规模/位置双多，利润被 Coinbase/平台抽走 → COIN 相对 CRCL 更优</div>
     </div>
     <div class="card" style="background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,191,36,.02));border:1px solid rgba(251,191,36,.2)">
-      <div style="font-size:14px;font-weight:600;color:var(--yellow);margin-bottom:6px">重新介入 &lt; $90</div>
-      <div style="font-size:12px;color:var(--text2)">本地 EV ~$98 · 当前 $113 仍透支 ~15%</div>
+      <div style="font-size:14px;font-weight:600;color:var(--yellow);margin-bottom:6px">分水岭 = 8 月</div>
+      <div style="font-size:12px;color:var(--text2)">Coinbase 协议到期/重定价 + 8/18 Q2 财报 RLDC 趋势</div>
     </div>
     <div class="card" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(52,211,153,.02));border:1px solid rgba(52,211,153,.2)">
-      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:6px">关键拐点 = 价值捕获</div>
-      <div style="font-size:12px;color:var(--text2)">看 8 月续约 + RLDC/净利率回升</div>
+      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:6px">唯一未解 = H3 捕获</div>
+      <div style="font-size:12px;color:var(--text2)">利润率/RLDC 回升 = 真拐点，目前未见</div>
     </div>
   </div>
 </div>
@@ -626,6 +644,7 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
       <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
       <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">RWA 平台明确选择 USDC 作为现金腿</div><div class="tp-sig">核心论点验证 — 加仓信号</div></div><span class="tp-time">持续观察</span><span class="b b-g">加仓</span></div>
       <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">Securitize 等平台采用 USDC</div><div class="tp-sig">机构认可 — 加仓信号</div></div><span class="tp-time">持续观察</span><span class="b b-g">加仓</span></div>
+      <div class="tp" onclick="cycleTp(this)"><span class="tp-dot triggered"></span><div style="flex:1"><div class="tp-text">银行级铸赎通道落地（BNY 6/29 · 渣打 G-SIB 7/2）</div><div class="tp-sig">机构发行/赎回入口打通 — 位置强化，已发生</div></div><span class="tp-time">2026/06-07</span><span class="b b-g">利好</span></div>
     </div>
   </div>
 
@@ -646,11 +665,12 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
   </div>
 
   <!-- 反信号与竞争者 -->
-  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">⚠️ 反信号与竞争者</div><div class="belief-desc">USDH > 10% = 止损；Stripe 26/04 拿牌 = 竞争加剧</div></div><div class="belief-right"><span class="b b-r">风险</span><span class="arrow">▼</span></div></div>
+  <div class="belief open"><div class="belief-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="belief-title">⚠️ 反信号与竞争者</div><div class="belief-desc">OUSD（Stripe 系）= 当前最实竞争者；USDH > 10% = 止损</div></div><div class="belief-right"><span class="b b-r">风险</span><span class="arrow">▼</span></div></div>
     <div class="belief-body">
       <div class="comp"><div style="font-weight:500">USDT (Tether)</div><span class="b b-gr">共存</span><div style="font-size:11px;color:var(--text3)">新兴市场主导；S&P 下调评级至 "Weak" 可能利好 USDC</div></div>
       <div class="comp" style="background:rgba(52,211,153,.06)"><div style="font-weight:500">Hyperliquid USDH</div><span class="b b-g">已退场</span><div style="font-size:11px;color:var(--text3)">2026-05 AQAv2：USDH sunset，平台全面切 USDC（Coinbase 收购 USDH 品牌）— H2 位置威胁解除，反成正向拐点</div></div>
-      <div class="comp"><div style="font-weight:500">Stripe / Bridge</div><span class="b b-r">高威胁</span><div style="font-size:11px;color:var(--text3)">2026/04 拿 OCC 牌照；有 to C 能力和商家网络</div></div>
+      <div class="comp" style="background:rgba(248,113,113,.06)"><div style="font-weight:500">OpenUSD (OUSD · Stripe)</div><span class="b b-r">高威胁 ⭐</span><div style="font-size:11px;color:var(--text3)">Stripe 系稳定币，挟商户网络切支付/RWA 现金腿；对 USDC「中立计价」位置最实的竞争者。真检验：能否拿下非支付场景（RWA 现金腿/CEX 计价/DeFi）</div></div>
+      <div class="comp"><div style="font-weight:500">Stripe / Bridge</div><span class="b b-r">高威胁</span><div style="font-size:11px;color:var(--text3)">2026/04 拿 OCC 牌照；有 to C 能力和商家网络（OUSD 的分发底座）</div></div>
       <div class="comp"><div style="font-weight:500">交易所稳定币</div><span class="b b-y">待验证</span><div style="font-size:11px;color:var(--text3)">流动性聚合效应是否够强来抵御交易所自建</div></div>
       <div class="comp"><div style="font-weight:500">PayPal PYUSD</div><span class="b b-g">低威胁</span><div style="font-size:11px;color:var(--text3)">投入大补贴多最后失败 — 反面案例</div></div>
       <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
@@ -715,7 +735,7 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
       <div class="tf-row"><div style="font-weight:500">按交易量/流量收费</div><div style="font-size:11px;color:var(--text3)">当前 <5%</div><span class="b b-g">核心方向</span></div>
       <div class="tf-row"><div style="font-weight:500">CCTP 跨链转账</div><div style="font-size:11px;color:var(--text3)">目前无法收费</div><span class="b b-y">有可能</span></div>
       <div class="tf-row"><div style="font-weight:500">CPN 机构转换网络</div><div style="font-size:11px;color:var(--text3)">$3.4B 年化 TPV</div><span class="b b-g">可按流量收费</span></div>
-      <div class="tf-row"><div style="font-weight:500">ARC 区块链</div><div style="font-size:11px;color:var(--text3)">测试网阶段</div><span class="b b-y">待验证</span></div>
+      <div class="tf-row"><div style="font-weight:500">ARC L1（自有链）</div><div style="font-size:11px;color:var(--text3)">$2.22 亿融资 · 主网路径 · 收入不与 Coinbase 分成</div><span class="b b-g">自有捕获</span></div>
       <div class="tf-row"><div style="font-weight:500">开发者钱包</div><div style="font-size:11px;color:var(--text3)">推广中</div><span class="b b-gr">不确定</span></div>
       <div style="margin-top:12px;font-size:11px;color:var(--text3);margin-bottom:6px">🎯 相关拐点</div>
       <div class="tp" onclick="cycleTp(this)"><span class="tp-dot pending"></span><div style="flex:1"><div class="tp-text">非利息收入占比提升（当前约 4%）</div><div class="tp-sig">商业模式转型信号 — 拐点: >10%</div></div><span class="tp-time">季度追踪</span><span class="b b-g">加仓</span></div>
@@ -772,8 +792,14 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
       <table class="log-tbl" id="logTbl">
         <thead><tr><th style="width:100px">日期</th><th>事件/证据</th><th style="width:200px">概率调整</th><th style="width:80px;text-align:right">期望值</th></tr></thead>
         <tbody id="logBody">
+          <tr><td class="mono" style="color:var(--text3)">2026-07-13</td><td>对外扇出核实照出库内单源偏空盲区 — MiCA 清 USDT / 渣打(G-SIB)铸赎 / BNY 托管铸赎 / USYC 反超 BUIDL，均利好；此前只看对内流会系统性偏空</td><td>H1/H2 机构通道↑；利好 &gt; 利空</td><td class="mono" style="text-align:right;font-weight:600;color:var(--text3)">—</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-07-06</td><td>Circle 被剔除 Russell 指数、未被提前监控到 — 补稳定币主线短期流动性事件雷达</td><td>监控缺口（非 thesis 变化）</td><td class="mono" style="text-align:right;font-weight:600;color:var(--text3)">—</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-07-02</td><td>圆桌复核 — 价值捕获结构性流向 Coinbase/平台而非 Circle，COIN 相对 CRCL 更优；单纯裸多 CRCL 被否</td><td>H3 捕获仍唯一未解；8 月续约 = 分水岭</td><td class="mono" style="text-align:right;font-weight:600;color:var(--text3)">—</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-07-02</td><td>渣打（Standard Chartered，首家 G-SIB）单一 onboarding 为机构提供 USDC 铸造/赎回（DIFC 起步）</td><td>H2 机构级铸赎通道↑</td><td class="mono" style="text-align:right;font-weight:600;color:var(--text3)">—</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-06-29</td><td>BNY Mellon 扩大合作 — USDC 成其数字资产托管平台首个支持稳定币，可托管/转移/铸赎</td><td>H2 机构级托管↑</td><td class="mono" style="text-align:right;font-weight:600;color:var(--text3)">—</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-06-02</td><td>数学复核 — 5y 终点期望 $126 ≈ 年化 4.95%，远低于 25% 门槛；base 不成立，仅 Bull tail 成立</td><td>立场转中性偏谨慎；H3 捕获未兑现前不给溢价</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$126</td></tr>
           <tr><td class="mono" style="color:var(--text3)">2026-05-22</td><td>AQAv2 分成一手核查 — Coinbase/Circle 官方博客均不写分成，HYPE「up to 90%」剩余「未公开量化」</td><td>「Circle≈0 reserve」属三方沉默强推断 <span class="b b-o">[B]</span>，非官方明示；「Coinbase 10%」无一手出处</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$113</td></tr>
-          <tr><td class="mono" style="color:var(--text3)">2026-05-15</td><td>清仓 200 股 @ $119.6 换入 HYPE（D#90）— AQAv2 落地，L3a「平台抢 yield」kill 路径从假设变事实</td><td>H3 价值捕获 <span class="b b-r">商品化先例</span>；$119.6 vs 本地 EV $98 透支 22%</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$98</td></tr>
+          <tr><td class="mono" style="color:var(--text3)">2026-05-15</td><td>AQAv2 落地 — L3a「平台抢 yield」kill 路径从假设变事实（reserve take rate 归平台先例）</td><td>H3 价值捕获 <span class="b b-r">商品化先例</span>；当时市价 ~$119.6 vs 本地 EV $98，透支 22%</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$98</td></tr>
           <tr><td class="mono" style="color:var(--text3)">2026-05-04</td><td>CLARITY 收益条款文本 + 白宫定 7/4 签署目标 — 稳定币品类合法化彻底完成</td><td>H1 规模确定性 60%→<span class="b b-g">70%</span>；但 bona fide 例外把 Bull tail（分润反转）封堵</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$114</td></tr>
           <tr><td class="mono" style="color:var(--text3)">2026-04-22</td><td>ARC 启动 pivot Morpho（Circle 自任风控）+ 自有收入定位 — ARC 收入不与 Coinbase 分成</td><td>H3 <span class="b b-g">正面项</span>：自有平台价值捕获路径，但冷启动 TVL 仍存风险</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$93</td></tr>
           <tr><td class="mono" style="color:var(--text3)">2026-02-12</td><td>AI Agent 支付基础设施巨头密集布局 — 第一波中心化不需 crypto，USDC 机会在结算层</td><td>场景 5 确定性 <span class="b b-r">低</span>→<span class="b b-o">低→中</span>，时间 5 年后→2-3 年</td><td class="mono" style="text-align:right;font-weight:600;color:var(--blue)">$73</td></tr>
@@ -807,19 +833,19 @@ footer { text-align: center; padding: 20px; color: var(--text3); font-size: 11px
     <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">CPN/ARC/CCTP 收费启动</strong><div style="font-size:11px;color:var(--text3)">新收入来源 · 持续观察</div></div><span class="b b-g">加仓</span></div>
     <div class="tp-summary bull"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Mint 占比 >25%</strong><div style="font-size:11px;color:var(--text3)">降低 Coinbase 依赖 · 当前 13.5%</div></div><span class="b b-g">加仓</span></div>
     <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">美联储利率决议</strong><div style="font-size:11px;color:var(--text3)">利润率直接影响 · 持续</div></div><span class="b b-gr">观察</span></div>
-    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Coinbase 合同重谈</strong><div style="font-size:11px;color:var(--text3)">55% 分成 · 2026 Q4</div></div><span class="b b-y">关键</span></div>
+    <div class="tp-summary key"><span class="tp-dot pending" style="cursor:pointer" onclick="cycleTpDot(this)"></span><div style="flex:1"><strong style="font-size:12px">Coinbase 协议到期/重定价</strong><div style="font-size:11px;color:var(--text3)">利差分成重定价 · 2026/08</div></div><span class="b b-y">关键</span></div>
   </div>
 
   <!-- 关键时间线 -->
   <div class="card" style="margin-top:0">
     <div class="card-title">📅 关键时间节点</div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;font-size:11px">
-      <div style="padding:12px 8px;background:rgba(52,211,153,.08);border-radius:6px;border:1px solid rgba(52,211,153,.15)"><div style="color:var(--green);font-weight:600">2026/07</div><div style="color:var(--text3);margin-top:4px">⭐ CLARITY 签署目标</div></div>
-      <div style="padding:12px 8px;background:rgba(251,191,36,.08);border-radius:6px;border:1px solid rgba(251,191,36,.15)"><div style="color:var(--yellow);font-weight:600">2026 H2</div><div style="color:var(--text3);margin-top:4px">ARC 上线 · 自有收入</div></div>
-      <div style="padding:12px 8px;background:rgba(167,139,250,.08);border-radius:6px;border:1px solid rgba(167,139,250,.15)"><div style="color:var(--purple);font-weight:600">2026/06-07</div><div style="color:var(--text3);margin-top:4px">世界杯 · 预测市场增量</div></div>
-      <div style="padding:12px 8px;background:rgba(249,115,22,.08);border-radius:6px;border:1px solid rgba(249,115,22,.15)"><div style="color:var(--orange);font-weight:600">2026/08</div><div style="color:var(--text3);margin-top:4px">⭐ Coinbase 续约条款</div></div>
-      <div style="padding:12px 8px;background:rgba(77,140,245,.08);border-radius:6px;border:1px solid rgba(77,140,245,.15)"><div style="color:var(--blue);font-weight:600">2026 Q2 报</div><div style="color:var(--text3);margin-top:4px">RLDC/净利率趋势</div></div>
-      <div style="padding:12px 8px;background:rgba(34,211,238,.08);border-radius:6px;border:1px solid rgba(34,211,238,.15)"><div style="color:var(--cyan);font-weight:600">触发</div><div style="color:var(--text3);margin-top:4px">价格 &lt; $90 = 重新介入</div></div>
+      <div style="padding:12px 8px;background:rgba(77,140,245,.08);border-radius:6px;border:1px solid rgba(77,140,245,.15)"><div style="color:var(--blue);font-weight:600">2026/08/18</div><div style="color:var(--text3);margin-top:4px">⭐ Q2 财报 · RLDC/净利率</div></div>
+      <div style="padding:12px 8px;background:rgba(249,115,22,.08);border-radius:6px;border:1px solid rgba(249,115,22,.15)"><div style="color:var(--orange);font-weight:600">2026/08</div><div style="color:var(--text3);margin-top:4px">⭐ Coinbase 协议到期/重定价</div></div>
+      <div style="padding:12px 8px;background:rgba(251,191,36,.08);border-radius:6px;border:1px solid rgba(251,191,36,.15)"><div style="color:var(--yellow);font-weight:600">拖过 8 月</div><div style="color:var(--text3);margin-top:4px">CLARITY 二次冲刺窗口</div></div>
+      <div style="padding:12px 8px;background:rgba(167,139,250,.08);border-radius:6px;border:1px solid rgba(167,139,250,.15)"><div style="color:var(--purple);font-weight:600">2026 H2</div><div style="color:var(--text3);margin-top:4px">ARC 上线 · 自有收入</div></div>
+      <div style="padding:12px 8px;background:rgba(34,211,238,.08);border-radius:6px;border:1px solid rgba(34,211,238,.15)"><div style="color:var(--cyan);font-weight:600">信号</div><div style="color:var(--text3);margin-top:4px">OUSD 首批真实采用（RWA/CEX 计价）</div></div>
+      <div style="padding:12px 8px;background:rgba(248,113,113,.08);border-radius:6px;border:1px solid rgba(248,113,113,.15)"><div style="color:var(--red);font-weight:600">2027 H1</div><div style="color:var(--text3);margin-top:4px">银行系代币化存款采用 = H2 风险</div></div>
     </div>
   </div>
 
