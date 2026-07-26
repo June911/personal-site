@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>进步还是退化 · 一套看法什么时候该扔 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141414;--card:#1D1D1D;--fg:#EAEAEA;--accent:#FF3000;
+  --muted:#242424;--gray:#8C8C8C;--hairline:#333333;
+  --pos:#3FB950;--neg:#F85149;--warn:#D29922;
+  --body:#c8cede;--body2:#aeb6c6;--dim:#6E6E6E;
+  --font:'Inter',Helvetica,-apple-system,"PingFang SC",sans-serif;
+  --mono:'SF Mono',ui-monospace,Menlo,"Cascadia Code",monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--body);font:16px/1.75 var(--font);font-weight:400;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* nav */
+.nav{border-bottom:1px solid var(--hairline);position:sticky;top:0;background:rgba(20,20,20,.82);backdrop-filter:blur(8px);z-index:50}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:56px;padding:0 24px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-shapes{display:flex;align-items:center;gap:5px}
+.sh-c{width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.sh-s{width:10px;height:10px;background:var(--gray)}
+.sh-t{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--warn)}
+.nav-name{font-size:15px;font-weight:600;color:var(--fg);letter-spacing:.04em}
+.nav-back{font-size:12px;font-weight:500;color:var(--gray);letter-spacing:.04em;border:1px solid var(--hairline);border-radius:7px;padding:5px 12px;transition:.18s}
+.nav-back:hover{color:var(--fg);border-color:var(--gray)}
+
+/* hero */
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{padding:72px 0 40px;border-bottom:1px solid var(--hairline)}
+.hero .label{font:600 12px var(--mono);letter-spacing:.22em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.hero .label::before{content:"";width:26px;height:2px;background:var(--accent)}
+.hero h1{font-size:44px;font-weight:600;line-height:1.12;letter-spacing:-.01em;color:var(--fg)}
+.hero .sub{margin-top:18px;font-size:17px;color:var(--body2);line-height:1.7;max-width:60ch}
+.hero .meta{margin-top:24px;font:11.5px var(--mono);color:var(--dim);letter-spacing:.05em}
+
+/* body */
+.article{padding:8px 0 40px}
+.article h2{font-size:26px;font-weight:600;color:var(--fg);letter-spacing:-.01em;margin:64px 0 8px;padding-bottom:14px;border-bottom:1px solid var(--hairline);position:relative}
+.article h2::before{content:"";position:absolute;left:0;bottom:-1px;width:56px;height:2px;background:var(--accent)}
+.article h3{font-size:19px;font-weight:600;color:var(--fg);margin:44px 0 14px}
+.article h4{font-size:16px;font-weight:600;color:var(--warn);margin:32px 0 10px;font-family:var(--mono);letter-spacing:.01em}
+.article p{margin:16px 0;color:var(--body);line-height:1.85}
+.article ul,.article ol{margin:16px 0 16px 4px;padding-left:22px;color:var(--body);line-height:1.85}
+.article li{margin-bottom:8px}
+.article li::marker{color:var(--dim)}
+.article strong{font-weight:600;color:var(--fg)}
+.article a{color:#8fb7d8;border-bottom:1px solid rgba(143,183,216,.3)}
+.article a:hover{color:#c8e2f7}
+
+/* lead blockquote (the ">" callouts) */
+.article blockquote{margin:24px 0;padding:18px 22px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;color:var(--fg);font-weight:500;line-height:1.7}
+.article blockquote strong{color:var(--fg)}
+.article blockquote p{margin:0;color:inherit}
+.article blockquote p + p{margin-top:12px}
+
+/* ascii / model blocks */
+.ascii{margin:22px 0;padding:18px 20px;background:#101010;border:1px solid var(--hairline);border-radius:10px;overflow-x:auto;font:13px/1.65 var(--mono);color:var(--body2);white-space:pre;letter-spacing:0}
+.ascii .k{color:var(--accent)}
+
+/* closing line */
+.kicker{margin:40px 0 8px;padding:24px;background:linear-gradient(180deg,rgba(255,48,0,.05),var(--card));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--hairline));border-radius:14px;font-size:17px;line-height:1.7;color:var(--fg);font-weight:500}
+.kicker strong{color:var(--accent)}
+
+/* footer */
+.footer{border-top:1px solid var(--hairline);margin-top:48px}
+.footer-inner{max-width:820px;margin:0 auto;padding:32px 24px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer span{font:12px var(--mono);color:var(--dim)}
+.footer a{font:12px var(--mono);color:var(--gray)}
+.footer a:hover{color:var(--fg)}
+
+/* comments */
+.comments{margin:56px 0 0;padding-top:36px;border-top:1px solid var(--hairline)}
+.comments h2{font-size:18px;font-weight:600;color:var(--fg);letter-spacing:.05em;margin-bottom:22px;font-family:var(--mono)}
+
+@media (max-width:640px){
+  .hero{padding:48px 0 32px}
+  .hero h1{font-size:32px}
+  .article h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <span class="nav-shapes"><span class="sh-c"></span><span class="sh-s"></span><span class="sh-t"></span></span>
+      <span class="nav-name">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">← 返回文章</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="label">方法 · 认识论</div>
+  <h1>进步还是退化<br>一套看法什么时候该扔</h1>
+  <p class="sub">一笔交易亏了，是运气不好，还是背后那套看法本身坏了？拉卡托斯给了一把刀：别看单笔胜负，看它撞墙之后是"提前说对新东西"还是"事后找借口"。</p>
+  <div class="meta">LAKATOS · RESEARCH PROGRAMME · PROGRESSIVE VS DEGENERATING</div>
+</header>
+
+<article class="wrap article">
+
+  <p>一笔交易亏了，是这笔运气不好，还是背后那套看法本身坏了？这两件事必须分开——否则你要么因为一次意外就扔掉一套好方法，要么抱着一套烂方法不放，因为它"上次还赚了"。</p>
+
+  <p>单笔交易的对错，市场很快会告诉你。难的是判断<strong>那套反复在用的看法</strong>——你的选股框架、你识别机会的套路、你对某类资产的核心假设——它到底还灵不灵。这一层，靠单笔胜负判不了。科学哲学里有个现成的答案，来自伊姆雷·拉卡托斯。</p>
+
+  <h2>波普尔的漏，拉卡托斯来补</h2>
+
+  <p>教科书里的波普尔是这样的：一个理论是不是科学，看它能不能被证伪；一个反例出现，理论就该被推翻。（这个粗糙版本，拉卡托斯自己叫它"朴素证伪主义"，波普尔本人并不这么极端。）干净，但太天真——现实里没有科学家会因为一个反常数据就扔掉整套理论，他们会打补丁继续用，而且这么做常常是对的。</p>
+
+  <p>拉卡托斯把"证伪"的对象从<strong>单个命题</strong>升级成<strong>一整套理论</strong>，他叫它"研究纲领"。一套纲领分两层：</p>
+
+  <ul>
+    <li><strong>硬核</strong>：你不拿来证伪的核心信念，反例来了先保护它。</li>
+    <li><strong>保护带</strong>：外围的辅助假设，反例真来了，改的是这一圈，硬核不动。</li>
+  </ul>
+
+  <p>关键不在于"能不能打补丁"——总能。关键在于<strong>打补丁的方式</strong>。</p>
+
+  <h2>进步，还是退化</h2>
+
+  <p>拉卡托斯给了一把刀，判一套纲领是活着还是在烂：</p>
+
+  <blockquote>
+    <p><strong>进步式</strong>：你打的补丁带来了一个新的、原来预测不到的说法，而且这个新说法后来被现实证实了。</p>
+    <p><strong>退化式</strong>：你打的补丁只是事后给已知的反例找补，不产生任何新的、可以提前检验的预言。</p>
+  </blockquote>
+
+  <p>一句话：<strong>看它撞墙之后，是"提前说对了新东西"，还是"事后找了个只管这一次的借口"。</strong></p>
+
+  <p>注意这把刀量的是<strong>斜率，不是当下的值</strong>。一套此刻正在亏、看着也不聪明的方法，可能正在进步（每次错都学到一条能提前用的新规矩）——该留；一套战功赫赫的老方法，可能已经退化（每次都靠事后解释续命）——该扔。<strong>别在一个点上判生死，要在一段时间里判。</strong></p>
+
+  <figure class="figure">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 480" width="100%" height="auto" role="img" aria-label="进步式与退化式研究纲领随时间分岔示意图">
+      <text x="410" y="32" text-anchor="middle" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="11" letter-spacing="3" fill="#8C8C8C">LAKATOS · PROGRESSIVE  vs  DEGENERATING</text>
+      <text x="410" y="58" text-anchor="middle" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="18" font-weight="600" fill="#FF3000">看斜率，不看单笔胜负</text>
+      <line x1="70" y1="80" x2="70" y2="410" stroke="#333333" stroke-width="1"/>
+      <line x1="70" y1="410" x2="790" y2="410" stroke="#333333" stroke-width="1"/>
+      <line x1="70" y1="245" x2="790" y2="245" stroke="#3a3a3a" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="64" y="249" text-anchor="end" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="10" fill="#6E6E6E">零线</text>
+      <text x="30" y="245" text-anchor="middle" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="11" fill="#8C8C8C" transform="rotate(-90 30 245)">新预言 − 事后补丁（纲领健康度）</text>
+      <text x="430" y="458" text-anchor="middle" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="11" fill="#8C8C8C">时间 · 一次次撞墙（反例撞击） →</text>
+      <g font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="10" fill="#6E6E6E" text-anchor="middle">
+        <text x="185" y="427">反例①</text>
+        <text x="395" y="427">反例②</text>
+        <text x="585" y="427">反例③</text>
+      </g>
+      <polyline points="92,245 185,258" fill="none" stroke="#8C8C8C" stroke-width="2"/>
+      <circle cx="92" cy="245" r="4" fill="#8C8C8C"/>
+      <text x="92" y="231" text-anchor="middle" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="10" fill="#8C8C8C">同一起点</text>
+      <circle cx="185" cy="258" r="4" fill="#EAEAEA"/>
+      <text x="185" y="276" text-anchor="middle" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="10" fill="#aeb6c6">第一次撞墙 · 怎么打补丁决定方向</text>
+      <polyline points="185,258 250,185 360,200 430,125 540,140 600,82 760,78" fill="none" stroke="#3FB950" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <polyline points="185,258 250,292 360,304 430,338 540,350 600,385 760,398" fill="none" stroke="#F85149" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <g font-family="ui-monospace,SF Mono,Menlo,monospace">
+        <circle cx="250" cy="185" r="9" fill="#0f0f0f" stroke="#3FB950" stroke-width="1.5"/>
+        <text x="250" y="189" text-anchor="middle" font-size="13" font-weight="700" fill="#3FB950">+</text>
+        <text x="250" y="167" text-anchor="middle" font-size="10" fill="#3FB950">吐新预言 · 被证实</text>
+        <circle cx="430" cy="125" r="9" fill="#0f0f0f" stroke="#3FB950" stroke-width="1.5"/>
+        <text x="430" y="129" text-anchor="middle" font-size="13" font-weight="700" fill="#3FB950">+</text>
+        <text x="430" y="107" text-anchor="middle" font-size="10" fill="#3FB950">再吐新预言 · 又中</text>
+      </g>
+      <g font-family="ui-monospace,SF Mono,Menlo,monospace">
+        <circle cx="250" cy="292" r="9" fill="#0f0f0f" stroke="#F85149" stroke-width="1.5"/>
+        <text x="250" y="296" text-anchor="middle" font-size="13" font-weight="700" fill="#F85149">−</text>
+        <text x="262" y="312" text-anchor="start" font-size="10" fill="#F85149">只找事后借口</text>
+        <circle cx="430" cy="338" r="9" fill="#0f0f0f" stroke="#F85149" stroke-width="1.5"/>
+        <text x="430" y="342" text-anchor="middle" font-size="13" font-weight="700" fill="#F85149">−</text>
+        <text x="442" y="356" text-anchor="start" font-size="10" fill="#F85149">又一个借口</text>
+      </g>
+      <g font-family="ui-monospace,SF Mono,Menlo,monospace">
+        <circle cx="760" cy="78" r="4" fill="#3FB950"/>
+        <text x="754" y="64" text-anchor="end" font-size="12" font-weight="600" fill="#3FB950">进步式 · 留</text>
+        <circle cx="760" cy="398" r="4" fill="#F85149"/>
+        <text x="754" y="420" text-anchor="end" font-size="12" font-weight="600" fill="#F85149">退化式 · 弃</text>
+      </g>
+      <text x="772" y="98" text-anchor="end" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="14" fill="#3FB950">↗</text>
+      <text x="772" y="388" text-anchor="end" font-family="ui-monospace,SF Mono,Menlo,monospace" font-size="14" fill="#F85149">↘</text>
+    </svg>
+    <figcaption>同一个起点、同样撞墙，怎么打补丁决定了分岔——绿线越爬越高（吐出被证实的新预言），红线一路跌破零线（只有事后借口）。</figcaption>
+  </figure>
+
+  <h2>一个例子</h2>
+
+  <p>假设你有一套看法："某类公司在被纳入大指数之前，会有资金提前买入，所以纳入前买它能赚。"你拿它下了几注，有的赢有的输。当一注输了，你会改这套看法来救它——有两种改法：</p>
+
+  <p><strong>好的改法。</strong>某次输了，你复盘发现：这家公司要被纳入，市场早就都猜到了，价格提前反应完了。于是你把看法改一句：「只有当纳入是市场没料到的意外时才买。」——这句新话能<strong>提前用</strong>：下次遇到"大家都预期会纳入"的，你主动不买。之后再遇到冷门意外的，你按新规矩下注——它们一次次应验了这句新话。注意"证实"靠的是<strong>"事先说、后来真中"这个结构反复发生</strong>，不是某一笔赚钱本身。这套看法在变聪明，留着。</p>
+
+  <p><strong>坏的改法。</strong>同样输了一注，你说"这次是大盘不好拖累的"；又输一注，"这次是它财报暴雷"；再输一注，"这次是利率变了"。每次都解释得通，但每个解释都是事后想的、只管这一次的。你从没因此定出一条"下次遇到 X 就别买"的新规矩，也没有一次是"我提前说会怎样、然后真怎样了"。这套看法没变聪明，只是每次给自己找了个不同的台阶。它一直在赔——该扔了。</p>
+
+  <p>两边都是先赢后输，区别根本不在输赢，在<strong>输完之后你干了什么</strong>。</p>
+
+  <h2>最阴险的地方</h2>
+
+  <p>退化的那套看法，最危险之处在于它<strong>看着很健康</strong>。你每一步都解释得头头是道，感觉自己特别懂、特别有掌控感；它天天被你用、被你提、被你拿去下新注。任何"这套方法还在不在用"的检查，都会给它打高分——因为你确实一直在用它。</p>
+
+  <p>所以判一套看法该不该留，别问"我还用不用它、我能不能自圆其说"（永远能），要问那句更硬的：</p>
+
+  <blockquote>
+    <p><strong>靠这套看法，我最近有没有提前说对过新东西？</strong></p>
+  </blockquote>
+
+  <div class="kicker">说得出，它在<strong>进步</strong>；说不出，你只是在<strong>找台阶</strong>。这不只是投资的事——任何一套你反复依赖、又舍不得放下的判断方式，都可以拿这把刀照一照。</div>
+
+  <div class="comments">
+    <h2>评论</h2>
+    <div class="giscus"></div>
+    <script src="https://giscus.app/client.js"
+      data-repo="June911/personal-site"
+      data-repo-id="R_kgDORNjR9Q"
+      data-category="General"
+      data-category-id="DIC_kwDORNjR9c4C2TU2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="dark"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>june © 2026 · 进步还是退化</span>
+    <span><a href="../index.html">首页</a>　·　<a href="../index.html#articles">文章</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
