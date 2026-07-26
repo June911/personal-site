@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>右侧结构拐点 · 从看见变化到参与变化 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141414;--card:#1D1D1D;--fg:#EAEAEA;--accent:#FF3000;
+  --muted:#242424;--gray:#8C8C8C;--hairline:#333333;
+  --pos:#3FB950;--neg:#F85149;--warn:#D29922;
+  --body:#c8cede;--body2:#aeb6c6;--dim:#6E6E6E;
+  --font:'Inter',Helvetica,-apple-system,"PingFang SC",sans-serif;
+  --mono:'SF Mono',ui-monospace,Menlo,"Cascadia Code",monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--body);font:16px/1.75 var(--font);font-weight:400;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* nav */
+.nav{border-bottom:1px solid var(--hairline);position:sticky;top:0;background:rgba(20,20,20,.82);backdrop-filter:blur(8px);z-index:50}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:56px;padding:0 24px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-shapes{display:flex;align-items:center;gap:5px}
+.sh-c{width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.sh-s{width:10px;height:10px;background:var(--gray)}
+.sh-t{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--warn)}
+.nav-name{font-size:15px;font-weight:600;color:var(--fg);letter-spacing:.04em}
+.nav-back{font-size:12px;font-weight:500;color:var(--gray);letter-spacing:.04em;border:1px solid var(--hairline);border-radius:7px;padding:5px 12px;transition:.18s}
+.nav-back:hover{color:var(--fg);border-color:var(--gray)}
+
+/* hero */
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{padding:72px 0 40px;border-bottom:1px solid var(--hairline)}
+.hero .label{font:600 12px var(--mono);letter-spacing:.22em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.hero .label::before{content:"";width:26px;height:2px;background:var(--accent)}
+.hero h1{font-size:44px;font-weight:600;line-height:1.12;letter-spacing:-.01em;color:var(--fg)}
+.hero .sub{margin-top:18px;font-size:17px;color:var(--body2);line-height:1.7;max-width:60ch}
+.hero .meta{margin-top:24px;font:11.5px var(--mono);color:var(--dim);letter-spacing:.05em}
+
+/* body */
+.article{padding:8px 0 40px}
+.article h2{font-size:26px;font-weight:600;color:var(--fg);letter-spacing:-.01em;margin:64px 0 8px;padding-bottom:14px;border-bottom:1px solid var(--hairline);position:relative}
+.article h2::before{content:"";position:absolute;left:0;bottom:-1px;width:56px;height:2px;background:var(--accent)}
+.article h3{font-size:19px;font-weight:600;color:var(--fg);margin:44px 0 14px}
+.article h4{font-size:16px;font-weight:600;color:var(--warn);margin:32px 0 10px;font-family:var(--mono);letter-spacing:.01em}
+.article p{margin:16px 0;color:var(--body);line-height:1.85}
+.article ul,.article ol{margin:16px 0 16px 4px;padding-left:22px;color:var(--body);line-height:1.85}
+.article li{margin-bottom:8px}
+.article li::marker{color:var(--dim)}
+.article strong{font-weight:600;color:var(--fg)}
+.article a{color:#8fb7d8;border-bottom:1px solid rgba(143,183,216,.3)}
+.article a:hover{color:#c8e2f7}
+
+/* lead blockquote (the ">" callouts) */
+.article blockquote{margin:24px 0;padding:18px 22px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;color:var(--fg);font-weight:500;line-height:1.7}
+.article blockquote strong{color:var(--fg)}
+.article blockquote p{margin:0;color:inherit}
+
+/* tables */
+.tw{overflow-x:auto;margin:24px 0;border:1px solid var(--hairline);border-radius:12px}
+.article table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.article th{background:var(--muted);color:var(--body2);text-align:left;padding:12px 16px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--hairline)}
+.article td{padding:12px 16px;border-bottom:1px solid var(--hairline);color:var(--body);vertical-align:top;line-height:1.6}
+.article tr:last-child td{border-bottom:none}
+.article tbody tr:hover td{background:rgba(255,255,255,.014)}
+.article td strong{color:var(--fg)}
+
+/* ascii / model blocks */
+.ascii{margin:22px 0;padding:18px 20px;background:#101010;border:1px solid var(--hairline);border-radius:10px;overflow-x:auto;font:13px/1.65 var(--mono);color:var(--body2);white-space:pre;letter-spacing:0}
+.ascii .k{color:var(--accent)}
+
+/* figure */
+.figure{margin:32px 0;padding:20px;background:var(--card);border:1px solid var(--hairline);border-radius:14px}
+.figure svg{width:100%;height:auto;display:block}
+.figure figcaption{margin-top:14px;font:12px var(--mono);color:var(--dim);text-align:center;letter-spacing:.03em}
+
+/* closing line */
+.kicker{margin:40px 0 8px;padding:24px;background:linear-gradient(180deg,rgba(255,48,0,.05),var(--card));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--hairline));border-radius:14px;font-size:17px;line-height:1.7;color:var(--fg);font-weight:500}
+.kicker strong{color:var(--accent)}
+
+/* footer */
+.footer{border-top:1px solid var(--hairline);margin-top:48px}
+.footer-inner{max-width:820px;margin:0 auto;padding:32px 24px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer span{font:12px var(--mono);color:var(--dim)}
+.footer a{font:12px var(--mono);color:var(--gray)}
+.footer a:hover{color:var(--fg)}
+
+/* comments */
+.comments{margin:56px 0 0;padding-top:36px;border-top:1px solid var(--hairline)}
+.comments h2{font-size:18px;font-weight:600;color:var(--fg);letter-spacing:.05em;margin-bottom:22px;font-family:var(--mono)}
+
+@media (max-width:640px){
+  .hero{padding:48px 0 32px}
+  .hero h1{font-size:32px}
+  .article h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <span class="nav-shapes"><span class="sh-c"></span><span class="sh-s"></span><span class="sh-t"></span></span>
+      <span class="nav-name">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">← 返回文章</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="label">Lens · 投资框架</div>
+  <h1>右侧结构拐点<br>从看见变化到参与变化</h1>
+  <p class="sub">这份框架只回答四个问题：什么是拐点，什么不是；最容易错在哪里；如何识别；识别之后如何投资。</p>
+  <div class="meta">S-CURVE · POSITIVE FEEDBACK · STRUCTURAL INFLECTION</div>
+</header>
+
+<article class="wrap article">
+
+  <p>这里讨论的不是价格图形上的转折，也不只是经营数据触底，而是<strong>公司生成增长和利润的结构发生变化</strong>。所谓“右侧”，是现实已经换轨，投资者也拿到了足以行动的证据；所谓“S 曲线”，是新结构开始让增长自我强化，并且距离饱和仍远。</p>
+
+  <p>最短定义：</p>
+
+  <blockquote><p><strong>右侧结构拐点，是一个足够大的商业闭环跨过产品市场匹配、单位经济性和自我强化阈值，使公司从外力推动的线性增长，切换到内生反馈驱动的加速阶段；变化已经获得现实确认，但终态尚未被市场充分计价。</strong></p></blockquote>
+
+  <p>本文只讨论正向、可投资的结构拐点。负向结构变化与之对称，但不在主要使用范围内。</p>
+
+  <p>本框架用于经营结构驱动的机会；事件套利、代理证券、信用产品和宏观资产需要使用相应框架。</p>
+
+  <h2>最简用法</h2>
+
+  <p>日常判断只问三个问题：</p>
+
+  <pre class="ascii">可买 = <span class="k">真拐点</span> × <span class="k">有赔率</span>
+赔率决定仓位，风险设置上限</pre>
+
+  <ul>
+    <li><strong>真的变了吗？</strong> 公司的赚钱方式是否改变，而且新增价值能留在公司和股东手里。</li>
+    <li><strong>现在值得买吗？</strong> 市场是否尚未充分计价，正确时的上行明显大于错误时的下行。</li>
+    <li><strong>买错扛得住吗？</strong> 赔率决定买多少；组合上限、相关性和流动性约束决定最多买多少。</li>
+  </ul>
+
+  <p>后文的七道识别门是第一问的后台审计清单，不需要在每次日常判断时全部展开。</p>
+
+  <h2>总览图</h2>
+
+  <p>图分三层：最上面是公司是否真的发生结构变化，中间是我们如何排除假象并确认变化，最下面是确认以后如何把判断转成投资动作。<strong>结构闸决定有没有资格，赔率决定买不买和买多少，组合风险决定最多买多少。</strong></p>
+
+  <figure class="figure">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1180" role="img" aria-labelledby="ov-title ov-desc">
+  <title id="ov-title">右侧结构拐点投资框架</title>
+  <desc id="ov-desc">上半部分展示公司从外力推动跨过起飞阈值进入内生反馈和 S 曲线加速，中间展示包含价值捕获的六层证据与结构闸，下面展示赔率定仓、风险封顶、复检、持有和退出动作。</desc>
+  <defs>
+    <marker id="ov-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#77777f"/></marker>
+    <marker id="ov-arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950"/></marker>
+    <marker id="ov-arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f85149"/></marker>
+    <style>
+      #ov-title,#ov-desc{display:none}
+      svg text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:0}
+      .ov-title{fill:#f4f4f1;font-size:38px;font-weight:500}
+      .ov-subtitle{fill:#a1a1aa;font-size:18px;font-weight:400}
+      .ov-section-num{fill:#ff3000;font-size:15px;font-weight:500}
+      .ov-section-title{fill:#f4f4f1;font-size:24px;font-weight:500}
+      .ov-label{fill:#f4f4f1;font-size:19px;font-weight:500}
+      .ov-body{fill:#c4c4c7;font-size:16px;font-weight:400}
+      .ov-small{fill:#a1a1aa;font-size:14px;font-weight:400}
+      .ov-panel{fill:#1d1d1d;stroke:#383838;stroke-width:1.5}
+      .ov-panel-soft{fill:#202020;stroke:#333333;stroke-width:1}
+      .ov-axis{stroke:#4a4a4f;stroke-width:1.5}
+      .ov-flow{stroke:#77777f;stroke-width:2;fill:none;marker-end:url(#ov-arrow)}
+      .ov-flow-green{stroke:#3fb950;stroke-width:2.5;fill:none;marker-end:url(#ov-arrow-green)}
+      .ov-flow-red{stroke:#f85149;stroke-width:2.5;fill:none;marker-end:url(#ov-arrow-red)}
+    </style>
+  </defs>
+  <rect width="1600" height="1180" fill="#141414"/>
+  <text class="ov-title" x="72" y="66">右侧结构拐点</text>
+  <text class="ov-subtitle" x="72" y="100">公司先换轨，证据越阈值，赔率定仓位，风险封顶</text>
+  <line x1="72" y1="126" x2="1528" y2="126" stroke="#343434" stroke-width="1"/>
+  <text class="ov-section-num" x="72" y="166">01  REALITY</text>
+  <text class="ov-section-title" x="72" y="198">什么真的发生了变化？</text>
+  <rect x="72" y="222" width="1456" height="336" rx="6" fill="#181818" stroke="#303030" stroke-width="1"/>
+  <rect x="120" y="258" width="340" height="244" fill="#1d1d1d"/>
+  <rect x="460" y="258" width="322" height="244" fill="#3fb950" fill-opacity="0.06"/>
+  <rect x="782" y="258" width="686" height="244" fill="#d29922" fill-opacity="0.035"/>
+  <line class="ov-axis" x1="120" y1="492" x2="1468" y2="492"/>
+  <line class="ov-axis" x1="120" y1="492" x2="120" y2="266"/>
+  <text class="ov-small" x="1442" y="519">时间</text>
+  <text class="ov-small" x="82" y="280">价值 / 渗透</text>
+  <path d="M 124 472 C 270 470, 360 466, 438 430 C 530 388, 582 284, 682 218 C 786 150, 902 132, 1042 126 C 1170 120, 1302 119, 1450 119" fill="none" stroke="#ff3000" stroke-width="5" stroke-linecap="round"/>
+  <line x1="460" y1="250" x2="460" y2="502" stroke="#ff3000" stroke-width="2" stroke-dasharray="7 7"/>
+  <circle cx="460" cy="420" r="8" fill="#ff3000"/>
+  <text class="ov-label" x="477" y="351">起飞阈值</text>
+  <text class="ov-body" x="477" y="376">真实使用、付费、交付闭环跑通</text>
+  <text class="ov-small" x="477" y="399">风险从“有没有需求”转向“能放多大”</text>
+  <line x1="782" y1="250" x2="782" y2="502" stroke="#d29922" stroke-width="2" stroke-dasharray="7 7"/>
+  <circle cx="782" cy="154" r="8" fill="#d29922"/>
+  <text class="ov-label" x="806" y="180">数学拐点</text>
+  <text class="ov-body" x="806" y="204">绝对新增量达到峰值</text>
+  <text class="ov-small" x="806" y="226">此后仍增长，但加速度转负</text>
+  <text class="ov-label" x="168" y="411">R1 · 外力推动</text>
+  <text class="ov-small" x="168" y="437">补贴 / 销售 / 资本 / 周期</text>
+  <text class="ov-label" x="544" y="280">R2 · 内生反馈</text>
+  <text class="ov-small" x="544" y="306">今天的增长制造明天的增长</text>
+  <text class="ov-label" x="1125" y="166">共识与饱和</text>
+  <text class="ov-small" x="1125" y="192">增长显影，赔率逐步收窄</text>
+  <text class="ov-small" x="226" y="540">探索期</text>
+  <text class="ov-small" x="551" y="540">加速期</text>
+  <text class="ov-small" x="1030" y="540">减速但仍增长</text>
+  <line x1="462" y1="528" x2="1050" y2="528" stroke="#3fb950" stroke-width="3"/>
+  <line x1="462" y1="520" x2="462" y2="536" stroke="#3fb950" stroke-width="3"/>
+  <line x1="1050" y1="520" x2="1050" y2="536" stroke="#3fb950" stroke-width="3"/>
+  <text x="630" y="519" fill="#3fb950" font-size="15" font-weight="500">结构右侧窗口：现实已换轨，共识未充分</text>
+  <text class="ov-section-num" x="72" y="606">02  EVIDENCE</text>
+  <text class="ov-section-title" x="72" y="638">如何证明它不是一次假拐点？</text>
+  <line class="ov-flow" x1="236" y1="704" x2="272" y2="704"/>
+  <line class="ov-flow" x1="446" y1="704" x2="482" y2="704"/>
+  <line class="ov-flow" x1="656" y1="704" x2="692" y2="704"/>
+  <line class="ov-flow" x1="866" y1="704" x2="902" y2="704"/>
+  <line class="ov-flow" x1="1076" y1="704" x2="1112" y2="704"/>
+  <line class="ov-flow-green" x1="1286" y1="704" x2="1320" y2="704"/>
+  <rect class="ov-panel" x="66" y="665" width="170" height="78" rx="6"/>
+  <text class="ov-label" x="151" y="696" text-anchor="middle">规则换轨</text>
+  <text class="ov-small" x="151" y="720" text-anchor="middle">R1 与 R2 写清</text>
+  <rect class="ov-panel" x="276" y="665" width="170" height="78" rx="6"/>
+  <text class="ov-label" x="361" y="696" text-anchor="middle">商业闭环</text>
+  <text class="ov-small" x="361" y="720" text-anchor="middle">使用 · 留存 · 付费</text>
+  <rect class="ov-panel" x="486" y="665" width="170" height="78" rx="6"/>
+  <text class="ov-label" x="571" y="696" text-anchor="middle">单位经济</text>
+  <text class="ov-small" x="571" y="720" text-anchor="middle">规模扩大不恶化</text>
+  <rect class="ov-panel" x="696" y="665" width="170" height="78" rx="6"/>
+  <text class="ov-label" x="781" y="696" text-anchor="middle">内生反馈</text>
+  <text class="ov-small" x="781" y="720" text-anchor="middle">增长产生增长</text>
+  <rect class="ov-panel" x="906" y="665" width="170" height="78" rx="6"/>
+  <text class="ov-label" x="991" y="696" text-anchor="middle">公司级价值</text>
+  <text class="ov-small" x="991" y="720" text-anchor="middle">利润贡献 · 价值捕获</text>
+  <rect class="ov-panel" x="1116" y="665" width="170" height="78" rx="6"/>
+  <text class="ov-label" x="1201" y="696" text-anchor="middle">持续与余量</text>
+  <text class="ov-small" x="1201" y="720" text-anchor="middle">路径依赖 · 远离饱和</text>
+  <path d="M 1385 650 L 1460 704 L 1385 758 L 1310 704 Z" fill="#ff3000" fill-opacity="0.14" stroke="#ff3000" stroke-width="2"/>
+  <text class="ov-label" x="1385" y="698" text-anchor="middle">结构闸</text>
+  <text class="ov-small" x="1385" y="722" text-anchor="middle">有下注资格？</text>
+  <rect x="66" y="770" width="1394" height="48" rx="6" fill="#f85149" fill-opacity="0.08" stroke="#f85149" stroke-opacity="0.45"/>
+  <text x="86" y="800" fill="#f85149" font-size="15" font-weight="500">常见假象</text>
+  <text class="ov-body" x="205" y="800">发布 / 合作　　同比转正 / 高增长　　周期反弹　　局部产品成功　　股价上涨</text>
+  <text class="ov-small" x="1230" y="800">都不能独立通过结构闸</text>
+  <text class="ov-section-num" x="72" y="872">03  ACTION</text>
+  <text class="ov-section-title" x="72" y="904">拐点给资格，赔率定仓位，风险封顶</text>
+  <line class="ov-flow" x1="288" y1="962" x2="354" y2="962"/>
+  <line class="ov-flow-green" x1="510" y1="962" x2="586" y2="962"/>
+  <line class="ov-flow" x1="796" y1="962" x2="858" y2="962"/>
+  <line class="ov-flow-green" x1="1018" y1="930" x2="1120" y2="930"/>
+  <line class="ov-flow-red" x1="1018" y1="994" x2="1120" y2="1016"/>
+  <rect class="ov-panel" x="70" y="922" width="218" height="80" rx="6"/>
+  <text class="ov-label" x="179" y="953" text-anchor="middle">结构闸通过</text>
+  <text class="ov-small" x="179" y="978" text-anchor="middle">公司真的换轨</text>
+  <path d="M 432 902 L 510 962 L 432 1022 L 354 962 Z" fill="#d29922" fill-opacity="0.14" stroke="#d29922" stroke-width="2"/>
+  <text class="ov-label" x="432" y="955" text-anchor="middle">赔率闸</text>
+  <text class="ov-small" x="432" y="980" text-anchor="middle">价格仍值得？</text>
+  <rect x="586" y="922" width="210" height="80" rx="6" fill="#3fb950" fill-opacity="0.11" stroke="#3fb950" stroke-width="2"/>
+  <text class="ov-label" x="691" y="946" text-anchor="middle">建立仓位</text>
+  <text class="ov-small" x="691" y="970" text-anchor="middle">赔率定仓 · 风险封顶</text>
+  <text class="ov-small" x="691" y="991" text-anchor="middle">Kill + 复检</text>
+  <path d="M 938 902 L 1018 962 L 938 1022 L 858 962 Z" fill="#242424" stroke="#77777f" stroke-width="2"/>
+  <text class="ov-label" x="938" y="955" text-anchor="middle">证据 / 赔率</text>
+  <text class="ov-small" x="938" y="980" text-anchor="middle">升级还是耗尽？</text>
+  <rect x="1120" y="890" width="250" height="80" rx="6" fill="#3fb950" fill-opacity="0.11" stroke="#3fb950" stroke-width="2"/>
+  <text class="ov-label" x="1245" y="921" text-anchor="middle">证据升级</text>
+  <text class="ov-small" x="1245" y="946" text-anchor="middle">仍有赔率：加仓 / 持有</text>
+  <rect x="1120" y="986" width="250" height="80" rx="6" fill="#f85149" fill-opacity="0.1" stroke="#f85149" stroke-width="2"/>
+  <text class="ov-label" x="1245" y="1017" text-anchor="middle">结构 / 赔率失效</text>
+  <text class="ov-small" x="1245" y="1042" text-anchor="middle">减仓或退出</text>
+  <path d="M 432 1022 L 432 1064 L 586 1064" stroke="#77777f" stroke-width="2" fill="none" marker-end="url(#ov-arrow)"/>
+  <rect class="ov-panel-soft" x="586" y="1032" width="210" height="64" rx="6"/>
+  <text class="ov-label" x="691" y="1059" text-anchor="middle">等待或放弃</text>
+  <text class="ov-small" x="691" y="1082" text-anchor="middle">公司变好，但价格太贵</text>
+  <rect x="72" y="1122" width="1456" height="36" rx="6" fill="#ff3000" fill-opacity="0.08"/>
+  <text x="800" y="1146" text-anchor="middle" fill="#f4f4f1" font-size="16" font-weight="500">可买 = 真拐点 × 有赔率　｜　赔率决定仓位，风险设置上限</text>
+</svg>
+    <figcaption>右侧结构拐点总览：S 曲线、结构闸与投资动作</figcaption>
+  </figure>
+
+  <h2>1. 什么是拐点，什么不是拐点</h2>
+
+  <h3>1.1 拐点改变的是规则，不只是结果</h3>
+
+  <pre class="ascii">before: x(t+1) = R1(x(t))
+after:  x(t+1) = R2(x(t))
+where:  R1 != R2</pre>
+
+  <p><strong>x</strong> 可以是用户、交易量、收入、利润或其他核心状态。数值从下降变成上升，只说明结果改变；决定下一期状态的规则从 <strong>R1</strong> 变成 <strong>R2</strong>，才是结构拐点。</p>
+
+  <p>变化前，公司增长主要依靠销售人员、补贴、资本开支或行业景气。每增加一份收入，都要重新付出相近成本。变化后，已有增长开始生产下一轮增长：用户带来用户，使用产生数据，流动性吸引流动性，规模降低成本，标准吸引生态。</p>
+
+  <p>一个用于思考而非精确估值的最小模型是：</p>
+
+  <pre class="ascii">before: dx/dt = a * I(t)
+after:  dx/dt = [a * I(t) + b * x(t)] * [1 - x(t)/K]</pre>
+
+  <ul>
+    <li><strong>I(t)</strong> 是营销、补贴、销售人员和资本开支等外部投入。</li>
+    <li><strong>b * x(t)</strong> 是用户、数据、流动性、标准或生态产生的内生反馈。</li>
+    <li><strong>K</strong> 是这条曲线最终可容纳的市场上限。</li>
+  </ul>
+
+  <p>真正的结构变化不是外力消失，而是内生反馈开始成为可持续的边际主导力量。</p>
+
+  <h3>1.2 “右侧”“结构”“S 曲线”和“赔率”各管一层</h3>
+
+  <div class="tw"><table>
+    <thead><tr><th>层次</th><th>回答的问题</th><th>判定对象</th></tr></thead>
+    <tbody>
+      <tr><td>结构拐点</td><td>公司内部哪套生成规则变了？</td><td>现实中的公司</td></tr>
+      <tr><td>右侧</td><td>有什么证据证明换轨已经发生？</td><td>投资者的信息状态</td></tr>
+      <tr><td>S 曲线加速</td><td>新规则会不会让增长越来越快？</td><td>系统的动力学</td></tr>
+      <tr><td>赔率</td><td>即使判断正确，价格还剩多少回报？</td><td>市场定价</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>结构变化是原因，右侧是证据状态，S 曲线加速是可能产生的结果，赔率决定能不能下注。</p>
+
+  <p>真正决定买不买的是两道闸：<strong>结构闸</strong>（公司到底换没换轨——右侧证据到没到，是这道闸的把握度）和<strong>赔率闸</strong>（这个价格还给不给回报）。看两道闸各自过没过，就有几种情形：有结构苗头、但证据还没到，是左侧猜想；只有数据改善、底下没有结构，是趋势交易；结构闸过了、但价格已经透支，是好公司而非好投资；结构根本没变、只是市场此前把一个（多为负向的）结构叙事误价、又被现实证伪，是<strong>证伪反转</strong>——结构闸 N/A，靠赔率闸的错价修复（判法见 3.5 Google 例）。</p>
+
+  <h3>1.3 本文说的不是数学上的 S 曲线拐点</h3>
+
+  <p>严格数学意义上的逻辑斯蒂 S 曲线拐点位于渗透率约 <strong>K/2</strong> 的位置，那里绝对新增量达到峰值。越过以后仍在增长，但加速度已经转负。</p>
+
+  <p>本文关心的是更早的<strong>起飞阈值</strong>：一个商业闭环刚被证明，内生反馈开始接管，公司进入加速段，但距离饱和仍远。若等到数学拐点才确认，往往已经太右。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>阶段</th><th>主导状态</th><th>主要风险</th></tr></thead>
+    <tbody>
+      <tr><td>探索期</td><td>需求是否存在仍不确定，增长靠外力推动</td><td>产品市场匹配风险</td></tr>
+      <tr><td>起飞阈值</td><td>完整商业闭环跑通，内生反馈开始出现</td><td>复制与扩张风险</td></tr>
+      <tr><td>加速期</td><td>增量产生下一轮增量，渗透率和利润池扩张</td><td>价值捕获与竞争风险</td></tr>
+      <tr><td>数学拐点</td><td>绝对新增量达到峰值</td><td>增速开始下降</td></tr>
+      <tr><td>饱和期</td><td>市场上限和竞争约束主导</td><td>估值与再投资风险</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>1.4 拐点有层级</h3>
+
+  <div class="tw"><table>
+    <thead><tr><th>层级</th><th>什么时候算跨过</th><th>还不能推出什么</th></tr></thead>
+    <tbody>
+      <tr><td>产品拐点</td><td>产品从演示变成可重复完成真实任务</td><td>不能推出用户会长期留下</td></tr>
+      <tr><td>用户拐点</td><td>多批次用户留存、使用深度和自然增长成立</td><td>不能推出用户愿意付费</td></tr>
+      <tr><td>商业化拐点</td><td>付费、续费、加购和交付闭环可以复制</td><td>不能推出规模化后利润改善</td></tr>
+      <tr><td>利润拐点</td><td>单位经济为正，规模扩大带来经营杠杆</td><td>不能推出竞争优势可持续</td></tr>
+      <tr><td>护城河拐点</td><td>数据、标准、网络或工作流形成路径依赖</td><td>不能推出市场空间仍足够大</td></tr>
+      <tr><td>公司结构拐点</td><td>新曲线足以重写整体利润池、资本配置或公司身份</td><td>不能推出当前价格仍有赔率</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>一个产品过了拐点，不代表整家公司过了拐点。公司级拐点必须看到相邻层级之间的传导，并且影响足以改变整体利润、市场空间、资本配置或公司身份。</p>
+
+  <p>一个常见的重要性校准锚是“未来利润扩大数倍”或“影响整体利润超过一半”——它们不是普适定义。数字可以因公司而变，重要性要求不能取消。</p>
+
+  <h3>1.5 一张边界表</h3>
+
+  <div class="tw"><table>
+    <thead><tr><th>现象</th><th>是不是结构拐点</th><th>原因</th></tr></thead>
+    <tbody>
+      <tr><td>股价突破前高</td><td>不是</td><td>只证明资金看法改变</td></tr>
+      <tr><td>同比收入转正</td><td>不一定</td><td>可能只是低基数或周期复苏</td></tr>
+      <tr><td>发布产品或签合作</td><td>不是</td><td>没有证明使用、付费和交付闭环</td></tr>
+      <tr><td>一个场景形成真实付费与正单位经济</td><td>产品或商业化拐点候选</td><td>风险开始从需求转向扩张</td></tr>
+      <tr><td>现有增长开始降低下一轮增长成本</td><td>结构拐点核心信号</td><td>结果开始改善产生结果的条件</td></tr>
+      <tr><td>新业务足以重写公司利润池且反馈可持续</td><td>公司结构拐点候选</td><td>生成函数和公司身份都可能改变</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>2. 常见的误区有哪些</h2>
+
+  <h4>误区一：把高增长当成结构变化</h4>
+  <p>高增长可能来自低基数、补贴、并购、周期或一次性大客户。结构变化要求增长具有自我生成能力，而不是单纯增长率很高。</p>
+  <p>校正问题是：<strong>本轮增长如何提高下一轮增长发生的概率，或者降低下一轮增长的成本？</strong></p>
+
+  <h4>误区二：把事件当成拐点</h4>
+  <p>产品发布、政策通过、签下合作伙伴或获得牌照，只会改变成功概率，不会自动证明商业闭环。事件是前瞻读数，不是结论。</p>
+  <p>一项发布只有继续产生重复使用、真实付费、可复制交付和正单位经济，才可能上升为商业化拐点。</p>
+
+  <h4>误区三：把周期反弹当成结构换轨</h4>
+  <p>库存见底、利率下降、商品涨价或行业补库，可以让同一套规则 <strong>R1</strong> 从低位恢复。只要获客方式、成本函数、价值捕获和竞争结构没有改变，它就是周期位置变化，不是结构变化。</p>
+
+  <h4>误区四：用最前端的一项成功替后面所有层级作证</h4>
+  <p>产品能力跃迁不能直接推出用户留存，用户增长不能直接推出付费，商业化不能直接推出利润，利润增长也不能直接推出护城河。</p>
+  <p>这是最常见的越级推断。每跨一层，都需要该层自己的独立证据。</p>
+
+  <h4>误区五：把产品拐点说成公司拐点</h4>
+  <p>一个新业务即使增长很快，如果只占集团很小部分，也不足以改变公司价值。判断公司级拐点必须明确它对未来增量收入、利润池、资本配置和估值身份的影响。</p>
+
+  <h4>误区六：先画巨大终态，再把当前位置叫作起飞前夜</h4>
+  <p>S 曲线可以给任何故事制造非线性终态。若市场边界、渗透率、单位经济和价值捕获没有现实约束，曲线只是叙事插图。</p>
+  <p>必须同时回答：<strong>K</strong> 到底是什么、当前渗透率是多少、谁控制入口、谁能留下利润、什么会让曲线提前饱和。</p>
+
+  <h4>误区七：把“不可逆”理解成永远不会倒退</h4>
+  <p>真正可用的概念是路径依赖：回到旧状态需要付出显著代价。数据已经迁移、工作流已经重构、标准已经采用或生态已经形成，都让系统带有记忆，但不能保证它永远不会被新技术替代。</p>
+  <p>其中监管型的“不可逆”最脆，但要分档：行政令、牌照、准入这类靠行政意志维系的，换届、改判或一纸命令就能抹掉，要比数据、工作流、生态类护城河多打一层折扣——是一纸能被收回的护城河；写进成文法的（需立法机关才能推翻）相对更黏，但也非永久。判据是“推翻它要动谁”——动一支笔，还是动一部法。</p>
+
+  <h4>误区八：等所有财务结果确认后才叫右侧</h4>
+  <p>财务报表通常是滞后结果。若等收入、利润和市场共识全部确认，误判概率虽然更低，赔率也可能已经消失。</p>
+  <p>右侧不是“所有人都知道”，而是<strong>决定性闭环已经获得现实证据</strong>。</p>
+
+  <h4>误区九：结构判断正确就等于股票值得买</h4>
+  <p>公司可以成功，股票仍然可能亏钱。若价格已经计入比乐观情景更高的终态，结构拐点只证明公司变好，不证明投资回报足够。</p>
+
+  <h2>3. 我们如何识别拐点</h2>
+
+  <h3>3.1 识别标准：可观测、前瞻、带阈值</h3>
+  <ul>
+    <li><strong>可观测</strong>：必须落到用户、订单、留存、交易量、价格、成本或现金流等现实读数。</li>
+    <li><strong>前瞻</strong>：优先观察导致收入和利润变化的原因，而不是只看滞后财务结果。</li>
+    <li><strong>带阈值</strong>：事前写明什么数值、持续多久、覆盖多大范围才算跨过，避免事后解释。</li>
+  </ul>
+  <p>只有机制、没有读数，无法区分结构变化与故事；只有读数、没有机制，无法区分拐点与噪声。</p>
+
+  <h3>3.2 七道识别门</h3>
+  <p>这是用于深挖和复盘的后台清单。日常操作仍然只问：真的变了吗，现在值得买吗，买错扛得住吗。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>识别门</th><th>核心问题</th><th>合格证据</th><th>常见假象</th></tr></thead>
+    <tbody>
+      <tr><td>1. 规则换轨</td><td><strong>R1</strong> 与 <strong>R2</strong> 到底差在哪？</td><td>能写出变化前后的获客、交付、价值捕获或成本函数</td><td>只说行业空间很大</td></tr>
+      <tr><td>2. 闭环跑通</td><td>有没有一个场景完成使用、留存、付费和交付？</td><td>重复使用、真实付费、可归因收入、可复制交付</td><td>发布产品、免费试用</td></tr>
+      <tr><td>3. 正单位经济</td><td>放大以后会不会越做越亏？</td><td>贡献利润为正，边际交付或获客成本改善</td><td>靠补贴换规模</td></tr>
+      <tr><td>4. 内生反馈</td><td>本轮增长如何提高下一轮增长概率？</td><td>网络、数据、流动性、标准、规模或生态形成闭环</td><td>单纯行业景气</td></tr>
+      <tr><td>5. 公司级重要性</td><td>成功后能否改变整体利润或资本配置？</td><td>可解释未来主要增量利润，管理层资源持续迁移</td><td>对集团无足轻重</td></tr>
+      <tr><td>6. 路径依赖</td><td>催化消失后会不会立即退回原状？</td><td>数据沉淀、工作流嵌入、标准采用、切换成本</td><td>用户因优惠暂留</td></tr>
+      <tr><td>7. 曲线余量</td><td>新曲线还有多长，谁能捕获价值？</td><td>渗透率仍低、边界清晰、价值捕获权可验证</td><td>把行业规模算成公司收入</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>七道门不是打分表。前四道证明新的增长结构存在，第五道证明它值得进入公司估值，第六道证明变化有持续性，第七道证明未来仍有空间。</p>
+
+  <h3>3.3 证据要形成跨层链条</h3>
+  <div class="tw"><table>
+    <thead><tr><th>信号位置</th><th>观察什么</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>原因层</td><td>技术可用性、成本曲线、政策门槛、库存、供给能力</td><td>判断为什么可能换轨</td></tr>
+      <tr><td>行为层</td><td>重复使用、留存、使用深度、自然增长、交易活跃</td><td>最早确认真实需求</td></tr>
+      <tr><td>商业层</td><td>付费转化、续费、加购、贡献利润、可复制交付</td><td>确认商业闭环</td></tr>
+      <tr><td>财务层</td><td>收入、毛利、经营杠杆、自由现金流</td><td>确认结果传导</td></tr>
+      <tr><td>市场层</td><td>盈利预测、估值、相对强弱</td><td>判断共识和赔率</td></tr>
+    </tbody>
+  </table></div>
+  <p>识别右侧不要求五层全部转正，但至少要有两个相互独立的来源跨层确认。管理层说需求很好，不算两个证据；用户留存改善且付费转化提高，才是相互咬合的证据。</p>
+
+  <h3>3.4 核心反事实：撤掉外力以后会怎样</h3>
+  <p>最有效的测试是：</p>
+  <blockquote><p><strong>如果公司不再增加补贴、营销和人工推动，已有系统还能否让增长继续发生？</strong></p></blockquote>
+  <p>答案不要求外力归零，但内生部分必须已经可观测，并且在边际上变得更重要。</p>
+  <p>常见的内生反馈包括：</p>
+  <ul>
+    <li>用户增加让产品对所有用户更有价值。</li>
+    <li>使用产生数据，数据改善产品，产品改善又提高使用。</li>
+    <li>流动性吸引交易，交易加深流动性并降低摩擦。</li>
+    <li>规模扩大降低单位成本，低成本打开更大市场。</li>
+    <li>标准采用吸引生态建设，生态建设强化标准地位。</li>
+    <li>工作流嵌入提高留存，留存降低获客与再教育成本。</li>
+  </ul>
+
+  <h3>3.5 判例只用于演示判法</h3>
+  <p>以下内容只演示方法，不代表对相关标的截至今日的最新判断。</p>
+  <p><strong>发布股票类产品</strong>：发布只证明产品存在，没有证明真实交易量、重复使用、流动性、单位经济和公司级重要性。它是事件读数，不是拐点。</p>
+  <p><strong>HIP-3</strong>：若新市场持续产生非补贴交易量、重复参与者、外部发行和正手续费，且流动性增长继续降低交易摩擦，风险才开始从“有没有需求”迁移到“可以放大多大”。只有影响足以重写协议利润、市场空间或竞争位置，才上升为公司结构拐点。</p>
+  <p><strong>AI Agent</strong>：从聊天工具变成能调用工具、拆解任务和执行完整工作流，可以证明产品结构变化。留存、付费、交付成本、经营杠杆和工作流锁定仍需逐层验证，不能用产品能力跃迁替全部层级作证。</p>
+  <p><strong>监管解锁</strong>：立法、发牌、解禁改变的是“能不能合法发生”，是原因层的一个开关，不是拐点本身。它抬高天花板 <strong>K</strong>、打开一扇原本焊死的门，但没有证明有人走进去、把使用、付费、交付闭环跑通——按误区二当事件对待，监管落地后接着盯行为层与商业层。它只在两种情况下升格为结构：一是本身成为可持续的价值捕获权（牌照租金、合规寡头），二是成为反身性闭环里的自我强化节点（用量做大形成系统重要性、反过来换取监管背书、再吸引更多采用——但“系统重要性→背书”这步不自动，做大同样可能招来收紧，能否转成背书取决于当时的政治与制度配置，是这条反身链里最弱的一环）。前者要为可逆性打折（见误区七），后者才真正参与 <strong>R1→R2</strong> 的换轨。此外监管催化多为公开、二元、瞬间事件，价格常在裁决当下就把共识计入，赔率随之收窄；alpha 通常不在裁决那一刻，而在裁决之前的概率下注，或初期躁动退潮后被低估的二阶商业闭环确认。</p>
+
+  <p>以下两例是<strong>反向判法</strong>——一个划出框架的射程边界，一个用同一套门否掉被误传的结构拐点。</p>
+
+  <p><strong>存储价格周期（射程之外）</strong>：内存、硬盘这类存储器价格从周期底部反弹、带动相关公司收入同比转正——这是商品与周期的位置变化，不是结构换轨。获客、成本函数、价值捕获、竞争格局都没变，同一套 <strong>R1</strong> 只是从低位回到高位，用门 1 一问即散。这类机会归周期框架，不在本框架射程内。真正的结构版本是另一回事：若一家公司从同质化存储切到有定价权、有客户锁定的差异化产品（例如面向 AI 的高带宽存储），那是价值捕获换轨，才进框架。记住区别——价格涨不是拐点，赚钱的方式变了才是。</p>
+
+  <p><strong>Google 搜索 2025（证伪反转：结构没变，被误价的负向判断被反转）</strong>：两条线都是反向演示，且都不是结构拐点。其一，2025 年反垄断一审温和落地（不强拆 Chrome / Android、只加行为约束、且仍在上诉），此前市场把“强拆打断搜索广告闭环”当负向结构事件计价，威胁缓解带来重估——这是事件风险的结算、让原有 <strong>R1</strong> 继续、没有生成 <strong>R2</strong>，属事件层。其二，熊派叙事是“AI 触发搜索的负向换轨、流量离开 Google”；当年证据（搜索广告收入增速逐季加速、查询量创新高、AI Overview 被并入同一变现闭环）证伪了它——生成函数、入口控制、反馈环都没变。</p>
+  <p>由此引出一类独立机会——<strong>证伪反转</strong>（专指上面第二条腿：被误价的<strong>结构叙事</strong>被证伪）：它不是结构拐点，公司规则一格没动；市场此前把一个负向换轨计进了价、被现实证伪，打掉的折价重估回来。钱来自赔率闸的错价修复、与结构闸无关；上行封顶在“重估回公允”，没有新 S 曲线可坐。它与“结构真变但价格透支＝好公司非好投资”正好互为镜像：一个是结构变了没赔率，一个是结构没变却有赔率。（第一条腿那种纯监管/法律事件的结算，按开头 scoping 归事件框架；Google 2025 只是恰好两者同时发生。）</p>
+  <p>纪律要盯住它<strong>只是半程反转</strong>：被证伪的是“流量/查询流失”这条线，“AI 时代每次搜索还值不值钱”这条线仍开着——查询量在升，但 AI Overview 里广告主侧的付费点击率大幅下滑（Google 靠 CPC 抬价与新增广告位把<strong>每查询变现</strong>守在大致持平——这是 Google 自己的口径，非独立测得），单位经济下移到门 3 与门 7 待定。这注的 kill 就是这扇没关的门：变现效率若最终压穿单位经济，负向拐点会从“流量”换到“利润”重新成立。拿最滞后的财务结果替更上游的单位经济作证，是误区四越级推断的镜像（方向从“前替后”反成“后替前”）。</p>
+
+  <h3>3.6 一页识别卡</h3>
+  <pre class="ascii">对象：
+这次变化发生在哪条业务、哪一层？
+
+旧生成函数 R1：
+过去靠什么增长，主要约束是什么？
+
+新生成函数 R2：
+什么关系已经发生改变？
+
+跨过的阈值：
+哪个完整商业闭环已经跑通？
+
+内生反馈：
+本轮增长如何成为下一轮增长的投入？
+
+单位经济：
+规模扩大后，边际收益是否改善？
+
+公司级影响：
+它将改变多少收入、利润、市场空间或资本配置？
+
+路径依赖：
+哪些状态形成后，很难退回原状？
+
+S 曲线余量：
+当前渗透率多低，终态上限由什么约束？
+
+三个前瞻读数：
+1.
+2.
+3.
+
+确认阈值：
+读数达到什么数值、持续多久、覆盖多大范围才算跨过？
+
+证伪条件：
+出现什么结果，就说明这只是事件、周期反弹或局部成功？</pre>
+  <p>如果无法写出 <strong>R1</strong>、<strong>R2</strong>、三个读数和证伪条件，就还没有形成可投资的拐点判断。</p>
+
+  <h2>4. 基于拐点，我们如何投资</h2>
+
+  <h3>4.1 先判断处在哪个阶段</h3>
+  <div class="tw"><table>
+    <thead><tr><th>阶段</th><th>已知状态</th><th>主要任务</th><th>投资含义</th></tr></thead>
+    <tbody>
+      <tr><td>左侧假设</td><td><strong>R2</strong> 可能出现，但闭环未证明</td><td>研究机制、定义读数和阈值</td><td>不把故事当核心仓依据</td></tr>
+      <tr><td>结构右侧</td><td>闭环和单位经济初步成立</td><td>验证复制性与公司级影响</td><td>获得首次正式下注资格</td></tr>
+      <tr><td>反馈确认</td><td>内生反馈跨期、跨场景扩散</td><td>检查曲线余量与价值捕获</td><td>证据升级时才有加仓依据</td></tr>
+      <tr><td>财务显影</td><td>收入、利润和现金流开始反映结构</td><td>对账早期假设与真实传导</td><td>判断持有，不机械追涨</td></tr>
+      <tr><td>共识充分</td><td>市场普遍接受新终态</td><td>比较价格与乐观情景</td><td>回报由估值而非发现驱动</td></tr>
+      <tr><td>饱和或失效</td><td>加速度下降，反馈破裂或标准被替代</td><td>区分路径波动和结构证伪</td><td>减仓、退出或重做研究</td></tr>
+    </tbody>
+  </table></div>
+  <p>“过了拐点”不是一个买入按钮，而是公司从没有下注资格，进入可以计算赔率的候选集合。</p>
+
+  <h3>4.2 结构闸与赔率闸必须分别通过</h3>
+  <pre class="ascii">EV = P(structural shift is real) * remaining upside
+   - P(structural shift is false) * downside</pre>
+  <p>结构闸回答“公司是否换轨”，赔率闸回答“以这个价格买是否值得”。两者不能互相代替。</p>
+  <p>上面这个 EV 是为<strong>正向</strong>结构下注写的——结构为假是成本项。<strong>证伪反转是例外</strong>：它赌的是一个负向 shift 为假，结构为假反而是收益来源，只走赔率闸、不套这个公式；它的赔率来自“被计价的恐惧”与现实之间的差，kill 是那份恐惧换个地方重新成立（见 3.5 Google 例的半程反转）。</p>
+  <p>一个合格机会同时满足：</p>
+  <ul>
+    <li>结构变化的证据已经越过行动门槛。</li>
+    <li>判断错误时的损失可以承受。</li>
+    <li>判断正确时仍有足够剩余上行。</li>
+    <li>市场尚未把乐观终态当成基准情景。</li>
+    <li>证伪条件和复检时间已经写明。</li>
+  </ul>
+
+  <h3>4.3 建仓、加仓和持有分别需要什么</h3>
+  <p><strong>建立仓位</strong>：不是因为出现一条利好，而是因为决定性商业闭环跨过事前阈值，风险从产品市场匹配转向扩张。建仓前必须同时写出 <strong>R1/R2</strong>、公司级影响、价格隐含预期、赔率对应的目标仓位、风险上限、kill 和复检日。</p>
+  <p><strong>增加仓位</strong>：只能由两类变化驱动。第一类是证据升级，例如从产品拐点跨到商业化或利润拐点；第二类是价格下降但结构证据没有受损，导致赔率改善。仅仅因为股价上涨、叙事变热或管理层重复乐观表述，不构成加仓理由。</p>
+  <p><strong>继续持有</strong>：不要求每个季度增速更高，而要求生成函数仍在运转。只要反馈环、价值捕获和曲线余量没有破坏，短期路径波动可能只是 timing 问题。</p>
+
+  <h3>4.4 分清结构仓与时点仓</h3>
+  <p>结构判断与买入时点的置信度可以不同：</p>
+  <ul>
+    <li>结构成立但估值昂贵，只支持等待或小规模参与。</li>
+    <li>结构成立且短期数据、估值也合适，才具备提高仓位的条件。</li>
+    <li>时点判断失败但结构未破，不应自动推翻长期 thesis。</li>
+    <li>结构被证伪，即使价格没跌也应退出。</li>
+  </ul>
+  <p>这能防止两个相反错误：因为长期看好而忽视价格，也因为短期股价下跌而否定仍成立的结构。</p>
+
+  <h3>4.5 什么时候退出</h3>
+  <p>退出首先看生成函数，不先看盈亏：</p>
+  <ul>
+    <li>原本认为已经跑通的商业闭环无法复制。</li>
+    <li>单位经济随规模扩大反而恶化。</li>
+    <li>内生反馈需要持续补贴才能维持。</li>
+    <li>新标准或新技术替代了原来的路径依赖。</li>
+    <li>公司无法捕获行业增长创造的价值。</li>
+    <li>S 曲线接近饱和，而价格仍按加速期定价。</li>
+    <li>市场价格超过自己乐观情景的可解释价值。</li>
+  </ul>
+  <p>需要区分两类失败：增长暂时低于预期，可能只是路径或时点问题；<strong>R2</strong> 不存在或已经失效，才是结构 thesis 失败。</p>
+
+  <h3>4.6 投资前的最终卡片</h3>
+  <pre class="ascii">结构判断：
+R1 是否已经切换为 R2？证据是什么？
+
+阶段判断：
+产品、用户、商业化、利润、护城河走到哪一层？
+
+S 曲线：
+当前处于探索、起飞、加速、增速峰值还是饱和？
+
+市场定价：
+现价隐含了多高渗透率、利润率和成功概率？
+
+动作：
+观察、建仓、加仓、持有、减仓还是退出？
+
+动作触发：
+为什么是现在，不是上一期或下一期？
+
+Kill：
+什么事实会证明 R2 没有出现或已经失效？
+
+复检：
+下一个关键读数何时到货？到点后改变什么？</pre>
+
+  <h3>4.7 决策压缩</h3>
+  <pre class="ascii">STRUCTURAL CHANGE
+        |
+        v
+OBSERVABLE EVIDENCE
+        |
+        v
+PMF + POSITIVE UNIT ECONOMICS
+        |
+        v
+ENDOGENOUS FEEDBACK
+        |
+        v
+COMPANY-LEVEL MATERIALITY
+        |
+        v
+PATH DEPENDENCE
+        |
+        v
+RUNWAY + VALUE CAPTURE
+        |
+        v
+ODDS AT CURRENT PRICE
+        |
+        v
+ACTION + KILL + RECHECK</pre>
+  <p>前台公式：</p>
+  <pre class="ascii">可买 = <span class="k">真拐点</span> × <span class="k">有赔率</span>
+赔率决定仓位，风险设置上限</pre>
+  <p>其中“真拐点”由七道识别门审计；它们是对第一项的展开，不是七个需要同时记住的前台概念。“赔率”同时包含成功概率与上下行幅度，决定目标仓位；组合风险只负责封顶。此公式为<strong>正向结构下注</strong>写；证伪反转是例外——它“真拐点＝假”却仍可买，走的是赔率闸的错价修复（见 4.2）。</p>
+
+  <div class="kicker">一句话：<strong>拐点投资不是在公司增长更快以后追进去，而是在公司已经开始用今天的增长制造明天的增长、这件事刚被现实证明而市场尚未充分计价时参与。</strong></div>
+
+  <div class="comments">
+    <h2>留言</h2>
+    <div class="giscus"></div>
+    <script src="https://giscus.app/client.js"
+      data-repo="June911/personal-site"
+      data-repo-id="R_kgDORNjR9Q"
+      data-category="General"
+      data-category-id="DIC_kwDORNjR9c4C2TU2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="dark"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>june © 2026 · 右侧结构拐点</span>
+    <span><a href="../index.html">首页</a>　·　<a href="../index.html#articles">文章</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
