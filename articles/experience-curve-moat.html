@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>经验曲线可占有性护城河 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141414;--card:#1D1D1D;--fg:#EAEAEA;--accent:#FF3000;
+  --muted:#242424;--gray:#8C8C8C;--hairline:#333333;
+  --pos:#3FB950;--neg:#F85149;--warn:#D29922;
+  --body:#c8cede;--body2:#aeb6c6;--dim:#6E6E6E;
+  --font:'Inter',Helvetica,-apple-system,"PingFang SC",sans-serif;
+  --mono:'SF Mono',ui-monospace,Menlo,"Cascadia Code",monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--body);font:16px/1.75 var(--font);font-weight:400;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* nav */
+.nav{border-bottom:1px solid var(--hairline);position:sticky;top:0;background:rgba(20,20,20,.82);backdrop-filter:blur(8px);z-index:50}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:56px;padding:0 24px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-shapes{display:flex;align-items:center;gap:5px}
+.sh-c{width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.sh-s{width:10px;height:10px;background:var(--gray)}
+.sh-t{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--warn)}
+.nav-name{font-size:15px;font-weight:600;color:var(--fg);letter-spacing:.04em}
+.nav-back{font-size:12px;font-weight:500;color:var(--gray);letter-spacing:.04em;border:1px solid var(--hairline);border-radius:7px;padding:5px 12px;transition:.18s}
+.nav-back:hover{color:var(--fg);border-color:var(--gray)}
+
+/* hero */
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{padding:72px 0 40px;border-bottom:1px solid var(--hairline)}
+.hero .label{font:600 12px var(--mono);letter-spacing:.22em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.hero .label::before{content:"";width:26px;height:2px;background:var(--accent)}
+.hero h1{font-size:44px;font-weight:600;line-height:1.12;letter-spacing:-.01em;color:var(--fg)}
+.hero .sub{margin-top:18px;font-size:17px;color:var(--body2);line-height:1.7;max-width:60ch}
+.hero .meta{margin-top:24px;font:11.5px var(--mono);color:var(--dim);letter-spacing:.05em}
+
+/* body */
+.article{padding:8px 0 40px}
+.article h2{font-size:26px;font-weight:600;color:var(--fg);letter-spacing:-.01em;margin:64px 0 8px;padding-bottom:14px;border-bottom:1px solid var(--hairline);position:relative}
+.article h2::before{content:"";position:absolute;left:0;bottom:-1px;width:56px;height:2px;background:var(--accent)}
+.article h3{font-size:19px;font-weight:600;color:var(--fg);margin:44px 0 14px}
+.article p{margin:16px 0;color:var(--body);line-height:1.85}
+.article ul,.article ol{margin:16px 0 16px 4px;padding-left:22px;color:var(--body);line-height:1.85}
+.article li{margin-bottom:8px}
+.article li::marker{color:var(--dim)}
+.article strong{font-weight:600;color:var(--fg)}
+.article a{color:#8fb7d8;border-bottom:1px solid rgba(143,183,216,.3)}
+.article a:hover{color:#c8e2f7}
+.article hr{border:none;border-top:1px solid var(--hairline);margin:52px 0 28px}
+
+/* lead blockquote */
+.article blockquote{margin:24px 0;padding:18px 22px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;color:var(--fg);font-weight:500;line-height:1.7}
+.article blockquote strong{color:var(--fg)}
+.article blockquote p{margin:0;color:inherit}
+
+/* tables */
+.tw{overflow-x:auto;margin:24px 0;border:1px solid var(--hairline);border-radius:12px}
+.article table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.article th{background:var(--muted);color:var(--body2);text-align:left;padding:12px 16px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--hairline)}
+.article td{padding:12px 16px;border-bottom:1px solid var(--hairline);color:var(--body);vertical-align:top;line-height:1.6}
+.article tr:last-child td{border-bottom:none}
+.article tbody tr:hover td{background:rgba(255,255,255,.014)}
+.article td strong{color:var(--fg)}
+
+/* interlude */
+.interlude{margin:44px 0 8px;font:12px var(--mono);color:var(--dim);letter-spacing:.06em;text-align:center}
+
+/* closing line */
+.kicker{margin:40px 0 8px;padding:24px;background:linear-gradient(180deg,rgba(255,48,0,.05),var(--card));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--hairline));border-radius:14px;font-size:17px;line-height:1.7;color:var(--fg);font-weight:500}
+.kicker strong{color:var(--accent)}
+
+/* footer */
+.footer{border-top:1px solid var(--hairline);margin-top:48px}
+.footer-inner{max-width:820px;margin:0 auto;padding:32px 24px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer span{font:12px var(--mono);color:var(--dim)}
+.footer a{font:12px var(--mono);color:var(--gray)}
+.footer a:hover{color:var(--fg)}
+
+/* comments */
+.comments{margin:56px 0 0;padding-top:36px;border-top:1px solid var(--hairline)}
+.comments h2{font-size:18px;font-weight:600;color:var(--fg);letter-spacing:.05em;margin-bottom:22px;font-family:var(--mono)}
+
+@media (max-width:640px){
+  .hero{padding:48px 0 32px}
+  .hero h1{font-size:30px}
+  .article h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <span class="nav-shapes"><span class="sh-c"></span><span class="sh-s"></span><span class="sh-t"></span></span>
+      <span class="nav-name">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">← 返回文章</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="label">研究 · 护城河</div>
+  <h1>经验曲线可占有性护城河</h1>
+  <p class="sub">罗罗发动机 / 台积电式的护城河，关键不在「经验多」，而在<strong>经验曲线的参数能否被别人拿走</strong>。本文把这个判断展开成一个可操作的框架：机制、学术地基、正反案例、边界、投资 checklist。</p>
+  <div class="meta">2026-07-17 · EXPERIENCE CURVE · APPROPRIABILITY · PROCESS POWER</div>
+</header>
+
+<article class="wrap article">
+
+  <blockquote><p>深度调研产出（多路并行调研 + 承重事实对抗核查）。起点是一段对话：这类护城河的骨架，是「后来者的学习没人付费」。</p></blockquote>
+
+  <h2>一、这个护城河是什么</h2>
+
+  <h3>1.1 起点观察</h3>
+  <p>罗罗因二战后连续制造大量发动机积累参数经验，中国至今赶不上；台积电同理。这类护城河的骨架是三句话：</p>
+  <ol>
+    <li><strong>参数经验无法通过模拟获得</strong>，只能靠大量真实生产积累。良率参数、失效边界、工艺窗口，都是废品和事故喂出来的。</li>
+    <li><strong>后来者要学全就得从第一代重走</strong>。但第一代产品已经没人买了——追赶者只能独自承担全部学费，没有收入分摊。</li>
+    <li>所以在位者的优势不是「知道得多」，而是<strong>它的学习是别人付过费的，追赶者的学习没人付费</strong>。</li>
+  </ol>
+
+  <h3>1.2 三条件模型</h3>
+  <p>这种护城河成立，需要三个条件<strong>同时</strong>满足：</p>
+  <ul>
+    <li><strong>(a) 参数经验无法模拟</strong>——写不进文档、算不出来，只能真做。</li>
+    <li><strong>(b) 低代产品无市场</strong>——没有一个愿意为次品买单的练习场，没人替追赶者付学费。</li>
+    <li><strong>(c) 经验没有被封装进可购买的设备/工具</strong>——买产线不等于买走经验曲线。</li>
+  </ul>
+  <p>第三条最常被忽视、也最常漏水（见第四节的光伏和 LCD）。</p>
+
+  <h3>1.3 关键提炼：看载体，不看存量</h3>
+  <p>护城河的本质问题是「<strong>经验曲线的参数能不能被别人拿走</strong>」，而答案取决于参数存放的<strong>载体</strong>。按可携带性从高到低排：</p>
+  <div class="tw"><table>
+    <thead><tr><th>载体</th><th>可携带性</th><th>拿走方式</th><th>例子</th></tr></thead>
+    <tbody>
+      <tr><td>设备/工具里</td><td>最高</td><td>直接买</td><td>光伏交钥匙产线、LCD 设备商</td></tr>
+      <tr><td>文档/配方里</td><td>高</td><td>偷、逼着转让</td><td>高铁技术转让、船级社规范</td></tr>
+      <tr><td>个人脑子里</td><td>中</td><td>挖人、人才回流</td><td>梁孟松、施正荣</td></tr>
+      <tr><td>组织协作里</td><td>最低</td><td>只能整队连锅端</td><td>台积电、罗罗、丰田 TPS</td></tr>
+    </tbody>
+  </table></div>
+  <p>另加两条修正：</p>
+  <ul>
+    <li><strong>参数有环境依赖性</strong>。良率参数是针对「你这条产线、你这批设备、你这套供应链」调出来的局部解，不是普适真理。搬到别人的物理环境里很多直接失效——这解释了为什么偷到文档也未必有用。</li>
+    <li><strong>偷到的是快照，不是导数</strong>。只要前沿还在动，搬走今天的参数只是追平昨天；真正致命的是搬走「产生参数的学习机器」（成建制团队）。反过来，<strong>前沿一旦停滞，快照就够用了</strong>——追赶者时间换得起。这是此类护城河长期看真正的软肋。</li>
+  </ul>
+  <blockquote><p>一句话版本：<strong>这个护城河 = 默会知识 × 时间压缩不经济 × 强可占有性体制</strong>。三个词分别回答「为什么模拟不出来」、「为什么砸钱买不到时间」、「为什么参数搬不走」。</p></blockquote>
+
+  <h2>二、学术地基</h2>
+  <p>这套东西在战略管理学里被拆得很细，每一环都有对应的概念。总框架是<strong>资源基础观</strong>（RBV，Barney 1991 的 VRIN 标准：资源要值钱、稀缺、难模仿、难替代）——本文全部内容都在拆「难模仿」这一条。</p>
+
+  <h3>2.1 两篇奠基论文（调研中已逐页通读原文）</h3>
+  <p><strong>Dierickx &amp; Cool 1989《Asset Stock Accumulation and Sustainability of Competitive Advantage》</strong>（Management Science，仅 8 页）。核心命题：真正承载竞争优势的资产往往<strong>根本没有市场</strong>——不是市场不完美，是市场不完整。经销商忠诚、客户信任、质量声誉都买不到，只能「建」。论文用浴缸比喻区分存量与流量：缸里的水位（know-how 存量）是流入（当期研发）与漏出（知识过时）的累积结果，<strong>流量可以瞬间调整，存量不能</strong>。资产的不可模仿性由积累过程的五个特征决定：</p>
+  <ol>
+    <li><strong>时间压缩不经济</strong>（time compression diseconomies）：把时间固定住时的报酬递减律。原文三例：英国勋爵的草坪（「没什么诀窍，老兄，坚持五百年就行」）；一年制 MBA 即使其他投入翻倍也积累不出两年制的知识存量；同样的研发总预算，按一半强度花两倍时间的产出，大于按两倍强度花一半时间——所以突击式研发通常效果更差。<strong>这就是「后来者必须从第一代重走、没法压缩」的教科书表述。</strong></li>
+    <li><strong>资产体量效率</strong>（asset mass efficiencies）：存量高者加增量更容易，success breeds success。从低起点追赶很难，尤其当积累需要临界质量时。</li>
+    <li><strong>资产存量互联性</strong>（interconnectedness）：一个存量的积累速度取决于<strong>其他</strong>存量的水平。原文例子：没有大服务网络的公司连技术 know-how 都更难积累——这把单项资产的模仿难度升级为资产系统的模仿难度。对应「参数的环境依赖性」。</li>
+    <li><strong>资产侵蚀</strong>（asset erosion）：存量无维护即衰减。战略含义：只有存量变量能构成可信的进入威慑（流量对手进来后可以随意调整，威胁不可信）。</li>
+    <li><strong>因果模糊</strong>（causal ambiguity）：积累过程随机、不连续，<strong>连拥有者自己都说不全哪些因素起了作用</strong>，外人模仿近乎不可能。</li>
+  </ol>
+  <p>论文还预埋了本框架最重要的反例机制：即使模仿不构成威胁，存量仍可能被<strong>不同的存量替代</strong>——Canon 用更优的产品设计「把服务设计出产品之外」，令 Xerox 庞大的服务网络部分作废。存量护城河也会被降维打击。</p>
+  <p><strong>Teece 1986《Profiting from Technological Innovation》</strong>（Research Policy 创刊以来被引最多的论文）。回答的问题：为什么首个商业化创新的公司常常眼看模仿者赚得比自己多。答案由三块决定：<strong>可占有性体制</strong>（appropriability regime，环境因素决定创新者能否捕获创新利润；紧体制=可乐配方，弱体制=线性规划算法，且「紧是例外、弱是常态」）、主导设计范式、<strong>互补资产</strong>（通用型/专业化/共专业化三类）。核心结论：<strong>弱可占有性下，创新利润流向掌握专业化互补资产的一方</strong>。签名案例是 EMI CT 扫描仪：Hounsfield 发明 CT（1979 年与 Cormack 分享诺贝尔奖），但 EMI 毫无培训、支持、维修能力，专利又挡不住逆向工程，1973 年进美国市场后 6 年丢掉领导地位、8 年退出，业务最终被拥有制造、医院渠道与服务网络的 GE「以近乎白送的价格」买走。发明得了诺奖，利润归了拥有互补资产的模仿者。</p>
+
+  <h3>2.2 概念互锁链——谁回答哪一环</h3>
+  <div class="tw"><table>
+    <thead><tr><th>环节</th><th>问题</th><th>概念</th><th>出处</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>经验为什么值钱</td><td>干中学；赖特定律/经验曲线</td><td>Arrow 1962；Wright 1936；BCG/Henderson 1966-68</td></tr>
+      <tr><td>2</td><td>经验以什么形态存在</td><td>默会知识（「我们知道的比能说出的多」）</td><td>Polanyi 1958/1966</td></tr>
+      <tr><td>3</td><td>写不下来的部分存在哪</td><td>组织惯例（组织记忆存在人与人的协调模式里）</td><td>Nelson &amp; Winter 1982</td></tr>
+      <tr><td>4</td><td>为什么观察模仿也难</td><td>因果模糊/不确定可模仿性</td><td>Lippman &amp; Rumelt 1982</td></tr>
+      <tr><td>5</td><td>转移一次多少钱</td><td>粘性信息</td><td>von Hippel 1994</td></tr>
+      <tr><td>6</td><td>实际漏多快</td><td>知识外溢通道实证</td><td>Levin et al. 1987；Almeida &amp; Kogut 1999</td></tr>
+      <tr><td>7</td><td>漏出去谁接得住</td><td>吸收能力（学习方的概念）</td><td>Cohen &amp; Levinthal 1990</td></tr>
+      <tr><td>总账本</td><td>为什么租金没被磨平</td><td>隔离机制</td><td>Rumelt 1984</td></tr>
+    </tbody>
+  </table></div>
+  <p>几个值得单独记的点：</p>
+  <ul>
+    <li><strong>赖特定律的时钟是累计产量，摩尔定律的时钟是日历时间</strong>。产量驱动的成本下降可以被份额领先者独占；时间驱动的等着也能拿到，后进者免费搭车。判断一条成本曲线是哪种驱动，直接决定先行者优势是否可积累。（Wright 1936 的原始数字：飞机装配累计产量每翻倍，单位工时降约 20%；BCG 推广到总成本降 20-30%。）</li>
+    <li><strong>外溢通道的实证</strong>：挖人是被专利引用轨迹坐实的真实通道（Almeida &amp; Kogut 用半导体专利发明人跳槽轨迹证明，知识随工程师流动且嵌在区域劳动力网络里），专利文献传播也有地理摩擦；但在耶鲁调查（Levin et al. 1987）的企业自评里，最有效的学习通道是独立研发与许可，挖人在七项中仅排第五——这反而印证「个人载体可携带性有限」。同一调查发现<strong>多数创新在 3 年内被模仿</strong>——漏是默认，不漏才需要解释。保护产品创新最有效的是先行者优势、学习曲线与销售服务等互补资产（保密只对<strong>工艺</strong>创新有效；专利只在医药/化工等少数行业强）。</li>
+    <li><strong>丰田是因果模糊的活标本</strong>：几十年敞开工厂让对手参观、TPS 手册公开出版，真正复制成功者寥寥；GM 在 NUMMI 合资中获得完全透明的观察权仍学不会，丰田向自己供应商转移 TPS 都花了 15 年。Helmer《7 Powers》把这个叫 <strong>Process Power</strong>，认为是七种力中最稀有的一种。</li>
+    <li><strong>个人载体的边界</strong>（Groysberg 华尔街明星分析师研究）：单独跳槽的明星绩效立即下滑且持续至少五年；<strong>与团队同行、或跳去能力更强的平台</strong>则无显著下滑。默会知识的最小可携带单元不是个人而是「团队×平台」——可占有性护城河对团队级连锅端不设防。</li>
+  </ul>
+
+  <h2>三、正面案例：护城河怎么立</h2>
+
+  <h3>3.1 航空发动机（载体：组织＋法律实体；判定：厚，且有商业模式加固）</h3>
+  <ul>
+    <li><strong>参数是试出来的</strong>：GE9X 拿 FAA 认证动用 8 台认证试验发动机（另 1 台装机用于 ETOPS）、近 5,000 试验小时/8,000 循环，至今累计超 31,000 循环；直接研发超 20 亿美元（全口径行业估计可达百亿美元量级，但这是类比不是实数）。这些钱买的不是图纸，是失效数据。</li>
+    <li><strong>单晶涡轮叶片是微观标本</strong>：Bridgman 定向凝固抽拉速率仅约 3 毫米/分钟，大型厚壁叶片单铸良率曾被预测低于 20%（该预测出自陆基重型燃机口径，航空叶片成熟产线良率远高于此）；罗罗与 Cannon-Muskegon 开发的 CMSX-4 合金成分窗口极窄——「性能好」与「能铸出来」是同一组参数的两面。各家量产良率一律是商业机密。</li>
+    <li><strong>机队数据是持续流入的存量</strong>：罗罗发动机健康监测覆盖超 13,000 台在役发动机，每年接收超 70 万亿数据点；Trent 家族三转子架构可追溯到 1972 年的 RB211——半个世纪同架构迭代。</li>
+    <li><strong>适航认证把经验绑死在法人上</strong>：型号合格证（TC）的符合性数据是持证人的知识产权，FAA 依据它批准设计但不向第三方公开；法律规定只有持证人或其被许可人能凭证取得适航与生产许可。<strong>数据不随人才流动，随法人走</strong>——这是「参数搬不走」的法律强化层。C919 的欧洲适航证按 EASA 局长 2025 年表态还要三到六年（最早 2028、可能到 2031），且 COMAC 从未申请过 FAA 认证；2025 年 5 月底美国暂停 LEAP-1C 出口许可（7 月初恢复），期间 C919 生产受阻，全年交付 16 架、低于年初 30 架的交付目标（75 架为产能规划口径）。</li>
+    <li><strong>剃刀-刀片模式再加一道墙</strong>：2025 年发动机 OEM 拿走商用航空（制造+租赁价值链，不含航司）利润池的 47%，发动机商+租赁商合计 85%；罗罗超 90% 的 Trent 绑定按飞行小时付费的长约，GE 商用发动机部门营业利润率 26.6%。整机微利、利润在 20-40 年翻修周期里兑现——<strong>追赶者即使造出发动机，也要先熬过整整一代机队寿命的负现金流才碰得到利润池</strong>。</li>
+    <li>追赶方进展（诚实记录）：WS-15 已随歼-20 于 2025 年底批产（单晶叶片良率曾是最大公开卡点），CJ-1000A 预计 2027-2028 年取中国适航证。从「能造出来」到「良率稳定+翻修间隔可预测」是参数经验的下半场，机队级可靠性未经证明。中国的结构性瓶颈：高空模拟试车台数量远少于欧美（数据积累速度的物理上限）、高温合金批次稳定性有差距——批次稳定性恰恰是参数经验最集中的地方。</li>
+  </ul>
+
+  <h3>3.2 台积电（载体：组织协作；判定：厚——「同机不同命」的活证据）</h3>
+  <ul>
+    <li><strong>同样的 ASML 机器，不同的良率</strong>：业界估计（注意：两家从不官方披露，全部是韩媒/分析师口径）三星 3nm 良率长期在 20-60% 区间挣扎，台积电 N3E 成熟期约 82-90%。行为学证据比数字硬：三星自家 Exynos 2500 因良率不足错过 Galaxy S25（全系改用高通），Google Tensor G5 转单台积电。转单决定是多年累积良率史的结果，不是单一数字导致。<strong>设备可购买 ≠ 曲线可购买</strong>，这是条件 (c) 的直接验证。</li>
+    <li><strong>梁孟松案例精确划出个人载体的边界</strong>：他 2009 年离开台积电、2011 年加入三星（之间在三星系的成均馆大学给三星资深工程师授课，此节后来成为二审判决逆转的关键——电镜比对显示三星 28nm PMOS 硅锗电极呈台积电特有的菱形结构，法院实质上认定了「工艺指纹」的迁移，2015 年 8 月经最高法院维持定谳，民事竞业禁令延伸到竞业期满后，台湾司法史首例）。他在三星推动跳代打法、14nm 于 2015 年 2 月量产反超台积电 16nm 约半年，抢走苹果 A9 分单；2017 年入中芯后带 200 余人团队复制跳代路线，2019 年 14nm 量产，自述完成 28nm 到 7nm 五个世代。<strong>但边界同样清晰</strong>：三星 14nm 短暂反超后在 10nm/7nm/3nm 又被甩开；中芯 7nm（无 EUV、DUV 多重曝光）良率各方估计在 15-50% 区间（口径分歧大、随时间改善）、单片成本比台积电高 40-50%，2025 年营收创纪录（93.3 亿美元），但 Q4 毛利率被 7nm 良率与折旧拖到 19.2%（全年 21.0%）——技术上「能做」，商业上靠保护市场和补贴维持。<strong>个人能搬走「路线图选择+方法论+一批骨干」（把落后两代拉到落后一代），搬不走持续微调的组织过程（良率曲线本身）。</strong></li>
+    <li><strong>组织性的自证</strong>：台积电夜鹰计划（2014 年起 300-400 名研发工程师三班倒攻 10nm/7nm，成员底薪+30%、分红+50%）；与 ASML「one team」联合调机，2019→2024 年 EUV 机台数增 10 倍、EUV 晶圆产出增 30 倍（台积电自比基线：单台产出翻倍+良率与停机改善）。Intel 的 Copy Exactly! 方法论（新厂连油漆颜色都要复制）是「良率知识不可言明」的最佳旁证——<strong>因为不知道哪个变量承重，只能全盘复制</strong>。</li>
+    <li>反向读数：SMIC 员工流动率是台积电的 3-4 倍——「该成为下一代老师的人在成为老师之前就离开了」。人才留存率是这类护城河的健康度直接读数。</li>
+  </ul>
+
+  <h3>3.3 其他候选（各一句机制+厚薄判定）</h3>
+  <ul>
+    <li><strong>SpaceX 火箭回收</strong>（载体：飞行数据+迭代组织；<strong>显著变厚</strong>）：单枚助推器 B1067 已完成第 36 次飞行回收（2026-07），累计回收逾 630 次（2026 年 4 月破 600）；着陆控制律靠上百次真实回收（含早期炸毁）喂出的边缘工况数据，模拟器还原不了。竞对差一个数量级：Blue Origin 2026 年 4 月才首次复用轨道级助推器（当次上面级故障入错轨道，5 月又一枚静态点火爆炸重创发射台）；朱雀三号 2025 年 12 月首飞入轨但一级回收坠毁。这是「第一代没人买」最纯的现代版——一次性火箭在价格上已无法竞争，追赶者的每次爆炸都是自费学费。</li>
+    <li><strong>日本材料三杰</strong>（载体：批次数据+客户认证；<strong>仍厚但边缘变薄</strong>）：硅片前五大厂占约 82% 营收（信越+SUMCO 占全球一半以上量）；光刻胶日系约 80-90%（EUV 段约 95%）。买不走的核心是晶圆厂导入新供应商的验证周期（主流 6-24 个月）+靠量产积累的缺陷密度参数。但注意时态：2025 年 11 月起日本出口管制、2026 年对华 ArF/EUV 停供——<strong>供给通道被切断反而强制加速中国替代验证</strong>（KrF 国产化率各口径估计分歧极大——从 &lt;5% 到 30-40% 都有，ArF 仍 &lt;5%）。东丽是波音 787 主结构预浸料唯一认证供应商（合约 2015 年已延长并纳入 777X、总额超 110 亿美元）；未见任何中国碳纤维通过波音平台认证，但中复神鹰 2026 年 6 月投产 T1100 级产线，国产替代在自主机型上快速铺开。</li>
+    <li><strong>直觉外科</strong>（载体：手术数据+医生肌肉记忆+装机基座；<strong>仍厚，2025 年底首现真实竞争</strong>）：2025 年手术量超 310 万台、装机超 11,000 台；换平台等于让整个外科团队重新爬学习曲线。美敦力 Hugo 2025 年 12 月在美获泌尿适应症清关——威胁真实但目前很窄。</li>
+    <li><strong>生物药 CDMO</strong>（三星生物/龙沙；<strong>此框架下最弱的一个</strong>）：客户转换成本真实（工艺转移+监管重批要 2-3 年），但工艺 know-how 相当部分随药企的工艺包转移，CDMO 赚的是产能规模与合规执行——「买不走」程度远低于前几个。<strong>放进对照组是为了说明：不是所有「经验密集」行业都有这个护城河，要逐个验载体。</strong></li>
+  </ul>
+
+  <h2>四、反面案例：护城河怎么漏</h2>
+  <p>五个「曾被认为有工艺壁垒、结果被追平」的行业，泄漏通道收敛为四条，反复组合出现：</p>
+  <div class="tw"><table>
+    <thead><tr><th>案例</th><th>泄漏通道</th><th>被破坏的条件</th></tr></thead>
+    <tbody>
+      <tr><td>造船（日→韩→中）</td><td>船级社规范高度编码化+许可设计；低端散货船是付费练习场</td><td>(a) 知识可编码；(b) 低端有市场</td></tr>
+      <tr><td>高铁（2004 市场换技术）</td><td>文档/合同强制转让+外方工程师驻厂教学+单一买家垄断市场入口</td><td>(b) 买方垄断使「不转让=永远失去市场」；卖方财务危机迫使默会知识成文</td></tr>
+      <tr><td>LCD（京东方）</td><td>整体收购（Hydis：IP+文档+整支团队一次性转移）+设备商封装工艺</td><td>(c) 工艺产权在设备商生态；在位者财务危机被迫卖资产</td></tr>
+      <tr><td>光伏</td><td>海归创始人自带工艺+欧洲交钥匙产线封装配方+德国补贴市场付学费</td><td>(a)(b)(c) 三条全破</td></tr>
+      <tr><td>动力电池（CATL）</td><td>成建制团队连工艺体系整体平移（ATL 分拆）+政策把日韩挡在补贴市场外</td><td>载体整体流动；行政制造保护性买家</td></tr>
+    </tbody>
+  </table></div>
+  <p>值得记住的具体史实（均经核查修正）：</p>
+  <ul>
+    <li><strong>造船</strong>：现代重工 1972 年毫无造船经验，靠希腊船东两艘油轮订单「边建厂边造船」，技术是向苏格兰 Scott Lithgow 与 A&amp;P Appledore 明码买的（与川崎的技术合作在其后）。中国 1980 年「长城号」为入级劳氏，把劳氏建造检验规范全套翻译重编工艺规程——<strong>船级社规范就是被第三方编码的工艺知识</strong>。中国份额从 2003 年 14% 到 2024 年接单约 70%。</li>
+    <li><strong>高铁</strong>：2004 年招标的买方垄断设计——外商必须与两家国内厂结对、投标前签妥技术转让合同、设「动联办」考核转让效果（学不会就不付钱）。川崎（自身经营不佳）、阿尔斯通（濒临破产、刚获法国政府增资纾困，靠中国订单续命）都是<strong>卖方陷入财务危机时默会知识被迫成文出售</strong>的例子。三轮招标 280 列约 553 亿元，技术转让费合计仅约 23 亿元（约 4%）；西门子 2004 年坚持 3.9 亿欧元转让费出局，2005 年回归被压到 8000 万欧元。（注：流传的「227 亿/占 51%」通不过数量级对账，疑为 22.7 亿的小数点讹传。）</li>
+    <li><strong>LCD</strong>：京东方 2003 年以 3.8 亿美元买下海力士 LCD 事业部 Hydis（时全球第九），获完整 IP+团队，2005 年量产大陆第一条<strong>自主技术</strong>5 代线。学术研究明确指出后来者享受设备商学习曲线的「搭便车效应」——设备商为多卖设备，把改进后的工艺连同调试支持卖给任何付得起钱的人。</li>
+    <li><strong>光伏</strong>：「学习曲线成立但可占有性归零」的极端案例。Swanson 定律持续应验（组件从 1975 年 $100/W 到中国约 $0.10/W），但补贴使产能与市场信号脱钩——2025 年全球组件产能约 1.8TW（中国占约四分之三）对全球年需求约 500-600GW，头部厂商集体巨亏。<strong>行业学习曲线 ≠ 公司护城河，必须问「这条曲线是私有的还是全行业共享的」。</strong></li>
+    <li><strong>CATL</strong>：不是从零追赶，是把一支出自 ATL 的成建制团队连工艺体系整体搬出（2011 年分拆，是对外资动力电池股比限制政策信号的提前应对）；随后电池白名单把松下/LG/三星挡在补贴市场外，让它在无日韩竞争下独享中国电动车爆发期的学习曲线——<strong>学费由车企和财政补贴支付</strong>。</li>
+  </ul>
+  <blockquote><p><strong>横向结论</strong>：经验壁垒的成立条件极为苛刻——知识必须默会到无法编码进设备和文档、载体必须不流动、市场必须没有质量分层的低端入口、且在位者永远不能陷入被迫卖资产的财务危机。四条同时长期成立的行业极少，所以<strong>纯经验壁垒的默认定价应该是「时间壁垒」而非永久壁垒</strong>——问题只是这个时间值几年的超额利润。</p></blockquote>
+
+  <h2>五、框架的边界与反驳（红队结论）</h2>
+  <p>最强的反驳不是学术上的挑刺，而是一个结构性盲区：<strong>三条件全部在回答「别人复制这份经验有多难」（供给侧），完全不管「这份经验对应的需求维度还存不存在」（需求侧）。</strong> 历史上，三条件真正成立的护城河被突破时，几乎都不是被爬过去的，而是被绕开的（第四节那五个案例属于另一类：三条件本身有漏，被正面爬平）：经验存量原封不动，只是世界不再为它付费。</p>
+  <ul>
+    <li><strong>瑞士钟表 vs 石英（1970s）</strong>：三条件曾被视为教科书级成立——百年师徒制默会工艺、学徒制无法加速、行会结构强可占有（严格说条件 (b) 有漏：Timex、精工正是从低端表市场爬起的；但压垮瑞士钟表的不是这条爬升路径）。结果 1970-83 年制表商从 1600 家降到 600 家，就业从 9 万（1970）降到 2.8 万（1988）。最刺眼的细节：瑞士自己的 CEH 实验室 1967 年就造出打破精度纪录的石英原型（Beta 1），Astron 上市约三个半月后的巴塞尔表展上，约十家瑞士品牌就展出了 20 余只搭载 Beta 21 机芯的石英表（多为展品、上市前还需修改，Beta 21 总产量仅约 6000 枚）——<strong>在位者动了，但组织结构（数千家专业化小作坊）与成本曲线不允许它赢下量产市场</strong>（修正史观还加上瑞郎升值）。石英不攀爬机械经验曲线，它换了一条曲线。</li>
+    <li><strong>宝丽来/柯达</strong>：Tripsas &amp; Gavetti 的经典研究——宝丽来<strong>拥有</strong>领先的数字成像技术，死因不是能力缺口而是管理层认知：死守「剃刀-刀片」模式（相机便宜卖、耗材赚钱），拒绝为没有耗材流的数码相机放行。柯达 1975 年自己发明数字相机，管理层反应是「很可爱，但别告诉任何人」。<strong>能力可迁移，但认知锁死时能力无法变现。</strong></li>
+    <li><strong>小钢厂（Christensen）</strong>：电弧炉熔废钢走一条完全不同的成本/学习曲线，从在位者乐意放弃的低毛利螺纹钢切入逐级上移——<strong>经验护城河只防守正面进攻，不防守换赛道</strong>，而在位者的价值网络让它在每一步「理性地」撤退。</li>
+    <li><strong>诺基亚</strong>：硬件制造默会知识全球第一，但竞争基础迁移到操作系统生态；组织内部的集体恐惧阻断「Symbian 不行」的信息上行。<strong>默会知识是有维度的，护城河只在竞争基础恰好落在你的经验维度上时有效。</strong></li>
+    <li><strong>能力陷阱</strong>（Leonard-Barton core rigidities，1992）：核心能力天然自带反面——深嵌的知识系统构成过滤器，筛掉与现有能力不合的信息。<strong>最危险的时点是财务表现仍然强劲时</strong>：高利润公司最没有变革动机，等业绩下滑到触发变革，窗口已关闭。四条锁死信号同时亮灯时，经验存量应按负债重估：① 行业竞争基础在换维度（产品改进速度超过客户需求速度=性能过剩）；② 经验绑定特定物理/技术范式；③ 组织身份与该经验绑定（「我们是做 X 的公司」）；④ 现有高利润业务与新路径商业模式互斥。</li>
+    <li><strong>学术纪律</strong>（Priem &amp; Butler 对 RBV 的批评）：框架有同义反复风险——很容易从「公司成功」倒推「它有默会知识护城河」，再用成功本身当证据，形成不可证伪的循环。元分析（Crook et al. 2008，125 项研究、2.9 万组织）显示战略资源与绩效相关约 r=0.22（满足 VRIN 判据时 0.26，不满足仅 0.12）——框架有真实但<strong>温和</strong>的解释力。</li>
+  </ul>
+  <p><strong>投资者最易犯的三个错误</strong>：① 事后归因（正确做法：把护城河命题写成事前可证伪的猜想，如「竞品 X 投入 N 倍资源 M 年内良率仍追不上」，并设复检日）；② 只审供给侧，不单独回答「这个经验维度的付费意愿有没有被替代技术清零的路径」；③ 把深经验无条件当资产——对「三条件满分且当前利润率极高」的标的，应额外做范式迁移压力测试，而不是给更高确定性溢价。</p>
+
+  <h2>六、投资应用 checklist</h2>
+
+  <h3>6.1 给一家公司打分的七问</h3>
+  <ol>
+    <li><strong>曲线的时钟是什么？</strong> 成本下降跟着累计产量走（赖特定律，可独占）还是跟着日历时间走（摩尔定律式，后进者搭车）？</li>
+    <li><strong>参数的载体在哪？</strong> 设备里/文档里/个人脑子里/组织协作里——沿载体表打分，只有「组织协作」档给足分。旁证：同样设备在不同玩家手里产出是否显著不同（台积电测试）；公司是否需要 Copy Exactly! 式的全盘复制（说明连自己都说不清哪个变量承重）。</li>
+    <li><strong>谁在替追赶者付学费？</strong> 有没有质量分层的低端市场、保护性内需、政府补贴买家？有，则条件 (b) 已破——参照造船和高铁。</li>
+    <li><strong>工艺知识在往设备商漂移吗？</strong> 行业里是否出现「交钥匙产线」；设备商毛利率相对制造商毛利率的此消彼长。</li>
+    <li><strong>有没有法律/认证强化层？</strong> 适航证、FDA、客户认证周期——把经验绑死在法人上的机制，是最被低估的加固层（Teece 语言：认证互锁制造了人为的紧可占有性体制，参照 3.1 节的适航型号合格证——符合性数据产权绑定持证法人，不随人才流动）。</li>
+    <li><strong>利润池的时间结构？</strong> 剃刀-刀片/长约维保型收入让追赶者即使做出产品也要熬一代资产寿命的负现金流——这是护城河的现金流表达。</li>
+    <li><strong>需求侧独立审一遍</strong>：这个经验维度对应的付费意愿，有没有被替代技术/新价值网络清零的路径？（供给侧七问全过 ≠ 安全，参照瑞士钟表。）</li>
+  </ol>
+
+  <h3>6.2 衰变信号（持续监控指标）</h3>
+  <div class="tw"><table>
+    <thead><tr><th>信号</th><th>可观察指标</th><th>案例锚</th></tr></thead>
+    <tbody>
+      <tr><td>前沿停滞/曲线成熟</td><td>行业累计产量翻倍所需年数拉长；单位成本年降幅跌破个位数</td><td>燃油车 29 年翻倍 vs EV 约 1 年</td></tr>
+      <tr><td>知识封装进设备</td><td>交钥匙产线出现；设备商毛利率走强</td><td>光伏、LCD</td></tr>
+      <tr><td>人才流失</td><td>核心工程师留存率；竞对针对性挖角的密度与薪资溢价倍数；<strong>团队级</strong>连锅端事件</td><td>SMIC 挖角、梁孟松</td></tr>
+      <tr><td>保护性买家出现</td><td>政府补贴/白名单/强制转让政策</td><td>高铁、电池白名单</td></tr>
+      <tr><td>在位者财务危机</td><td>被迫卖资产=默会知识被迫成文</td><td>阿尔斯通、海力士</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>6.3 估值含义</h3>
+  <ul>
+    <li><strong>市场系统性高估可见可数的专利</strong>（已编码、会过期、可绕开），<strong>低估不可见的隐性流程知识</strong>（Process Power 最稀有所以最少被识别）。反向错价是把全行业共享的学习曲线当个体护城河外推（光伏教训——只配拿商品化倍数甚至亏损）。</li>
+    <li><strong>组织资本没有被账面价值捕捉</strong>：Eisfeldt &amp; Papanikolaou（2013, JF）用资本化 SG&amp;A 度量组织资本，高组织资本公司年收益高约 4.6-4.7%、不被标准因子模型解释。但作者的解释是风险补偿而非免费午餐：<strong>组织资本部分属于关键人才，股东必须与人才分租</strong>——存在人身上的学习曲线护城河，其租金部分归员工而非股东，估值要打折（参考各 frontier AI lab 的薪酬军备竞赛）。</li>
+    <li><strong>ARK/特斯拉的教训</strong>（此框架最著名的实战失败）：赖特定律对「成本」的预测大体应验（单车成本降到约 $35,100 历史低位），但 ARK 2020 年模型的 2024 年毛利率熊市情景 25%、实际仅 18.4%（含积分；按 ARK 的剔除积分口径约 14-16%，缺口更大）——2023 年价格战把学习曲线省下的成本<strong>全部让渡给了消费者</strong>。教训写成公式：<strong>毛利率 = 成本曲线 × 可占有性</strong>。赖特定律只预测成本斜率，不预测谁截留红利。曲线被证伪后换叙事而非降仓（ARK 把约 90% 企业价值挪到 robotaxi），本身是使用此框架的失败模式。</li>
+    <li><strong>持久性溢价要打折</strong>：Wiggins &amp; Ruefli 2005 发现竞争优势持续期跨行业系统性缩短（有争议但方向值得记）——即便三条件今天成立，也要区分公司靠「一个存量护城河」还是「持续生成新优势的能力」，后者才配久期溢价。</li>
+  </ul>
+
+  <h3>6.4 一块几乎没人占的分析空地</h3>
+  <p>调研确认：<strong>没有任何机构把 Dierickx &amp; Cool 的五特征做成显式筛选器</strong>。它以变体存在于 Helmer 的 Process Power，但「时间压缩不经济」维度基本无人系统使用。对手工深研单个标的的投资者，这是现成的差异化审计清单——本文 6.1 的七问就是它的操作化。</p>
+
+  <h2>七、悬案：AI 大模型训练 know-how</h2>
+  <p>这是当下最有争议的应用，两面都写，不下死结论：</p>
+  <p><strong>看空 know-how 护城河一方</strong>：蒸馏（用领跑者模型的输出训练自己的模型）等于把领跑者累积的「生产经验」——数据配方、RLHF、训练试错——压缩成可低价吸收的参数。这在框架语言里就是<strong>「用模拟获得参数经验」的后门，直接绕过时间压缩不经济</strong>。证据：LLM 千 token 价格两年降 99%；伯克利/斯坦福用几十到几百美元复现推理行为；法律分析认为版权对蒸馏基本无保护力、ToS 条款可执行性存疑——这条护城河没有法律护栏，只剩商业秘密＋速度。</p>
+  <p><strong>辩方</strong>：DeepSeek 有独立的过程创新（MLA 把 KV cache 压缩 93%、GRPO 证明纯 RL 可涌现推理），其自蒸馏（用自家大模型造合成数据训小模型）是全行业惯例。Anthropic 2026 年 2 月披露的工业级蒸馏指控（约 2.4 万欺诈账户、超 1600 万次交互）分布极偏斜：MiniMax 约 1300 万次、Moonshot 约 340 万次、DeepSeek 仅约 15 万次（不足 1%）——分项数字出自披露细节，主流报道多只引总量。DeepSeek V4 自评落后前沿 3-6 个月，美国 NIST/CAISI 独立评估约 8 个月（代码基准接近打平，知识/多模态差距更大）。</p>
+  <p><strong>中间立场（当前最可用的表述）</strong>：训练 know-how 仍是真实的过程知识——<strong>推动前沿的能力蒸馏不走</strong>（蒸馏只能复制快照，不能复制导数），但其<strong>可占有窗口被压缩到约 3-8 个月</strong>。定价含义：按窗口长度而非「有无护城河」定价，且窗口长度本身是需要持续监控的衰变指标。对照本框架的三条件：(a) 部分被蒸馏破坏；(b) 开源模型免费提供「低代产品」，练习场充足；(c) know-how 尚未封装进可购买工具（训练框架开源了，但数据配方和调参判断没有）。三条里破了一条半——<strong>这解释了为什么 AI 实验室的护城河远弱于台积电，但又没有归零</strong>。</p>
+
+  <h2>八、活预测：把框架押上现实（证据基线）</h2>
+  <p>这个框架在 AI 上的判断，落成了一张可结算的预测。本节写清「赌什么 + 怎么结算」，判断的逻辑和证据也留在这里，供结算日回看修正。</p>
+
+  <h3>8.1 这几轮打磨出的四条框架增补（先收编，证据基线要用到）</h3>
+  <ol>
+    <li><strong>条件 (b) 是价格谱，不是二元</strong>。原表述「低代产品无市场」太粗；真正的判据是<strong>低代产品能否产生足以分摊学费的收入（毛利）</strong>。从「次品直接归零」（航空叶片，硬门槛型）到「卖白菜价但正毛利」（造船，护城河破防）是一条连续谱，由低代产品的毛利决定。中芯 7nm 能卖（华为买）但毛利被压到 19%、靠补贴续命——不是「无市场」，是「卖不起价、分摊不了学费」。</li>
+    <li><strong>第四条独立漏水通道——产品即知识快照</strong>。台积电卖芯片，芯片不含「怎么造芯片」的 know-how，所以卖得越多护城河越厚；Anthropic 卖 API＝卖输出，而输出就是参数经验的直接样本，所以卖得越多护城河越漏。这是 AI 独有的、商业模式内生的泄漏通道，与设备封装/文档转让/挖人并列。防它就得关 API，关了就没收入——两难。</li>
+    <li><strong>护城河动态化——逃逸速度</strong>。成本坍缩 →（弱可占有性下）价格坍缩 → 收入 = 价格 × 用量，方向取决于需求弹性（杰文斯悖论：便宜到用量爆炸则收入涨，涨不过则坍）。且行业蛋糕变大 ≠ 你的份额变大（蛋糕暴涨 + 人人能切是最凶组合）。更精细地：旧能力层不断被商品化（收入坍塌），公司靠创造新能力层托住收入——<strong>盖新层的速度追不上旧层坍塌的速度时，可以永远在前沿却收入净坍缩</strong>。前沿领先 ≠ 收入安全。</li>
+    <li><strong>观测量筛选：可观测性优先于区分力</strong>。私有标的（Anthropic/OpenAI）的收入侧几乎永远不可干净观测（ARR 口径烂、单位毛利不公开），任何涉及「它赚不赚钱」的预测都得退到公开价格/份额找代理，并明确声明代理何时失效。读不到的量再重要也不能当 kill 依据，否则是把「不可证伪」伪装成「有判断」。</li>
+  </ol>
+
+  <h3>8.2 这张预测</h3>
+  <p><strong>命题</strong>：框架断言「AI 参数经验护城河 ≈ 纯导数（前沿速度），存量快照经 API 蒸馏漏光 → 护城河脆」。赌它对不对；对立面是「算力/数据/组织规模构成不被蒸馏侵蚀、可累积的壁垒」（即 AI 其实像台积电）。</p>
+  <p><strong>两个公开可核观测量</strong>（2027-07-20 读，2027-01-20 期中）：</p>
+  <ul>
+    <li><strong>A · 身位</strong>：开源 SOTA 追平当时闭源前沿的落后月数（Epoch AI / LMArena 口径）。测技术层导数。</li>
+    <li><strong>B · 前沿溢价</strong>：SOTA 闭源 vs 同能力最便宜可得模型的每百万 token 标价比值（Artificial Analysis 公开标价口径）。测收入侧可占有性。B 的代理风险（标价≠成交价、补贴定价）已声明，只作领先指标、与 A 交叉判读。</li>
+  </ul>
+  <p><strong>主判定用 A，区间互斥穷尽</strong>：A ≤ 8 个月＝本方（护城河脆）胜；A ≥ 12 个月＝对手（壁垒硬）胜；A 落在 8 与 12 之间＝不判胜负、预测续期观察。<strong>B 不进胜负判定式，只作交叉判读</strong>：A 追平但 B 溢价仍在（对角格）＝护城河从技术层逃逸到分发/品牌层，证伪「纯导数」。</p>
+
+  <h3>8.3 证据基线（判断逻辑：为什么押本方、为什么现在还判不了）</h3>
+  <p><strong>支持本方的证据——多是已发生的硬事实</strong>：蒸馏工业级在发生（Anthropic 2026-02 披露约 2.4 万假账户、1600 万次交互）；token 价格两年降 99%、前沿 API 价格战已打；开源身位已压到 3-8 个月（DeepSeek V4 自评 3-6 月、NIST 约 8 月，编程基准已打平）；开源免费供给「低代产品」、练习场充足；商业模式内生漏水（卖输出＝卖快照）是结构性的。</p>
+  <p><strong>支持对手的证据——多是尚未被证伪的论点</strong>：前沿训练的算力资本壁垒指数抬升（百亿美元级集群，不是谁都堆得起）；真实用户交互数据私有、追赶者拿不到（数据飞轮可能累积）；推进前沿的导数蒸不走（蒸馏只追平快照、不能超越）；企业转换成本在积累（API 集成、Enterprise 合同、嵌入式产品）；顶尖人才团队级集中、安全/可靠性构成品牌溢价。</p>
+  <p><strong>枢纽——判断压在一个类比往哪边倒</strong>：AI 的「算力+数据规模」，到底像<strong>台积电的 EUV</strong>（机器人人能买、但买不到良率经验，规模是可累积护城河），还是像<strong>普通商品</strong>（英伟达把算力卖给所有人、规模人人可堆、不构成壁垒）？这个类比现在没有答案，它就是整个预测的裁决点。</p>
+  <p><strong>当前重心（诚实版）</strong>：略偏本方——本方证据是已经发生的硬事实，对手证据更多是「还没被推翻」的论点。但这个略偏很不稳，不足以定案。<strong>而这恰是它值得预测的原因</strong>：两边都有真证据、枢纽未定，才需要交给现实去裁。若证据已一边倒，就无可预测。</p>
+
+  <h2>参考文献</h2>
+  <p><strong>核心（按承重排序）</strong></p>
+  <ol>
+    <li>Dierickx, I. &amp; Cool, K. (1989). Asset Stock Accumulation and Sustainability of Competitive Advantage. <em>Management Science</em> 35(12): 1504-1511.</li>
+    <li>Teece, D.J. (1986). Profiting from Technological Innovation. <em>Research Policy</em> 15(6): 285-305.</li>
+    <li>Lippman, S.A. &amp; Rumelt, R.P. (1982). Uncertain Imitability. <em>Bell Journal of Economics</em> 13(2): 418-438.</li>
+    <li>Leonard-Barton, D. (1992). Core Capabilities and Core Rigidities. <em>Strategic Management Journal</em> 13: 111-125.</li>
+    <li>Nelson, R.R. &amp; Winter, S.G. (1982). <em>An Evolutionary Theory of Economic Change</em>. Harvard University Press.</li>
+    <li>Polanyi, M. (1966). <em>The Tacit Dimension</em>.</li>
+    <li>Arrow, K.J. (1962). The Economic Implications of Learning by Doing. <em>Review of Economic Studies</em> 29(3): 155-173.</li>
+    <li>Wright, T.P. (1936). Factors Affecting the Cost of Airplanes. <em>Journal of the Aeronautical Sciences</em> 3(4).</li>
+    <li>von Hippel, E. (1994). "Sticky Information" and the Locus of Problem Solving. <em>Management Science</em> 40(4): 429-439.</li>
+    <li>Cohen, W.M. &amp; Levinthal, D.A. (1990). Absorptive Capacity. <em>Administrative Science Quarterly</em> 35(1): 128-152.</li>
+    <li>Levin, Klevorick, Nelson &amp; Winter (1987). Appropriating the Returns from Industrial R&amp;D. <em>Brookings Papers on Economic Activity</em>.</li>
+    <li>Almeida, P. &amp; Kogut, B. (1999). Localization of Knowledge and the Mobility of Engineers. <em>Management Science</em> 45(7): 905-917.</li>
+    <li>Priem, R. &amp; Butler, J. (2001). Is the RBV a Useful Perspective? <em>Academy of Management Review</em> 26(1): 22-40.（+ Barney 回应）</li>
+    <li>Tripsas, M. &amp; Gavetti, G. (2000). Capabilities, Cognition, and Inertia: Evidence from Digital Imaging. <em>SMJ</em> 21: 1147-1161.</li>
+    <li>Groysberg, B., Lee, L. &amp; Nanda, A. (2008). Can They Take It With Them? <em>Management Science</em> 54(7).</li>
+    <li>Eisfeldt, A. &amp; Papanikolaou, D. (2013). Organization Capital and the Cross-Section of Expected Returns. <em>Journal of Finance</em> 68(4): 1365-1406.</li>
+    <li>Mauboussin &amp; Callahan (2024). Measuring the Moat（Morgan Stanley，末附完整 checklist）.</li>
+    <li>Helmer, H. (2016). <em>7 Powers</em>（Process Power 章）.</li>
+  </ol>
+  <p><strong>延伸阅读优先级</strong>：只读一篇的话读 <strong>Dierickx &amp; Cool 1989</strong>——8 页，五个机制全在里面，「草坪要养五百年」的原文出处。第二篇 Teece 1986（EMI 案例值回全文）。第三本 7 Powers 的 Process Power 章（实战化最好）。</p>
+
+  <h2>核查记录（流行说法勘误）</h2>
+  <p>本文所有承重事实过了一轮对抗核查（先试图推翻再引用）。以下流行说法被推翻或需修正，<strong>不要在别处引用错版</strong>：</p>
+  <div class="tw"><table>
+    <thead><tr><th>流行说法</th><th>核查结果</th></tr></thead>
+    <tbody>
+      <tr><td>高铁首轮技术转让费 227 亿元、占招标额 51%</td><td><strong>推翻</strong>。仅见维基无脚注孤句且算术不通；有源口径是三轮合计约 23 亿元（占 553 亿采购额约 4%），疑为 22.7 亿的小数点讹传。西门子个案（3.9 亿欧元压到 8000 万欧元）属实</td></tr>
+      <tr><td>「保密是保护产品创新最有效的机制」（引 Levin et al. 1987）</td><td><strong>推翻</strong>。1987 耶鲁调查里保密对产品创新恰是垫底，最有效的是销售服务能力/先行时间/学习曲线；「保密居首」是 1994 年 Carnegie Mellon 调查（Cohen-Nelson-Walsh 2000）对<strong>工艺</strong>创新的结论，两个调查常被混淆</td></tr>
+      <tr><td>台积电夜鹰部队 2000 人三班倒</td><td>修正：约 300-400 人（「2000 人」与「张忠谋向天下确认」均查无实据）</td></tr>
+      <tr><td>梁孟松被判泄密后才去三星跳代 14nm</td><td>时序倒置：2011 年入三星、2015 年 2 月 14nm 量产在前，终审判决 2015 年 8 月在后（民事竞业禁令，非刑事定罪）；三星也并非 28nm 直跳 14nm（2014 年量产过 20nm Exynos）</td></tr>
+      <tr><td>台积电 EUV 单台产出「远超同行」</td><td>外推过度：10 倍机台/30 倍产出是台积电 2024 年公布的<strong>自比 2019 基线</strong>数据，无同型号跨厂直接对比</td></tr>
+      <tr><td>瑞士钟表业「发明了石英却不商业化」</td><td>修正史观：Astron 上市约三个半月后的巴塞尔表展上约十家瑞士品牌即展出 20 余只 Beta 21 石英表；败因是碎片化作坊结构与成本曲线撑不起量产竞争（外加瑞郎升值），是「动了但赢不了」，不是「见到技术不动」</td></tr>
+      <tr><td>京东方建成「大陆第一条液晶产线」</td><td>修正：上广电 NEC 5 代线早 7 个月投产（技术授权引进）；京东方是第一条<strong>自主知识产权</strong>5 代线，「自主」是必须保留的限定词</td></tr>
+      <tr><td>DeepSeek 是 Anthropic 蒸馏指控的主角</td><td>修正（据披露分项）：1600 万次交互中 DeepSeek 不足 1%（约 15 万次），主体是 MiniMax（约 1300 万）与 Moonshot（约 340 万）；系单方指控，主流报道多只引总量</td></tr>
+      <tr><td>GE9X 取证台数口径</td><td>8 台认证试验发动机完成近 5,000 小时/8,000 循环，另 1 台装机用于 ETOPS（合计 9 台参与）；「全口径投入超 100 亿美元」是行业泛指非 GE9X 实数</td></tr>
+      <tr><td>CATL 分拆是 2011 目录直接触发</td><td>修正：目录发布晚于 CATL 成立，分拆是对已公开政策信号（外资股比帽征求意见稿）的<strong>提前应对</strong>；且切割仅限股权层面</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="comments">
+    <h2>评论</h2>
+    <div class="giscus"></div>
+    <script src="https://giscus.app/client.js"
+      data-repo="June911/personal-site"
+      data-repo-id="R_kgDORNjR9Q"
+      data-category="General"
+      data-category-id="DIC_kwDORNjR9c4C2TU2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="dark"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>june © 2026 · 经验曲线可占有性护城河</span>
+    <span><a href="../index.html">首页</a>　·　<a href="../index.html#articles">文章</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
