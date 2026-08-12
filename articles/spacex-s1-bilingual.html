@@ -2009,28 +2009,33 @@ body.fs-lg { font-size: 17px; }
   <thead><tr>
     <th>日期</th>
     <th>事件</th>
+    <th class="num">释放占总股本</th>
+    <th class="num">释放后流通 %</th>
     <th class="num">被动买盘 $B</th>
     <th class="num">可卖供给 $B</th>
     <th class="num">单波净流</th>
     <th class="num">累计净流</th>
   </tr></thead>
   <tbody>
-    <tr><td>6/19/2026</td><td>W0 · VTI + Russell fast-entry（已发生）</td><td class="num">+5.5</td><td class="num">—</td><td class="num">+5.5</td><td class="num">+5.5</td></tr>
-    <tr><td>7/7/2026</td><td>W1 · NDX fast-entry 生效（已发生 · JPM 估计，旧模型 +8.5 高估 2×）</td><td class="num">+4.3</td><td class="num">—</td><td class="num">+4.3</td><td class="num">+9.8</td></tr>
-    <tr style="background:#F8F8F8;"><td>8/6/2026</td><td>Q2 档 · 财报 8/4 盘后，8/6 释放 20%（9.115 亿股）。<strong>实测抛压落空，两天 +23%</strong></td><td class="num">—</td><td class="num">-38.5</td><td class="num">-38.5</td><td class="num">-28.7</td></tr>
-    <tr><td>8/20-9/9</td><td>D70 + D90（2 波 ×7% ≈ 3.19 亿股/波）</td><td class="num">—</td><td class="num">-21</td><td class="num">-21</td><td class="num">-49.7</td></tr>
-    <tr class="wave" style="background:#FFF5F0;"><td>9/21/2026</td><td><strong>W2 · NDX 季调（9/18 收盘切仓 · 8/31 参考日）· 条件基准</strong>：Nasdaq 上调 Index Shares 才落地；D90 赶不上参考日、顺延 12 月</td><td class="num"><strong>+13</strong></td><td class="num">—</td><td class="num">+13</td><td class="num">-36.7（弱反弹）</td></tr>
-    <tr><td>9/24-10/26</td><td>D105 + D120 + D135（3 波 ×7%）</td><td class="num">—</td><td class="num">-31.5</td><td class="num">-31.5</td><td class="num">-68.2</td></tr>
-    <tr style="background:#F8F8F8;"><td>11/17/2026</td><td>Q3 档 · 释放 28%（≈12.8 亿股，含未触发的 +10% 提前档顺延）</td><td class="num">—</td><td class="num">-60</td><td class="num">-60</td><td class="num">-128.2</td></tr>
-    <tr style="background:#F8F8F8;"><td>12/8/2026</td><td>D180 · 余下 17% 全释放</td><td class="num">—</td><td class="num">-23.5</td><td class="num">-23.5</td><td class="num" style="color:#FF3000;font-weight:700;">-151.7 · 谷底</td></tr>
-    <tr class="wave" style="background:#FFF5F0;"><td>12/21/2026</td><td><strong>W3 · NDX 季度 + 年度调整（12/18 收盘切仓 · 补计 D90 · cap 解除）· 条件基准</strong></td><td class="num"><strong>+10</strong></td><td class="num">—</td><td class="num">+10</td><td class="num">-141.7</td></tr>
-    <tr style="border-top:2px solid #000;"><td><strong>6 个月小计</strong></td><td></td><td class="num"><strong>+32.8</strong></td><td class="num"><strong>-174.5</strong></td><td class="num" colspan="2"><strong>净 -141.7（峰谷 -151.7）</strong></td></tr>
-    <tr style="color:#666;"><td>2/17 - 5/18/27</td><td>扩展群 Q4/D280/D340/Q1 档（未随本次修订）</td><td class="num">—</td><td class="num">-19.5</td><td class="num">-19.5</td><td class="num">-161.2</td></tr>
-    <tr style="color:#666;"><td>6/14/2027</td><td>D366 Musk 锁定到期（非自卖）</td><td class="num">—</td><td class="num">-14.5</td><td class="num">-14.5</td><td class="num">-175.7</td></tr>
-    <tr style="color:#666;"><td>~8/6/2027</td><td>Q2'27 档收尾（按 Q2'26 实际节奏顺推：财报 ~8/4 盘后 + D+2）</td><td class="num">—</td><td class="num">-7.5</td><td class="num">-7.5</td><td class="num">-183.2</td></tr>
-    <tr style="border-top:2px solid #000;"><td><strong>14 月累计</strong></td><td></td><td class="num"><strong>+32.8</strong></td><td class="num"><strong>-216</strong></td><td class="num" colspan="2"><strong>净 -183.2</strong></td></tr>
+    <tr><td>6/19/2026</td><td>W0 · VTI + Russell fast-entry（已发生）</td><td class="num">—</td><td class="num">4.9%</td><td class="num">+5.5</td><td class="num">—</td><td class="num">+5.5</td><td class="num">+5.5</td></tr>
+    <tr><td>7/7/2026</td><td>W1 · NDX fast-entry 生效（已发生 · JPM 估计，旧模型 +8.5 高估 2×）</td><td class="num">—</td><td class="num">4.9%</td><td class="num">+4.3</td><td class="num">—</td><td class="num">+4.3</td><td class="num">+9.8</td></tr>
+    <tr style="background:#F8F8F8;"><td>8/6/2026</td><td>Q2 档 · 财报 8/4 盘后，8/6 释放 20%（9.115 亿股）。<strong>实测抛压落空，两天 +23%</strong></td><td class="num">6.9%</td><td class="num">11.8%</td><td class="num">—</td><td class="num">-38.5</td><td class="num">-38.5</td><td class="num">-28.7</td></tr>
+    <tr><td>8/20-9/9</td><td>D70 + D90（2 波 ×7% ≈ 3.19 亿股/波）</td><td class="num">4.8%</td><td class="num">16.7%</td><td class="num">—</td><td class="num">-21</td><td class="num">-21</td><td class="num">-49.7</td></tr>
+    <tr class="wave" style="background:#FFF5F0;"><td>9/21/2026</td><td><strong>W2 · NDX 季调（9/18 收盘切仓 · 8/31 参考日）· 条件基准</strong>：Nasdaq 上调 Index Shares 才落地；D90 赶不上参考日、顺延 12 月</td><td class="num">—</td><td class="num">16.7%</td><td class="num"><strong>+13</strong></td><td class="num">—</td><td class="num">+13</td><td class="num">-36.7（弱反弹）</td></tr>
+    <tr><td>9/24-10/26</td><td>D105 + D120 + D135（3 波 ×7%）</td><td class="num">7.3%</td><td class="num">23.9%</td><td class="num">—</td><td class="num">-31.5</td><td class="num">-31.5</td><td class="num">-68.2</td></tr>
+    <tr style="background:#F8F8F8;"><td>11/17/2026</td><td>Q3 档 · 释放 28%（≈12.8 亿股，含未触发的 +10% 提前档顺延）</td><td class="num">9.7%</td><td class="num" style="font-weight:700;">33.6% ↑越阈</td><td class="num">—</td><td class="num">-60</td><td class="num">-60</td><td class="num">-128.2</td></tr>
+    <tr style="background:#F8F8F8;"><td>12/8/2026</td><td>D180 · 余下 17% 全释放</td><td class="num">5.9%</td><td class="num">39.5%</td><td class="num">—</td><td class="num">-23.5</td><td class="num">-23.5</td><td class="num" style="color:#FF3000;font-weight:700;">-151.7 · 谷底</td></tr>
+    <tr class="wave" style="background:#FFF5F0;"><td>12/21/2026</td><td><strong>W3 · NDX 季度 + 年度调整（12/18 收盘切仓 · 补计 D90 · cap 解除）· 条件基准</strong></td><td class="num">—</td><td class="num">39.5%</td><td class="num"><strong>+10</strong></td><td class="num">—</td><td class="num">+10</td><td class="num">-141.7</td></tr>
+    <tr style="border-top:2px solid #000;"><td><strong>6 个月小计</strong></td><td></td><td class="num"><strong>34.7%</strong></td><td class="num"><strong>→ 39.5%</strong></td><td class="num"><strong>+32.8</strong></td><td class="num"><strong>-174.5</strong></td><td class="num" colspan="2"><strong>净 -141.7（峰谷 -151.7）</strong></td></tr>
+    <tr style="color:#666;"><td>2/17 - 5/18/27</td><td>扩展群 Q4/D280/D340/Q1 档（未随本次修订）</td><td class="num">6.3%</td><td class="num">45.8%</td><td class="num">—</td><td class="num">-19.5</td><td class="num">-19.5</td><td class="num">-161.2</td></tr>
+    <tr style="color:#666;"><td>6/14/2027</td><td>D366 Musk 锁定到期（非自卖）+ 扩展群 +20%</td><td class="num">50.8%*</td><td class="num">96.6%*</td><td class="num">—</td><td class="num">-14.5</td><td class="num">-14.5</td><td class="num">-175.7</td></tr>
+    <tr style="color:#666;"><td>~8/6/2027</td><td>Q2'27 档收尾（按 Q2'26 实际节奏顺推：财报 ~8/4 盘后 + D+2）</td><td class="num">2.1%</td><td class="num">98.7%*</td><td class="num">—</td><td class="num">-7.5</td><td class="num">-7.5</td><td class="num">-183.2</td></tr>
+    <tr style="border-top:2px solid #000;"><td><strong>14 月累计</strong></td><td></td><td class="num"><strong>~93.9%</strong></td><td class="num"><strong>→ 98.7%*</strong></td><td class="num"><strong>+32.8</strong></td><td class="num"><strong>-216</strong></td><td class="num" colspan="2"><strong>净 -183.2</strong></td></tr>
   </tbody>
 </table>
+<p style="font-size:11px;color:#666;margin-top:6px;">
+基数：总股本 131.76 亿股（post-IPO）。「释放后流通 %」= 累计可交易股占总股本，IPO 起步 4.9%（≈6.46 亿股）；解禁档只改流通比例，指数波（W0-W3）不新增流通股。180 天池 45.75 亿股共占 34.7%，Q3 档后越过 3x cap 的 33.3% 阈值。* 2027 年 D366 行含 Musk 全部 64.18 亿股（占总股本 48.7%）——其中 13.02 亿股为未授予表演型限制股、解锁后仍不可交易，剔除后实际可交易约 <strong>86.7%</strong>（Q2'27 档后约 88.8%）。
+</p>
 
 <h2>三个判断</h2>
 <ol style="padding-left:20px;font-size:14px;line-height:1.7;">
