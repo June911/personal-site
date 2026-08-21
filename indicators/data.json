@@ -1,105 +1,105 @@
 {
-  "updated_at": "2026-08-20T12:52:55Z",
+  "updated_at": "2026-08-21T01:24:05Z",
   "indicators": {
     "ahr999": {
-      "value": 0.43,
-      "display": "0.43 (低于阈值)",
-      "triggered": true,
-      "level": "行动",
-      "btc_price": 71609.07,
-      "updated_at": "2026-08-20T12:52:49Z"
+      "value": 0.47,
+      "display": "0.47 (定投区)",
+      "triggered": false,
+      "level": "定投",
+      "btc_price": 74423.39,
+      "updated_at": "2026-08-21T01:23:58Z"
     },
     "nupl": {
       "value": 0.245,
       "display": "NUPL 0.245",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:50Z"
+      "updated_at": "2026-08-21T01:23:59Z"
     },
     "mvrv-zscore": {
       "value": 0.41,
       "display": "Z-Score 0.41",
       "triggered": false,
       "level": "关注",
-      "updated_at": "2026-08-20T12:52:51Z"
+      "updated_at": "2026-08-21T01:24:00Z"
     },
     "puell-multiple": {
       "value": 0.68,
       "display": "Puell 0.68",
       "triggered": false,
       "level": "关注",
-      "updated_at": "2026-08-20T12:52:51Z"
+      "updated_at": "2026-08-21T01:24:01Z"
     },
     "hash-ribbons": {
       "value": -1,
       "display": "投降中 (MA30/MA60: -1.7%)",
       "triggered": false,
       "level": "投降",
-      "updated_at": "2026-08-20T12:52:52Z"
+      "updated_at": "2026-08-21T01:24:02Z"
     },
     "fear-greed-crypto": {
-      "value": 62,
-      "display": "62 (Greed)",
+      "value": 72,
+      "display": "72 (Greed)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:53Z"
+      "updated_at": "2026-08-21T01:24:02Z"
     },
     "funding-rate": {
-      "value": 3,
-      "display": "当前 -0.0051% (8h)，连续负 3 次",
-      "triggered": false,
-      "level": "关注",
-      "current_rate": -0.0051,
-      "updated_at": "2026-08-20T12:52:53Z"
+      "value": 5,
+      "display": "当前 -0.0281% (8h)，连续负 5 次",
+      "triggered": true,
+      "level": "准备",
+      "current_rate": -0.0281,
+      "updated_at": "2026-08-21T01:24:03Z"
     },
     "stablecoin-supply": {
       "value": -4.1,
-      "display": "$307.1B, 90d -4.1%",
+      "display": "$307.2B, 90d -4.1%",
       "triggered": false,
       "level": "收缩",
-      "updated_at": "2026-08-20T12:52:54Z"
+      "updated_at": "2026-08-21T01:24:03Z"
     },
     "crypto-vc-funding": {
       "value": null,
       "display": "获取失败",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:54Z"
+      "updated_at": "2026-08-21T01:24:03Z"
     },
     "vix-spike": {
-      "value": 14.9,
-      "display": "VIX 14.9",
+      "value": 16.0,
+      "display": "VIX 16.0",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:55Z"
+      "updated_at": "2026-08-21T01:24:05Z"
     },
     "ma200-deviation": {
-      "value": 9.2,
-      "display": "偏离 +9.2%",
+      "value": 8.2,
+      "display": "偏离 +8.2%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:55Z"
+      "updated_at": "2026-08-21T01:24:05Z"
     },
     "double-drop-spy-gld": {
-      "value": "nan,2.81",
-      "display": "SPY nan%, GLD 2.81%",
+      "value": "-1.03,3.57",
+      "display": "SPY -1.03%, GLD 3.57%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:55Z"
+      "updated_at": "2026-08-21T01:24:05Z"
     },
     "double-drop-spy-tlt": {
-      "value": "nan,1.17",
-      "display": "SPY nan%, TLT 1.17%",
+      "value": "-1.03,0.18",
+      "display": "SPY -1.03%, TLT 0.18%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-08-20T12:52:55Z"
+      "updated_at": "2026-08-21T01:24:05Z"
     },
     "schd-qqq-ratio": {
-      "value": 94.79,
-      "display": "比率 94.79 (↑ SCHD 走强 (risk-off))",
+      "value": 94.77,
+      "display": "比率 94.77 (↑ SCHD 走强 (risk-off))",
       "triggered": false,
       "level": "防御",
-      "updated_at": "2026-08-20T12:52:55Z"
+      "updated_at": "2026-08-21T01:24:05Z"
     },
     "miner-shutdown-price": {
       "value": null,
