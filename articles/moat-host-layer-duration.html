@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>护城河的久期：一个框架的自我降格记录 — june</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141414;--card:#1D1D1D;--fg:#EAEAEA;--accent:#FF3000;
+  --muted:#242424;--gray:#8C8C8C;--hairline:#333333;
+  --pos:#3FB950;--neg:#F85149;--warn:#D29922;
+  --body:#c8cede;--body2:#aeb6c6;--dim:#6E6E6E;
+  --font:'Inter',Helvetica,-apple-system,"PingFang SC",sans-serif;
+  --mono:'SF Mono',ui-monospace,Menlo,"Cascadia Code",monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--body);font:16px/1.75 var(--font);font-weight:400;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* nav */
+.nav{border-bottom:1px solid var(--hairline);position:sticky;top:0;background:rgba(20,20,20,.82);backdrop-filter:blur(8px);z-index:50}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:56px;padding:0 24px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-shapes{display:flex;align-items:center;gap:5px}
+.sh-c{width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.sh-s{width:10px;height:10px;background:var(--gray)}
+.sh-t{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--warn)}
+.nav-name{font-size:15px;font-weight:600;color:var(--fg);letter-spacing:.04em}
+.nav-back{font-size:12px;font-weight:500;color:var(--gray);letter-spacing:.04em;border:1px solid var(--hairline);border-radius:7px;padding:5px 12px;transition:.18s}
+.nav-back:hover{color:var(--fg);border-color:var(--gray)}
+
+/* hero */
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{padding:72px 0 40px;border-bottom:1px solid var(--hairline)}
+.hero .label{font:600 12px var(--mono);letter-spacing:.22em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.hero .label::before{content:"";width:26px;height:2px;background:var(--accent)}
+.hero h1{font-size:44px;font-weight:600;line-height:1.12;letter-spacing:-.01em;color:var(--fg)}
+.hero .sub{margin-top:18px;font-size:17px;color:var(--body2);line-height:1.7;max-width:60ch}
+.hero .meta{margin-top:24px;font:11.5px var(--mono);color:var(--dim);letter-spacing:.05em}
+
+/* body */
+.article{padding:8px 0 40px}
+.article h2{font-size:26px;font-weight:600;color:var(--fg);letter-spacing:-.01em;margin:64px 0 8px;padding-bottom:14px;border-bottom:1px solid var(--hairline);position:relative}
+.article h2::before{content:"";position:absolute;left:0;bottom:-1px;width:56px;height:2px;background:var(--accent)}
+.article h3{font-size:19px;font-weight:600;color:var(--fg);margin:44px 0 14px}
+.article p{margin:16px 0;color:var(--body);line-height:1.85}
+.article ul,.article ol{margin:16px 0 16px 4px;padding-left:22px;color:var(--body);line-height:1.85}
+.article li{margin-bottom:8px}
+.article li::marker{color:var(--dim)}
+.article strong{font-weight:600;color:var(--fg)}
+.article a{color:#8fb7d8;border-bottom:1px solid rgba(143,183,216,.3)}
+.article a:hover{color:#c8e2f7}
+.article hr{border:none;border-top:1px solid var(--hairline);margin:52px 0 28px}
+.article em{color:var(--body2)}
+
+/* lead blockquote */
+.article blockquote{margin:24px 0;padding:18px 22px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;color:var(--fg);font-weight:500;line-height:1.7}
+.article blockquote strong{color:var(--fg)}
+.article blockquote p{margin:0 0 12px;color:inherit}
+.article blockquote p:last-child{margin-bottom:0}
+
+/* structure map */
+.map{margin:24px 0;padding:20px 24px;background:var(--card);border:1px solid var(--hairline);border-radius:12px;overflow-x:auto}
+.map pre{font:13px/1.9 var(--mono);color:var(--body2);white-space:pre}
+.map .hd{font:600 11px var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+
+/* tables */
+.tw{overflow-x:auto;margin:24px 0;border:1px solid var(--hairline);border-radius:12px}
+.article table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.article th{background:var(--muted);color:var(--body2);text-align:left;padding:12px 16px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid var(--hairline)}
+.article td{padding:12px 16px;border-bottom:1px solid var(--hairline);color:var(--body);vertical-align:top;line-height:1.6}
+.article tr:last-child td{border-bottom:none}
+.article tbody tr:hover td{background:rgba(255,255,255,.014)}
+.article td strong{color:var(--fg)}
+
+/* closing line */
+.kicker{margin:40px 0 8px;padding:24px;background:linear-gradient(180deg,rgba(255,48,0,.05),var(--card));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--hairline));border-radius:14px;font-size:17px;line-height:1.7;color:var(--fg);font-weight:500}
+.kicker strong{color:var(--accent)}
+
+/* disclaimer */
+.disclaim{margin:36px 0 0;font:12px var(--mono);color:var(--dim);letter-spacing:.04em}
+
+/* footer */
+.footer{border-top:1px solid var(--hairline);margin-top:48px}
+.footer-inner{max-width:820px;margin:0 auto;padding:32px 24px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer span{font:12px var(--mono);color:var(--dim)}
+.footer a{font:12px var(--mono);color:var(--gray)}
+.footer a:hover{color:var(--fg)}
+
+/* comments */
+.comments{margin:56px 0 0;padding-top:36px;border-top:1px solid var(--hairline)}
+.comments h2{font-size:18px;font-weight:600;color:var(--fg);letter-spacing:.05em;margin-bottom:22px;font-family:var(--mono)}
+
+@media (max-width:640px){
+  .hero{padding:48px 0 32px}
+  .hero h1{font-size:30px}
+  .article h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <span class="nav-shapes"><span class="sh-c"></span><span class="sh-s"></span><span class="sh-t"></span></span>
+      <span class="nav-name">june</span>
+    </a>
+    <a href="../index.html#articles" class="nav-back">← 返回文章</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="label">研究 · 护城河</div>
+  <h1>护城河的久期：一个框架的自我降格记录</h1>
+  <p class="sub">一个看起来很深刻的想法——护城河寄生在宿主层上，层没了护城河跟着清零——经 52 个案例、红队攻击、理论对表和 6 个标的实测后被砍掉大半。这篇记录砍剩的部分：一个给估值年限查表的锚，一张检查表。</p>
+  <div class="meta">2026-09-08 · MOAT · HOST LAYER · DURATION</div>
+</header>
+
+<article class="wrap article">
+
+  <blockquote>
+    <p>这篇的来路。和 AI 聊「Robinhood 怎么拿到用户」，聊出一个看起来很深刻的想法：护城河都寄生在某个<strong>宿主层</strong>上——层在，护城河在；层被换掉，护城河跟着清零。护城河能活多久，约等于那个层还能活多久。</p>
+    <p>我没有直接采用这个想法，先把它送去压测：52 个跨行业历史案例、专职唱反调的红队、和现有理论逐条对表、再拿 6 个标的实跑。结果它被砍掉大半：不是护城河总理论，只剩一块估值补丁和一张检查表。这篇记录砍完剩下的部分，以及为什么「被砍是常态，砍剩的才是真资产」。</p>
+  </blockquote>
+
+  <p><strong>定位，三句话说清</strong>：这个框架只回答两个问题——换代发生之后，谁活谁死；一条护城河最多还能值几年钱。它不预测换代什么时候来。它的输出是估值的一个输入项加一张监控清单，不直接给买卖信号。</p>
+
+  <div class="map">
+    <div class="hd">全文结构</div>
+    <pre>定位（判生死 + 定年限，不判时点）
+├── 一、什么时候用 / 什么时候别用（五类不适用，显式列出）
+├── 二、核心原理（护城河 = 资产清单 → 久期查表 → 仅有的两个新东西 → 五个存活变量）
+├── 三、操作步骤（Step 0-7）
+├── 四、输出怎么接进决策
+├── 五、正反案例
+├── 六、它解决不了的问题（天花板）
+├── 七、证据、实测与哨兵信号
+└── 八、和已有理论的关系</pre>
+  </div>
+
+  <h2>一、什么时候用，什么时候别用</h2>
+
+  <h3>何时用</h3>
+  <ul>
+    <li>换代信号<strong>已经确认</strong>的标的，判谁活谁死。例：Google——AI 对话界面替代搜索框已是现状，不是预测。这是框架判别力最强的场景。</li>
+    <li>给界面型、渠道型、技术架构型护城河<strong>定估值年限</strong>。这里的年限指 fade rate：估值模型里「超额回报多少年衰减完」的那个参数。框架最锋利的一条结论：<strong>渠道位置型公司的永续估值几乎总是错的</strong>——它的护城河有到期日。</li>
+    <li>研究覆盖还很薄的标的，快速逼出「它会怎么死」的想象。</li>
+    <li>检查已有的风险判断有没有<strong>把层选错</strong>。例：一份对腾讯的既有研究，曾把致命条件设在「硬件被替代」这一层，结果漏掉了同一硬件上的意图界面迁移（用户不打开 App、由系统智能体代办）——层选粗了，警报就永远不会响。</li>
+  </ul>
+
+  <h3>何时不用</h3>
+
+  <p>框架只覆盖护城河四种死法中的一种。四种死法：<strong>换代死</strong>（层被抽掉）、<strong>同层商品化死</strong>（层还在，被成本曲线耗死）、<strong>资产负债表死</strong>（杠杆先杀死公司）、<strong>监管/声誉猝死</strong>。后三种它完全管不了。</p>
+
+  <p>52 个案例里有 9 个反例，聚成下表前四行；第五行是分类学之外的界外情形。表内点名的公司含样本外补充示例。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>不适用情形</th><th>为什么失灵</th><th>案例</th></tr></thead>
+    <tbody>
+      <tr><td><strong>预测换代何时发生</strong></td><td>框架对时点零输入</td><td>分众传媒被多次误报将死；IBM 大型机被误判了四十年；特斯拉的核心不确定性（robotaxi 何时兑现）恰在盲区</td></tr>
+      <tr><td><strong>同层商品化</strong></td><td>层没换，护城河在层内被耗死</td><td>北电、Sun、Telerate——成本曲线、独家资源被抽走</td></tr>
+      <tr><td><strong>资产负债表死</strong></td><td>杠杆让公司死在层之前</td><td>玩具反斗城、恒大、雷曼</td></tr>
+      <tr><td><strong>监管/法律/声誉猝死</strong></td><td>与层无关，几个月清零</td><td>安达信、三鹿、Wirecard（AT&amp;T 肢解另算一小类：十年周期、价值重组而非清零）</td></tr>
+      <tr><td><strong>政策决定生死的标的</strong></td><td>政策是「层上之层」，可任意抽换，不按常理出牌</td><td>双减抽掉学科培训整层；断直连把第三方支付拉回持牌清算层（但坐上来的主要是新设的网联，被绕开的银联只部分复位）；短信死透、运营商牌照无恙</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>对政策嵌入型标的，框架只剩一个用法：不定价，只盯立法信号。它像一张含发行人任意赎回条款的债券，不能按普通债券估。</p>
+
+  <p>另外两类要单独说：</p>
+  <ul>
+    <li><strong>宿主锁不死的多层品牌</strong>：唱片公司穿越黑胶→磁带→CD→流媒体多次载体换代而存活（数字盗版期重伤，最后靠版权层恢复）。这类公司活着，总能事后追认一个「没换代的真宿主」——框架对它没有预测内容，只剩检查表价值。</li>
+    <li><strong>做多「层死亡」的策略</strong>（界外，不在 9 反例内）：经由持有未上市公司股权的上市载体做多某一持仓，赌的就是「这股权买不到」的稀缺性被 IPO 抽掉——2026 年 SpaceX 上市就是这类逻辑的一次公开结算。框架所有案例都假设你希望层活着，这类反着赌的策略在它的分类学里不存在。</li>
+  </ul>
+
+  <h2>二、核心原理</h2>
+
+  <p>护城河不是一个整体。它是一张<strong>资产清单</strong>：网络、渠道关系、品牌、文件格式、牌照、组织能力。每项资产附着在某个具体的层上，防御力只在那一层内有效。</p>
+
+  <p>层被换掉时，两类资产命运不同：</p>
+  <ul>
+    <li><strong>锁在层上的资产清零</strong>。诺基亚的运营商渠道、柯达的冲印网络——层没了，它们跟着没了。</li>
+    <li><strong>不挑层的资产可以带走</strong>，拿到重赛门票。Office 的文件格式、纽约时报的牌子。</li>
+  </ul>
+
+  <p>所以换代不是二值生死，是按「多少资产被锁在旧层里」折价。消费和实体行业更常见打折而非清零：吉列被 Dollar Shave Club 抢走份额但没死，星巴克到店客流萎缩但不消失。</p>
+
+  <p><strong>久期怎么定</strong>：护城河的年限上限 ≈ 它最重要的那项资产所附着的层还能活多久。层的寿命只能按类型给量级，查表：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>宿主层类型</th><th>换代周期量级</th></tr></thead>
+    <tbody>
+      <tr><td>界面 / 默认入口</td><td>5-15 年</td></tr>
+      <tr><td>渠道 / 网点</td><td>10-30 年</td></tr>
+      <tr><td>技术架构 / 标准</td><td>20-40 年</td></tr>
+      <tr><td>物理地理</td><td>30-100 年</td></tr>
+      <tr><td>法律权利</td><td>挂立法周期</td></tr>
+      <tr><td>礼俗</td><td>百年级</td></tr>
+      <tr><td>政策（层上之层）</td><td>挂政治周期，不可测</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>两条禁令：禁止把量级算成具体年数；禁止拿它择时。</p>
+
+  <p><strong>这套东西里真正新的只有两处</strong>。和已有理论对表后，五条原始命题里三条是别人早说过的（Christensen 的价值网络、Henderson &amp; Clark 的架构创新、Teece 的互补资产、Helmer 的 counter-positioning 已覆盖）。剩下两条：</p>
+
+  <ol>
+    <li><strong>给久期一个能查表的锚</strong>。Mauboussin 的 CAP（竞争优势期：超额回报还能维持几年）说「变化快的行业久期短」，但没给估计办法；Morningstar 的护城河评级给 10 年/20 年，靠委员会拍板。本框架的做法是查上面那张类型表——用一个能独立观察的外部变量代替拍脑袋。这是唯一够得上定价级的增量。</li>
+    <li><strong>同一场换代里，分出谁活谁死</strong>。问一句话：<strong>新层比拼的维度上，你的旧资产还有没有用武之地？</strong> 这一问在同一场换代里分出了纽约时报/地方报、富士/柯达等多组生死对照——「行业变化快慢」这类粗变量做不到这件事，它只能给全行业判一个年限。（诚实交代：原始压测报了七组对照，发表前复核撤下两组——嘉信/美林、百思买/玩具反斗城。美林死于资产负债表，玩具反斗城死于杠杆，都是框架明文不管的死法；拿不归自己管的死法给自己记功，正是第六节警告的选择效应。撤组过程留在这里作示例。）</li>
+  </ol>
+
+  <p><strong>换代 ≠ 必死，是必须重新赢一次。</strong>谁能赢，用五个变量打分（各打 +/0/−）：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>变量</th><th>问什么</th><th>读数示例</th></tr></thead>
+    <tbody>
+      <tr><td><strong>可迁移性</strong></td><td>旧资产在新层的比拼维度上有没有用；组织/软件能力必须单独算一项</td><td>诺基亚：硬资产搬得走，能力搬不走</td></tr>
+      <tr><td><strong>渠道冲突</strong></td><td>旧现金流会不会惩罚迁移</td><td>可被管理层强行压住——是可管理变量，不是死刑</td></tr>
+      <tr><td><strong>迁移资本</strong></td><td>报表还够不够再打一仗</td><td>有没有资格重新赢一次，先看资产负债表</td></tr>
+      <tr><td><strong>主权者需要度</strong></td><td>这个领域能不能被立法重写</td><td>能被重写的领域，年限挂政治不挂技术</td></tr>
+      <tr><td><strong>网络存量深度</strong></td><td>新界面会骑在旧网络上，还是把它抽掉</td><td>Apple Pay 骑银行卡清算轨 vs 二维码绕开卡层；微信网络深→层寿命被延长；Google 分发网络深→AI 可能骑轨；Robinhood 网络浅→易被新入口骑在身上</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>最后一个变量是实测中唯一在所有标的上都给出非平凡读数的。</p>
+
+  <h2>三、操作步骤</h2>
+
+  <p><strong>Step 0 分流</strong>。先问：这标的的第一死因是不是换代？不是就别跑全流程。再按护城河类型走不同深度：界面/渠道/技术架构型走全流程；礼俗品牌型只做 Step 2 和 6（锁定指认＋挂信号），不定年限；政策嵌入型只监控立法信号。</p>
+
+  <p><strong>Step 1 拆资产清单</strong>。护城河由哪几项资产组成，逐项列出。组织/软件能力必须单列一项。</p>
+
+  <p><strong>Step 2 逐项指认宿主层，白纸黑字锁定</strong>。这是整套纪律的核心，防的是事后改口。三条规则：</p>
+  <ul>
+    <li><strong>就近指认</strong>：宿主 = 这项资产直接依赖的那个接口或制度，不许往上泛化。Robinhood 锁「手机 App 作为个人财务入口」，不许退到「智能手机」，更不许退到「美国人要理财」。</li>
+    <li><strong>移除测试</strong>：写出「这层被抽掉 → 12 个月内护城河失去过半防御力」的传导过程。写不出来，就说明它不是宿主。</li>
+    <li><strong>多层并存就逐层锁</strong>，标出哪层承重、哪层是政策子层。茅台必须同时拆「宴席礼俗」（百年层）和「政务消费」（十年子层）——2012 年触发的腰斩打的是细层，只锁粗层会漏掉它。</li>
+  </ul>
+  <p>锁定后写进研究笔记，<strong>此后禁止换层</strong>。</p>
+
+  <p><strong>Step 3 定年限量级</strong>。查第二节的类型表，取量级不取年数。物理/基建资产按现金流分市场处理（铁路客运死了，货运活着）。只用作估值年限的上限。</p>
+
+  <p><strong>Step 4 算折价结构</strong>。锁在层上的资产 vs 带得走的资产，各占护城河价值几成，写出换代情景下的折价率。多个层并存时，情景加总要<strong>互斥处理</strong>——两个互相矛盾的层不能同时按满血计价。例：特斯拉的牛市情景里，robotaxi 兑现必然抽掉「私人拥车」这个层，汽车业务的层锁定资产要同步折价，不能一边算 robotaxi 的钱一边照旧算卖车的钱。</p>
+
+  <p><strong>Step 5 判存活</strong>。五变量打分。可迁移性那一项，问的是「新层比拼什么、旧资产在那个维度上还有没有用」，不是「资产还在不在」。三项以上为负：换代情景按接近清零建模。</p>
+
+  <p><strong>Step 6 预注册观察信号</strong>。预注册的意思：事先写死指标、阈值、时限，不许事后挑。每个锁定的层配 1-2 个可观测信号。<strong>必须同时盯两侧</strong>：新层建起来没有；旧层在不在被抽。实测中 Robinhood 的教训就在这：原有观察点全在「新对手起来没」，「旧入口还守不守得住」一侧是零。信号触发 = 回到 Step 5 重算。</p>
+
+  <p><strong>Step 7 挂上另外三路死因的监控</strong>。同层成本曲线、资产负债表（净债务、再融资墙）、监管声誉（立法与诉讼日历）。缺这三路的监控清单不算完成——否则就是第一节说的虚假安全感。</p>
+
+  <h2>四、输出怎么接进决策</h2>
+
+  <ul>
+    <li>框架的输出是<strong>输入，不是决策</strong>。Step 3 的年限 → 喂给估值模型做 fade rate 上限；Step 5 的打分 → 喂给情景折价率；Step 6 的信号 → 进监控与复查机制。</li>
+    <li>打分怎么读：三项以上为负，换代情景按接近清零建模。四正一负，判「重赛且胜算高」——但那个「−」往往就是监控缺口所在。例：Google 四正一负，负在「主权者需要度」：它的默认位资产附着在正被司法程序重写的政策子层上。地区法院 2025 年判决没禁付费默认位、否决了 Chrome 剥离；DOJ 2026 年 7 月的正式上诉书状收窄为只请求付费默认位禁令。重写风险移到了上诉层、范围变小，但没有消失。</li>
+    <li><strong>框架自己的证伪条款</strong>：任何一个白纸黑字锁定的层死了、护城河却活着——记框架一次证伪，不许事后改口说「其实真宿主是另一层」。</li>
+  </ul>
+
+  <h2>五、正反案例</h2>
+
+  <ul>
+    <li><strong>正例（同事件判别力）</strong>：富士 vs 柯达。同一场胶片换代，富士的化学/涂层能力在新层（材料、医疗影像）有用武之地，柯达的冲印网络锁死在旧层。变量①正确分边。同型对照还有纽约时报 vs 地方报。</li>
+    <li><strong>反例 1（同层死，框架零覆盖）</strong>：北电。没有任何层被换掉，光通信层一直在，成本曲线和低端商品化在层内把它耗死。用本框架看北电，会得出「很安全」的错误结论。</li>
+    <li><strong>反例 2（事后圆故事的漏洞）</strong>：唱片公司四次载体换代都没死。活着的公司总能事后追认一个「没换代的真宿主」（版权层）。这类案例证明：没有事前锁定纪律，框架就退化成怎么讲都通的故事。Step 2 的白纸黑字锁定＋移除测试＋禁止改口，就是为堵这个洞设计的。</li>
+    <li><strong>反例 3（政策压过技术）</strong>：中国移动——短信这个技术层死透了，牌照护城河无恙。断直连把第三方支付的「换代」政策性逆转——且层重建后坐上来的是新设的网联，不是被绕开的银联：政策能重建层，但不保证原持有者复位。政策领域里，技术类型表整体失效。</li>
+    <li><strong>类型表的缺档</strong>：AI。前沿模型 12-18 个月换一代，比表上最短的档（界面型 5-15 年）还快得多。类型表对 AI 原生公司只能给一句定性结论——护城河的承重全押在「组织能力」这项带得走的资产上——给不了年限。</li>
+  </ul>
+
+  <h2>六、它解决不了的问题（天花板）</h2>
+
+  <p>红队五路攻击留下四个事前关不掉的问题。前两个只是被纪律缓解，没有被机制消除：</p>
+
+  <ol>
+    <li><strong>怎么讲都通的风险还在</strong>。宿主层的指认，本质上只有事后才能完全验证——Oracle 该锁哪层、大银行要不要改口、唱片公司连错四次，是五个行业域各自独立撞上的同一个问题。事前锁定纪律把它从「不可证伪」降到「可证伪、但还没验过」：双盲回测没跑，「不同人独立指认、七成以上一致才算规则有效」的测试也没跑。攒够样本之前，任何「框架预测对了」都可能只是挑了对自己有利的例子。</li>
+    <li><strong>层的粗细没有客观标准</strong>。就近指认规则挡住了往上泛化，但多层并存时「哪层承重」仍有主观空间。微信是「5-15 年的 App 入口」，还是被网络深度延长的特殊档？两种读法给出的年限差一倍以上。「网络深能延长层寿命」目前只是猜想，没有独立判据。</li>
+    <li><strong>增量还没经过预注册检验</strong>。那些生死对照（原七组，复核撤两组）全是事后挑的。正式宣称预测力之前，要攒 20 个按规则结算的样本，和「行业变化快慢」这个粗变量跑对照；赢不了就降级为纯检查表。在那之前，它只以「检查表＋估值锚」的身份使用。</li>
+    <li><strong>只会算防守</strong>。框架是防御端理论，对发起换代的一方（特斯拉、2008 年的苹果）怎么创造价值没有内容，只能算它对自己旧层的侵蚀。</li>
+  </ol>
+
+  <h2>七、证据、实测与哨兵信号</h2>
+
+  <p><strong>已有证据</strong>：52 案例压测——能解释 57.7%，部分解释 25.0%，解释不了 17.3%，五个行业域分布均匀。文献对表——五条原始命题三条是旧货（与已有理论重合度 75-95%），「定价化」是真增量。六个标的实测。</p>
+
+  <p><strong>实测诚实账（不美化）</strong>：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>标的</th><th>有没有真增量</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Robinhood</strong></td><td>有，够到定价级</td><td>新入口重赛情景按十年量级衰减给 App 层定价；区块链业务单列为「迁层期权」；补上了「旧入口守不守得住」一侧的信号</td></tr>
+      <tr><td><strong>特斯拉</strong></td><td>有</td><td>牛市情景两个层不能同时满血计价；补需求侧的层死亡信号</td></tr>
+      <tr><td><strong>Anthropic</strong></td><td>有一条</td><td>「模型一代不到两年 → 带得走的资产只剩人」逼出组织能力的监控缺口</td></tr>
+      <tr><td><strong>Circle</strong></td><td>基本没有</td><td>把付息禁令从「护城河」重读为「可逆的政策层」算半条；它最要紧的死因全在框架覆盖外，硬套反而制造虚假安全感</td></tr>
+      <tr><td><strong>腾讯</strong></td><td>基本没有</td><td>此前深研的结论九成被框架复述而非超越；只咬出一处层选粗了的错误</td></tr>
+      <tr><td><strong>Google</strong></td><td>复现，不是增量</td><td>五变量打分与此前判断一致（复现本身有校准价值）；真增量仅一条监控缺口</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><strong>结论模式</strong>：框架的增量集中在两端——研究覆盖薄的标的，和换代已确认的标的。被反复深研过的标的，剩余价值收敛到检查表和层粗细检查。</p>
+
+  <p><strong>可证伪验收（哨兵信号，全部事先写死）</strong>：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>标的</th><th>哨兵信号</th><th>时限</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Robinhood</strong></td><td>具名 AI 理财代理产品 MAU 破 500 万且拿到直连执行/清算</td><td>2027 年底</td></tr>
+      <tr><td><strong>腾讯</strong></td><td>任一手机厂商系统级智能体的商家直连成交（绕开小程序/微信支付）被披露量级</td><td>12 个月窗口</td></tr>
+      <tr><td><strong>Google</strong></td><td>DC 巡回上诉结果：付费默认位禁令是否被改判（DOJ 书状已放弃 Chrome 剥离，只押这一项）</td><td>口头辩论预计 2026 底-2027 初</td></tr>
+      <tr><td><strong>特斯拉</strong></td><td>robotaxi 已开城城市新车销量同比落后全国 ≥5pp 且持续两季（旧层死亡端信号）</td><td>2028 前可结算</td></tr>
+      <tr><td><strong>Circle</strong></td><td>允许稳定币给用户付息的立法草案进入国会逐条审议 / OCC 细则开口（政策层逆转前哨）</td><td>持续</td></tr>
+      <tr><td><strong>Anthropic</strong></td><td>核心研究员在 IPO 锁定期解禁前后流向竞对（判据：关键路径的人在关键节点走）</td><td>S-1 后启动</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><strong>框架自身的复检承诺</strong>：2027 年 3 月，数三件事。哨兵触发了几条、触发后有没有真的重算；有没有「锁定层死了护城河没死」的证伪记录；结算样本攒到几个（满 20 个跑粗变量对照）。任何一个锁定层被事后改口，直接判纪律失败，框架降级为纯检查表。</p>
+
+  <h2>八、和已有理论的关系</h2>
+
+  <ul>
+    <li><strong>估值流程</strong>：框架的宿命归属。Step 3 的年限量级作为 fade rate 上限喂给估值，是唯一定价级接口。</li>
+    <li><strong>Pre-mortem（事前验尸）</strong>：互补。Pre-mortem 管全部四种死法的失败路径；本框架只深挖换代这一路，但挖得更细。Step 7 强制挂回另外三路。</li>
+    <li><strong>Mauboussin CAP / Morningstar 护城河评级</strong>：本框架给它们补上缺的估计办法。机制层面引用 Henderson &amp; Clark、Teece、Helmer、Perez，不宣称原创。</li>
+  </ul>
+
+  <hr>
+
+  <div class="kicker">最后交代这个框架的身份判定：<strong>不立独立理论，作估值补丁 + 检查表</strong>（文献对表与六标的实测同向支持）——保留 2027 年 3 月复检后按哨兵结算结果翻案的可能。一个感觉极深刻的抽象被 52 个案例砍成一条补丁，这件事本身比框架更值得记：<strong>降格是常态，扛过降格剩下的那一小块，才是真资产。</strong></div>
+
+  <p class="disclaim">文中所有标的均为研究与案例对象，不构成持仓披露，也不构成投资建议。</p>
+
+  <div class="comments">
+    <h2>评论</h2>
+    <div class="giscus"></div>
+    <script src="https://giscus.app/client.js"
+      data-repo="June911/personal-site"
+      data-repo-id="R_kgDORNjR9Q"
+      data-category="General"
+      data-category-id="DIC_kwDORNjR9c4C2TU2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="dark"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>june © 2026 · 护城河的久期：一个框架的自我降格记录</span>
+    <span><a href="../index.html">首页</a>　·　<a href="../index.html#articles">文章</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
