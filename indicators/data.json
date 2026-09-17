@@ -1,105 +1,105 @@
 {
-  "updated_at": "2026-09-16T16:23:15Z",
+  "updated_at": "2026-09-17T04:00:03Z",
   "indicators": {
     "ahr999": {
       "value": 0.47,
       "display": "0.47 (定投区)",
       "triggered": false,
       "level": "定投",
-      "btc_price": 75823.89,
-      "updated_at": "2026-09-16T16:23:09Z"
+      "btc_price": 76380.48,
+      "updated_at": "2026-09-17T03:59:57Z"
     },
     "nupl": {
-      "value": 0.325,
-      "display": "NUPL 0.325",
+      "value": 0.312,
+      "display": "NUPL 0.312",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:09Z"
+      "updated_at": "2026-09-17T03:59:58Z"
     },
     "mvrv-zscore": {
-      "value": 0.85,
-      "display": "Z-Score 0.85",
+      "value": 0.84,
+      "display": "Z-Score 0.84",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:10Z"
+      "updated_at": "2026-09-17T03:59:59Z"
     },
     "puell-multiple": {
-      "value": 1.08,
-      "display": "Puell 1.08",
+      "value": 0.89,
+      "display": "Puell 0.89",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:11Z"
+      "updated_at": "2026-09-17T04:00:00Z"
     },
     "hash-ribbons": {
       "value": 0,
-      "display": "正常 (MA30/MA60: +0.7%)",
+      "display": "正常 (MA30/MA60: +0.6%)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:12Z"
+      "updated_at": "2026-09-17T04:00:01Z"
     },
     "fear-greed-crypto": {
-      "value": 51,
-      "display": "51 (Neutral)",
+      "value": 50,
+      "display": "50 (Neutral)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:12Z"
+      "updated_at": "2026-09-17T04:00:01Z"
     },
     "funding-rate": {
       "value": 0,
-      "display": "当前 0.0001% (8h)，连续负 0 次",
+      "display": "当前 0.0164% (8h)，连续负 0 次",
       "triggered": false,
       "level": null,
-      "current_rate": 0.0001,
-      "updated_at": "2026-09-16T16:23:13Z"
+      "current_rate": 0.0164,
+      "updated_at": "2026-09-17T04:00:02Z"
     },
     "stablecoin-supply": {
       "value": -1.0,
       "display": "$309.5B, 90d -1.0%",
       "triggered": false,
       "level": "收缩",
-      "updated_at": "2026-09-16T16:23:13Z"
+      "updated_at": "2026-09-17T04:00:02Z"
     },
     "crypto-vc-funding": {
       "value": null,
       "display": "获取失败",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:13Z"
+      "updated_at": "2026-09-17T04:00:02Z"
     },
     "vix-spike": {
-      "value": 17.2,
-      "display": "VIX 17.2",
+      "value": 17.7,
+      "display": "VIX 17.7",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:15Z"
+      "updated_at": "2026-09-17T04:00:03Z"
     },
     "ma200-deviation": {
-      "value": 6.5,
-      "display": "偏离 +6.5%",
+      "value": 5.7,
+      "display": "偏离 +5.7%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:15Z"
+      "updated_at": "2026-09-17T04:00:03Z"
     },
     "double-drop-spy-gld": {
-      "value": "-1.66,-3.10",
-      "display": "SPY -1.66%, GLD -3.10%",
+      "value": "nan,nan",
+      "display": "SPY nan%, GLD nan%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:15Z"
+      "updated_at": "2026-09-17T04:00:03Z"
     },
     "double-drop-spy-tlt": {
-      "value": "-1.66,-1.82",
-      "display": "SPY -1.66%, TLT -1.82%",
+      "value": "nan,nan",
+      "display": "SPY nan%, TLT nan%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:15Z"
+      "updated_at": "2026-09-17T04:00:03Z"
     },
     "schd-qqq-ratio": {
-      "value": 94.64,
-      "display": "比率 94.64 (↓ QQQ 走强 (risk-on))",
+      "value": 93.87,
+      "display": "比率 93.87 (↓ QQQ 走强 (risk-on))",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-09-16T16:23:15Z"
+      "updated_at": "2026-09-17T04:00:03Z"
     },
     "miner-shutdown-price": {
       "value": null,
