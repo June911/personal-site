@@ -1,105 +1,105 @@
 {
-  "updated_at": "2026-10-30T17:49:17Z",
+  "updated_at": "2026-10-31T04:38:50Z",
   "indicators": {
     "ahr999": {
       "value": 0.45,
       "display": "0.45 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 77185.64,
-      "updated_at": "2026-10-30T17:49:12Z"
+      "btc_price": 77146.68,
+      "updated_at": "2026-10-31T04:38:44Z"
     },
     "nupl": {
-      "value": 0.313,
-      "display": "NUPL 0.313",
+      "value": 0.302,
+      "display": "NUPL 0.302",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:12Z"
+      "updated_at": "2026-10-31T04:38:45Z"
     },
     "mvrv-zscore": {
-      "value": 0.89,
-      "display": "Z-Score 0.89",
+      "value": 0.76,
+      "display": "Z-Score 0.76",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:13Z"
+      "updated_at": "2026-10-31T04:38:46Z"
     },
     "puell-multiple": {
-      "value": 1.27,
-      "display": "Puell 1.27",
+      "value": 1.05,
+      "display": "Puell 1.05",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:14Z"
+      "updated_at": "2026-10-31T04:38:47Z"
     },
     "hash-ribbons": {
       "value": 0,
-      "display": "正常 (MA30/MA60: +3.5%)",
+      "display": "正常 (MA30/MA60: +3.9%)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:15Z"
+      "updated_at": "2026-10-31T04:38:47Z"
     },
     "fear-greed-crypto": {
       "value": 30,
       "display": "30 (Fear)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:15Z"
+      "updated_at": "2026-10-31T04:38:48Z"
     },
     "funding-rate": {
       "value": 0,
-      "display": "当前 0.0130% (8h)，连续负 0 次",
+      "display": "当前 0.0180% (8h)，连续负 0 次",
       "triggered": false,
       "level": null,
-      "current_rate": 0.013,
-      "updated_at": "2026-10-30T17:49:16Z"
+      "current_rate": 0.018,
+      "updated_at": "2026-10-31T04:38:48Z"
     },
     "stablecoin-supply": {
-      "value": 0.4,
-      "display": "$299.7B, 90d +0.4%",
+      "value": 0.1,
+      "display": "$298.9B, 90d +0.1%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:16Z"
+      "updated_at": "2026-10-31T04:38:49Z"
     },
     "crypto-vc-funding": {
       "value": null,
       "display": "获取失败",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:16Z"
+      "updated_at": "2026-10-31T04:38:49Z"
     },
     "vix-spike": {
-      "value": 17.2,
-      "display": "VIX 17.2",
+      "value": 19.4,
+      "display": "VIX 19.4",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:17Z"
+      "updated_at": "2026-10-31T04:38:50Z"
     },
     "ma200-deviation": {
-      "value": 4.0,
-      "display": "偏离 +4.0%",
+      "value": 4.1,
+      "display": "偏离 +4.1%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:17Z"
+      "updated_at": "2026-10-31T04:38:50Z"
     },
     "double-drop-spy-gld": {
-      "value": "0.04,-2.40",
-      "display": "SPY 0.04%, GLD -2.40%",
+      "value": "-2.25,-6.11",
+      "display": "SPY -2.25%, GLD -6.11%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:17Z"
+      "updated_at": "2026-10-31T04:38:50Z"
     },
     "double-drop-spy-tlt": {
-      "value": "0.04,1.70",
-      "display": "SPY 0.04%, TLT 1.70%",
+      "value": "-2.25,1.99",
+      "display": "SPY -2.25%, TLT 1.99%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:17Z"
+      "updated_at": "2026-10-31T04:38:50Z"
     },
     "schd-qqq-ratio": {
-      "value": 107.74,
-      "display": "比率 107.74 (↑ SCHD 走强 (risk-off))",
+      "value": 112.15,
+      "display": "比率 112.15 (↑ SCHD 走强 (risk-off))",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-10-30T17:49:17Z"
+      "updated_at": "2026-10-31T04:38:50Z"
     },
     "miner-shutdown-price": {
       "value": null,
