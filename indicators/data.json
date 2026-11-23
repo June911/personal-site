@@ -1,105 +1,105 @@
 {
-  "updated_at": "2026-11-22T19:12:14Z",
+  "updated_at": "2026-11-23T06:25:45Z",
   "indicators": {
     "ahr999": {
-      "value": 0.27,
-      "display": "0.27 (低于阈值)",
+      "value": 0.28,
+      "display": "0.28 (低于阈值)",
       "triggered": true,
       "level": "行动",
-      "btc_price": 60638.89,
-      "updated_at": "2026-11-22T19:12:08Z"
+      "btc_price": 61455.7,
+      "updated_at": "2026-11-23T06:25:41Z"
     },
     "nupl": {
-      "value": 0.179,
-      "display": "NUPL 0.179",
+      "value": 0.175,
+      "display": "NUPL 0.175",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-11-22T19:12:09Z"
+      "updated_at": "2026-11-23T06:25:41Z"
     },
     "mvrv-zscore": {
-      "value": 0.38,
-      "display": "Z-Score 0.38",
+      "value": 0.37,
+      "display": "Z-Score 0.37",
       "triggered": false,
       "level": "关注",
-      "updated_at": "2026-11-22T19:12:10Z"
+      "updated_at": "2026-11-23T06:25:42Z"
     },
     "puell-multiple": {
-      "value": 1.03,
-      "display": "Puell 1.03",
+      "value": 0.98,
+      "display": "Puell 0.98",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-11-22T19:12:11Z"
+      "updated_at": "2026-11-23T06:25:43Z"
     },
     "hash-ribbons": {
       "value": 0,
-      "display": "正常 (MA30/MA60: +0.7%)",
+      "display": "正常 (MA30/MA60: +0.0%)",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-11-22T19:12:12Z"
+      "updated_at": "2026-11-23T06:25:43Z"
     },
     "fear-greed-crypto": {
       "value": 11,
       "display": "11 (Extreme Fear)",
       "triggered": true,
       "level": "行动",
-      "updated_at": "2026-11-22T19:12:12Z"
+      "updated_at": "2026-11-23T06:25:43Z"
     },
     "funding-rate": {
       "value": 0,
-      "display": "当前 0.0010% (8h)，连续负 0 次",
+      "display": "当前 0.0128% (8h)，连续负 0 次",
       "triggered": false,
       "level": null,
-      "current_rate": 0.001,
-      "updated_at": "2026-11-22T19:12:13Z"
+      "current_rate": 0.0128,
+      "updated_at": "2026-11-23T06:25:44Z"
     },
     "stablecoin-supply": {
       "value": -5.5,
-      "display": "$282.6B, 90d -5.5%",
+      "display": "$282.7B, 90d -5.5%",
       "triggered": false,
       "level": "收缩",
-      "updated_at": "2026-11-22T19:12:13Z"
+      "updated_at": "2026-11-23T06:25:44Z"
     },
     "crypto-vc-funding": {
       "value": null,
       "display": "获取失败",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-11-22T19:12:13Z"
+      "updated_at": "2026-11-23T06:25:45Z"
     },
     "vix-spike": {
       "value": 35.9,
       "display": "VIX 35.9",
       "triggered": false,
       "level": "准备",
-      "updated_at": "2026-11-22T19:12:14Z"
+      "updated_at": "2026-11-23T06:25:45Z"
     },
     "ma200-deviation": {
       "value": -5.5,
       "display": "偏离 -5.5%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-11-22T19:12:14Z"
+      "updated_at": "2026-11-23T06:25:45Z"
     },
     "double-drop-spy-gld": {
-      "value": "nan,-11.58",
-      "display": "SPY nan%, GLD -11.58%",
-      "triggered": false,
+      "value": "-9.21,-11.58",
+      "display": "SPY -9.21%, GLD -11.58%",
+      "triggered": true,
       "level": null,
-      "updated_at": "2026-11-22T19:12:14Z"
+      "updated_at": "2026-11-23T06:25:45Z"
     },
     "double-drop-spy-tlt": {
-      "value": "nan,0.65",
-      "display": "SPY nan%, TLT 0.65%",
+      "value": "-9.21,0.65",
+      "display": "SPY -9.21%, TLT 0.65%",
       "triggered": false,
       "level": null,
-      "updated_at": "2026-11-22T19:12:14Z"
+      "updated_at": "2026-11-23T06:25:45Z"
     },
     "schd-qqq-ratio": {
-      "value": 126.41,
-      "display": "比率 126.41 (↑ SCHD 走强 (risk-off))",
+      "value": 126.74,
+      "display": "比率 126.74 (↑ SCHD 走强 (risk-off))",
       "triggered": false,
       "level": "防御",
-      "updated_at": "2026-11-22T19:12:14Z"
+      "updated_at": "2026-11-23T06:25:45Z"
     },
     "miner-shutdown-price": {
       "value": null,
